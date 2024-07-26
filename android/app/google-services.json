@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "132465013831",
+    "project_id": "goodtimes-414811",
+    "storage_bucket": "goodtimes-414811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132465013831:android:c6c80b28dd173dd291ad62",
+        "android_client_info": {
+          "package_name": "com.goodtimes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132465013831-04d3917pi2flh57ur679eb3c1fhjr2as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goodtimes",
+            "certificate_hash": "876d73b3ad22e3585b877af89b75eee429c1e898"
+          }
+        },
+        {
+          "client_id": "132465013831-m2icgk0pb6n565gn93h9mak466iovv7k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-hF6pPqcNYAkEYptxYCr5yPrAakJV2q4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132465013831-m2icgk0pb6n565gn93h9mak466iovv7k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "132465013831-1biiuvncvt0svh22gpfh3e3p79d4kva5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.goodTimes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

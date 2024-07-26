@@ -1,0 +1,431 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:good_times/data/models/event_age_group_model.dart';
+import 'package:good_times/data/repository/endpoints.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../../utils/constant.dart';
+import '../../../../../utils/helper.dart';
+import '../../../../../view-models/advance_filter_controller.dart';
+import 'reuseable_checkbox.dart';
+
+AdvanceFilterController advanceFilterController =
+    Get.put(AdvanceFilterController());
+Widget serachByLocation(context) {
+  return GestureDetector(
+    onTap: () {
+      unfoucsKeyboard(context);
+    },
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Text(
+          'By Location',
+          style: labelStyle.copyWith(fontSize: 16, color: kTextWhite),
+        ),
+        const SizedBox(height: 12),
+        CupertinoSearchTextField(
+          controller: advanceFilterController.locationController.value,
+          placeholder: 'Search by location',
+          style: paragraphStyle,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+              color: const Color(0xffA1A1A1),
+            ),
+          ),
+          prefixIcon: const Icon(
+            CupertinoIcons.search,
+            color: kTextWhite,
+          ),
+          suffixIcon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: kTextWhite,
+          ),
+          onSuffixTap: () {
+            advanceFilterController.locationController.value.clear();
+            unfoucsKeyboard(context);
+          },
+          onChanged: (e) {
+            advanceFilterController.filterLocation(e);
+          },
+        ),
+        const SizedBox(height: 20),
+      ],
+    ),
+  );
+}
+
+Widget byCategory(context, categoryData) {
+  List<String> categoryDetails = [];
+
+  for (var element in categoryData) {
+    categoryDetails.add(element.title);
+  }
+
+  List<bool> checkBoxValues = categoryDetails
+      .map((category) =>
+          advanceFilterController.evetCategoryList.contains(category))
+      .toList();
+  final ExpansionTileController controller = ExpansionTileController();
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return Column(
+        children: [
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+                iconColor: kTextWhite,
+                collapsedIconColor: kTextWhite,
+                controller: controller,
+                title: Text(
+                  'By Category',
+                  style: paragraphStyle.copyWith(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                children: [
+                  CheckboxList(
+                    options: categoryDetails,
+                    checkBoxValues: checkBoxValues,
+                    onChangedCallback: (value, index) {
+                      setState(() {
+                        checkBoxValues[index] = value!;
+                      });
+
+                      if (advanceFilterController.evetCategoryList
+                          .contains(categoryDetails[index])) {
+                        advanceFilterController.evetCategoryList
+                            .remove(categoryDetails[index]);
+                      } else {
+                        advanceFilterController.evetCategoryList
+                            .add(categoryDetails[index]);
+                      }
+                    },
+                  ),
+                ]),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget sortBy(context) {
+  List<Map<String, String>> sortFilter = [
+    {"label": "Latest", "value": "latest"},
+    {"label": "Nearest", "value": "nearest"},
+    {"label": "Popular", "value": "popularity"},
+  ];
+
+  List<bool> checkBoxValues = sortFilter
+      .map((sort) => advanceFilterController.eventSort.contains(sort["value"]))
+      .toList();
+
+  List<String> valueList =
+      sortFilter.map((item) => item["label"] as String).toList();
+
+  final ExpansionTileController controller = ExpansionTileController();
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return Column(
+        children: [
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              iconColor: kTextWhite,
+              collapsedIconColor: kTextWhite,
+              controller: controller,
+              title: Text(
+                'Sort BY',
+                style: paragraphStyle.copyWith(
+                    fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              children: [
+                CheckboxList(
+                  options: valueList,
+                  checkBoxValues: checkBoxValues,
+                  onChangedCallback: (value, index) {
+                    setState(() {
+                      checkBoxValues[index] = value!;
+                    });
+                    if (advanceFilterController.eventSort
+                        .contains(sortFilter[index]["value"])) {
+                      advanceFilterController.eventSort
+                          .remove(sortFilter[index]["value"].toString());
+                    } else {
+                      advanceFilterController.eventSort
+                          .add(sortFilter[index]["value"].toString());
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget byDate(context) {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: advanceFilterController.selectedDate.value,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2550),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: primarySwatch,
+            accentColor: kTextBlack,
+            backgroundColor: Colors.lightBlue,
+            cardColor: kTextBlack,
+            brightness: Brightness.dark,
+          ),
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) {
+      advanceFilterController.selectDateTime(picked);
+    }
+  }
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'By Date',
+          style: paragraphStyle.copyWith(
+              fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () async {
+            await _selectDate(context);
+          },
+          child: Obx(
+            () => Container(
+              width: MediaQuery.of(context).size.width - 230,
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: kTextWhite.withOpacity(0.6), width: 1),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              child: Text(
+                advanceFilterController.selectedDate.value == null
+                    ? 'MM / DD / YY'
+                    : DateFormat('MMM / d / yyyy')
+                        .format(advanceFilterController.selectedDate.value!),
+                style: paragraphStyle.copyWith(color: kTextWhite),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget byPriceRange() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 14),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'By Event price',
+          style: paragraphStyle.copyWith(
+              fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 90,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "From",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xffE1E1E1),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        style: const TextStyle(
+                          color: kTextWhite,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter(RegExp(r'^\+?[0-9]+$'),
+                              allow: true)
+                        ],
+                        controller:
+                            advanceFilterController.startPriceController.value,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: "0",
+                          hintStyle: TextStyle(
+                            fontSize: 16,
+                            color: const Color(0xffC5C5C5).withOpacity(0.35),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: kTextWhite.withOpacity(0.6))),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: kTextWhite.withOpacity(0.6))),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: kTextWhite.withOpacity(0.6))),
+                          errorStyle: const TextStyle(fontSize: 14.0),
+                        ),
+                        onChanged: (e) {
+                          advanceFilterController.startPriceFunc(e);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "To",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xffE1E1E1),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        style: const TextStyle(
+                          color: kTextWhite,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter(RegExp(r'^\+?[0-9]+$'),
+                              allow: true)
+                        ],
+                        controller:
+                            advanceFilterController.endPriceController.value,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: "0",
+                          hintStyle: TextStyle(
+                            fontSize: 16,
+                            color: const Color(0xffC5C5C5).withOpacity(0.35),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: kTextWhite.withOpacity(0.6),
+                          )),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: kTextWhite.withOpacity(0.6),
+                          )),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                            color: kTextWhite.withOpacity(0.6),
+                          )),
+                          errorStyle: const TextStyle(fontSize: 14.0),
+                        ),
+                        onChanged: (e) {
+                          advanceFilterController.endPriceFunc(e);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget ageGroup(context, List<ageData>? ageGroups) {
+  logger.d("age list is :- ${ageGroups?.first.toString()}");
+  // List<Map<String, dynamic>> ageGroup = [
+  //   {"age": "18-21"},
+  //   {"age": "21-30"},
+  //   {"age": "30-40"},
+  //   {"age": "40-50"},
+  //   {"age": "50+"},
+  // ];
+  List<bool> checkBoxValues = ageGroups!
+      .map((age) => advanceFilterController.ageSort.contains(age.name))
+      .toList();
+  final ExpansionTileController controller = ExpansionTileController();
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return Column(
+        children: [
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              iconColor: kTextWhite,
+              collapsedIconColor: kTextWhite,
+              controller: controller,
+              title: Text(
+                'Age group',
+                style: paragraphStyle.copyWith(
+                    fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              children: [
+                CheckboxList(
+                  options: ageGroups.map((age) => age.name!).toList(),
+                  checkBoxValues: checkBoxValues,
+                  onChangedCallback: (value, index) {
+                    setState(() {
+                      checkBoxValues[index] = value!;
+                    });
+                    if (advanceFilterController.ageSort
+                        .contains(ageGroups[index].name)) {
+                      advanceFilterController.ageSort
+                          .remove(ageGroups[index].name);
+                    } else {
+                      advanceFilterController.ageSort
+                          .add(ageGroups[index].name.toString());
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
