@@ -463,7 +463,7 @@ class _EventPreviewState extends State<EventPreview> {
                                               style: paragraphStyle.copyWith(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w500,
-                                                color: kPrimaryColorLight,
+                                                color: kPrimaryColor,
                                               ),
                                             ),
                                           ),

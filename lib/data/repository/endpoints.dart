@@ -7,9 +7,9 @@ var logger = Logger();
 class Endpoints {
   // base point urls
   //!local urls of bobby server
-  static const domain = "http://192.168.50.134:8000/";
-  static const _base = "http://192.168.50.134:8000/api/";
-  static const chatDomain = "ws://chat.goodtimes.betadelivery.com/ws/chat/";
+  /* static const domain = "http://192.168.50.92:8000/";
+  static const _base = "http://192.168.50.92:8000/api/";
+  static const chatDomain = "ws://chat.goodtimes.betadelivery.com/ws/chat/"; */
 
   // base point urls
   //!stagging urls our server
@@ -18,9 +18,9 @@ class Endpoints {
   // static const chatDomain= "ws://chat.goodtimes.betadelivery.com/ws/chat/";
 
   //!stagging urls of client
-  // static const domain = "https://staging.goodtimesltd.co.uk";
-  // static const _base = "https://staging.goodtimesltd.co.uk/api/";
-  // static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
+  static const domain = "https://staging.goodtimesltd.co.uk";
+  static const _base = "https://staging.goodtimesltd.co.uk/api/";
+  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
 
   //!production urls of client
   /*  static const domain = "https://admin.goodtimesltd.co.uk";

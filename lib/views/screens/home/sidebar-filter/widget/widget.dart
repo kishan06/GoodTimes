@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/models/event_age_group_model.dart';
 import 'package:good_times/data/repository/endpoints.dart';
@@ -202,41 +203,56 @@ Widget byDate(context) {
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'By Date',
-          style: paragraphStyle.copyWith(
-              fontSize: 14, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 10),
-        GestureDetector(
-          onTap: () async {
-            await _selectDate(context);
-          },
-          child: Obx(
-            () => Container(
-              width: MediaQuery.of(context).size.width - 230,
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: kTextWhite.withOpacity(0.6), width: 1),
-                borderRadius: BorderRadius.circular(5),
+    
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'By Date',
+                style: paragraphStyle.copyWith(
+                    fontSize: 14, fontWeight: FontWeight.w500),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-              child: Text(
-                advanceFilterController.selectedDate.value == null
-                    ? 'MM / DD / YY'
-                    : DateFormat('MMM / d / yyyy')
-                        .format(advanceFilterController.selectedDate.value!),
-                style: paragraphStyle.copyWith(color: kTextWhite),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () async {
+                  await _selectDate(context);
+                },
+                child: Obx(
+                  () => Container(
+                    width: MediaQuery.of(context).size.width - 230,
+                    decoration: BoxDecoration(
+                      border:
+                          Border.all(color: kTextWhite.withOpacity(0.6), width: 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    child: Text(
+                      advanceFilterController.selectedDate.value == null
+                          ? 'MM / DD / YY'
+                          : DateFormat('MMM / d / yyyy')
+                              .format(advanceFilterController.selectedDate.value!),
+                      style: paragraphStyle.copyWith(color: kTextWhite),
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ),
-      ],
-    ),
+        GestureDetector(
+          onTap: (){
+            advanceFilterController.selectedDate.value=null;
+          },
+          child: Text("Clear", style: paragraphStyle.copyWith(
+                      fontSize: 14, fontWeight: FontWeight.w500),),
+        )
+        ],
+      ),
+    
   );
 }
 
