@@ -26,6 +26,7 @@ import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
 import '../../widgets/common/button.dart';
 import '../auth/registration/welcome_screen.dart';
+import '../home/sidebar-filter/widget/widget.dart';
 import '../notification/notification.dart';
 import '../subscription/open_website.dart';
 import 'edit_preferences.dart';
@@ -392,6 +393,11 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 25),
               MyElevatedButton(
                   onPressed: () {
+                     if (advanceFilterController.checkFilterIsClearOrNot()) {
+                    return;
+                  } else {
+                    advanceFilterController.clearAllFilter();
+                  }
                     setState(() {
                       curentIndex.value = 0;
                     });

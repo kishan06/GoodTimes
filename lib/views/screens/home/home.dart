@@ -351,6 +351,11 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 25),
             MyElevatedButton(
                 onPressed: () {
+                   if (advanceFilterController.checkFilterIsClearOrNot()) {
+                    return;
+                  } else {
+                    advanceFilterController.clearAllFilter();
+                  }
                   setState(() {
                     curentIndex.value = 0;
                   });
@@ -359,7 +364,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   GetStorage().write('profileStatus', null);
                   globalController.accessToken.value = '';
                   globalController.profileImgPath.value = '';
-
                   handleSignOut();
                   Navigator.pushNamedAndRemoveUntil(
                       context, WelcomeScreen.routeName, (route) => false);

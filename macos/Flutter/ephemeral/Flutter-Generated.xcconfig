@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/macbookpro/development/flutter
-FLUTTER_APPLICATION_PATH=/Users/macbookpro/Desktop/Flutter Projects /goodtimesltdlatest_app
+FLUTTER_ROOT=D:\pooja\fluttersdk\flutter_3.19.6\flutter
+FLUTTER_APPLICATION_PATH=D:\pooja\flutter\official\GoodTimes
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0

@@ -25,6 +25,13 @@ class AdvanceFilterService {
     final ApiService apiService = ApiService(dio);
     const baseUrl = Endpoints.getAdvanceEventFilter;
     // Fetch user's current position
+    bool checknearest=false;
+      for(String filter in advanceFilterController.eventSort){
+        if(filter=="nearest"){
+          checknearest=true;
+        };
+      }
+      if(checknearest){}else{}
     try {
       // Prepare query parameters
       final evetCat = advanceFilterController.evetCategoryList;
