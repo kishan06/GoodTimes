@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../view-models/global_controller.dart';
 import '../data/repository/services/user_location_data.dart';
+
+LatLng? latlong;
 
 class LocationController {
   final GlobalController globalController = Get.find();
@@ -16,7 +19,7 @@ class LocationController {
   Future<void> getCurrentLocation(BuildContext context) async {
     Position position;
     try {
-      position = await _getUserCurrentLocation();
+      position = await getUserCurrentLocation();
       final placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
       globalController.locationName.value =
@@ -32,7 +35,7 @@ class LocationController {
   Future<Map<String, double>> userCurrentPosition() async {
     Position position;
     try {
-      position = await _getUserCurrentLocation();
+      position = await getUserCurrentLocation();
       final placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
       globalController.locationName.value =
@@ -49,7 +52,7 @@ class LocationController {
     }
   }
 
-  Future<Position> _getUserCurrentLocation() async {
+  Future<Position> getUserCurrentLocation({bool redirect = false}) async {
     LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
@@ -57,11 +60,24 @@ class LocationController {
     }
 
     if (permission == LocationPermission.deniedForever) {
+      if (redirect) {
+        await Geolocator.openAppSettings().then((value) async {
+          Position currentP = await Geolocator.getCurrentPosition();
+          latlong = LatLng(currentP.latitude, currentP.longitude);
+
+          return currentP;
+        });
+      }
+
       throw 'Location permission permanently denied';
     }
-    
-    if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
-      return await Geolocator.getCurrentPosition();
+
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      Position currentP = await Geolocator.getCurrentPosition();
+      latlong = LatLng(currentP.latitude, currentP.longitude);
+
+      return currentP;
     } else {
       throw 'Location permission denied';
     }

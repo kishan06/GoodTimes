@@ -7,7 +7,9 @@ import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/screens/home/sidebar-filter/widget/widget.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
+import '../../../../data/common/locationwidget.dart';
 import '../../../../data/repository/services/advance_filter_service.dart';
+import '../../../../view-models/location_controller.dart';
 
 Drawer drawer(BuildContext context, List eventData, List<ageData>? ageGroups) {
   return Drawer(
@@ -72,10 +74,19 @@ Drawer drawer(BuildContext context, List eventData, List<ageData>? ageGroups) {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: MyElevatedButton(
-                    onPressed: () {
-                      AdvanceFilterService()
-                          .advanceFilterEventServices(context);
-                      Get.back();
+                    onPressed: () async {
+                      bool checknearest = false;
+                      if (advanceFilterController.eventSort
+                          .contains('nearest')) {
+                        checknearest = true;
+                      }
+                      if (checknearest != false && latlong == null) {
+                        await locationpermission(context);
+                      } else {
+                        AdvanceFilterService()
+                            .advanceFilterEventServices(context);
+                        Get.back();
+                      }
                     },
                     text: "Apply Filters",
                   ),

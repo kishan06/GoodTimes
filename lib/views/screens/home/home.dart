@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:good_times/data/models/event_age_group_model.dart';
@@ -14,6 +15,7 @@ import 'package:good_times/view-models/global_controller.dart';
 import 'package:good_times/views/screens/event/event_preview.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:good_times/views/widgets/common/parent_widget.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../data/repository/response_data.dart';
 import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/chat_service.dart';
@@ -25,6 +27,7 @@ import '../../../utils/helper.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/app_version.dart';
 import '../../../view-models/auth/google_auth.dart';
+import '../../../view-models/location_controller.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
 import '../../widgets/common/desclaimer.dart';
@@ -351,8 +354,8 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 25),
             MyElevatedButton(
                 onPressed: () {
-                   if (advanceFilterController.checkFilterIsClearOrNot()) {
-                    return;
+                  if (advanceFilterController.checkFilterIsClearOrNot()) {
+                    //return;
                   } else {
                     advanceFilterController.clearAllFilter();
                   }
@@ -567,8 +570,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(width: 10),
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
                         _scaffoldKey.currentState?.openDrawer();
+                        if (latlong == null) {
+                          LocationPermission permission =
+                              await Geolocator.checkPermission();
+                          if (permission == LocationPermission.whileInUse ||
+                              permission == LocationPermission.always) {
+                            Position currentP =
+                                await Geolocator.getCurrentPosition();
+                            latlong =
+                                LatLng(currentP.latitude, currentP.longitude);
+                          }
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

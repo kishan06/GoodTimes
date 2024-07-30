@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:good_times/utils/constant.dart';
+import 'package:good_times/views/widgets/common/parent_widget.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../../data/repository/services/advance_filter_service.dart';
+import '../../screens/home/main_home.dart';
+import '../../screens/home/sidebar-filter/widget/widget.dart';
 
 class ServerError extends StatelessWidget {
   static const String routeName = 'noInternet';
@@ -9,6 +15,19 @@ class ServerError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(
+        leading: GestureDetector(
+            onTap: () async{
+                 advanceFilterController.clearAllFilter();
+                 await AdvanceFilterService().advanceFilterEventServices(context);
+                  globalController.serverError.value=false;
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: kPrimaryColor,
+            )),
+        title: const Text(""),
+      ),
       body: Center(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
