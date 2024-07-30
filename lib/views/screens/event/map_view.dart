@@ -8,6 +8,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/repository/endpoints.dart';
+import 'package:good_times/utils/constant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../Globalconstant/constant.dart';
@@ -134,7 +135,7 @@ class _MapViewsState extends State<MapViews> {
             },
             child: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: kPrimaryColor,
             )),
         title: const Text(""),
       ),

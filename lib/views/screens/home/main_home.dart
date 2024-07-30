@@ -15,6 +15,7 @@ import '../../../data/models/account_trasfer_modal.dart';
 import '../../../data/models/profile.dart';
 import '../../../data/repository/endpoints.dart';
 import '../../../data/repository/services/account_transfer.dart';
+import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/profile.dart';
 import '../../../data/repository/services/send_player.dart';
 import '../../../utils/constant.dart';
@@ -23,6 +24,7 @@ import '../../widgets/common/bottom_navigation.dart';
 import '../auth/login/login.dart';
 import '../event/event_preview.dart';
 import 'home.dart';
+import 'sidebar-filter/widget/widget.dart';
 
 class HomeMain extends StatefulWidget {
   static const String routeName = 'homeMain';
@@ -242,13 +244,21 @@ class _HomeMainState extends State<HomeMain> {
     //  print('one signal player id ${GetStorage().read('oneSignalPlayerId')}');
     return WillPopScope(
       child: Obx(() => footerWidget[curentIndex.value]),
-      onWillPop: () {
-        if (homePageController.bottomNavIndex.value == 0) {
+      onWillPop: () async{
+        if(!globalController.serverError.value){
+            if (homePageController.bottomNavIndex.value == 0) {
           return showExitPopup();
         } else {
           homePageController.updateBottomNavIndex(0);
           return Future.value(false);
         }
+        }else{
+           advanceFilterController.clearAllFilter();
+                 await AdvanceFilterService().advanceFilterEventServices(context);
+                  globalController.serverError.value=false;
+          return Future.value(false);
+        }
+      
       },
     );
   }

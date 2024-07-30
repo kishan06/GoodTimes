@@ -40,7 +40,7 @@ class AppVersionController extends GetxController {
     log("device info ${info.version.runtimeType}");
     log("device info from api ${data.version.runtimeType}");
 
-    var isDataVersionGreaterThanInfoVersion = data.version!.compareTo(info.version) > 0;
+    bool isDataVersionGreaterThanInfoVersion = info.version!=data.version!;
     log("device isDataVersionGreaterThanInfoVersion $isDataVersionGreaterThanInfoVersion");
 
     if (isDataVersionGreaterThanInfoVersion) {

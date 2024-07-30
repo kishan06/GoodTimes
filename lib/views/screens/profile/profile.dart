@@ -45,7 +45,8 @@ class _ProfileState extends State<Profile> {
   String? refresh;
 
   checkReferesh(userData) async {
-    refresh = await getX.Get.to(() => EditProfile(profileData: userData),arguments: "fromProfile");
+    refresh = await getX.Get.to(() => EditProfile(profileData: userData),
+        arguments: "fromProfile");
     bool booleanValue = refresh == 'true';
     if (booleanValue) {
       setState(() {});
@@ -58,283 +59,278 @@ class _ProfileState extends State<Profile> {
     // log('globalContoller  ${globalContoller.profileImgPath.value}');
     return parentWidgetWithConnectivtyChecker(
       child: SafeArea(
-        child: Scaffold(
-                appBar: AppBar(
-                  leading: const SizedBox(),
-                  leadingWidth: 0,
-                  title: const Text('Profile', style: headingStyle),
-                  iconTheme: const IconThemeData(color: kPrimaryColor),
-                  actions: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, Notifications.routeName);
-                        },
-                        icon: const Icon(
-                          Icons.notifications_outlined,
-                          size: 28,
-                        )),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, Settings.routeName);
-                      },
-                      icon: const Icon(Icons.settings_outlined, size: 28),
-                    ),
-                  ],
-                ),
-                body: FutureBuilder(
-                    future: ProfileService().getProfileDetails(context),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(child: Text(snapshot.error.toString()));
-                      } else if (snapshot.hasData) {
-                        ProfileModel userData = snapshot.data!.data;
-                        return SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: scaffoldPadding),
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  onTap: () async {
-                                    checkReferesh(userData);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(100),
-                                        child: userData.profilePhoto == ''
-                                            ? Image.asset(
-                                                'assets/images/avatar.jpg',
-                                                width: 60,
-                                                height: 60,
-                                                fit: BoxFit.cover)
-                                            : Image.network(userData.profilePhoto,
-                                                width: 60,
-                                                height: 60,
-                                                fit: BoxFit.cover),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${userData.firstName} ${userData.lastName}",
-                                            style:
-                                                labelStyle.copyWith(fontSize: 20),
-                                          ),
-                                          Text(
-                                            userData.email,
-                                            style: labelStyle.copyWith(
-                                                fontSize: 14,
-                                                color: const Color(0xff9D9D9D)),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+          child: Scaffold(
+        appBar: AppBar(
+          leading: const SizedBox(),
+          leadingWidth: 0,
+          title: const Text('Profile', style: headingStyle),
+          iconTheme: const IconThemeData(color: kPrimaryColor),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, Notifications.routeName);
+                },
+                icon: const Icon(
+                  Icons.notifications_outlined,
+                  size: 28,
+                )),
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Settings.routeName);
+              },
+              icon: const Icon(Icons.settings_outlined, size: 28),
+            ),
+          ],
+        ),
+        body: FutureBuilder(
+            future: ProfileService().getProfileDetails(context),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              } else if (snapshot.hasData) {
+                ProfileModel userData = snapshot.data!.data;
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: scaffoldPadding),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            checkReferesh(userData);
+                          },
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: userData.profilePhoto == ''
+                                    ? Image.asset('assets/images/avatar.jpg',
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover)
+                                    : Image.network(userData.profilePhoto,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${userData.firstName} ${userData.lastName}",
+                                    style: labelStyle.copyWith(fontSize: 20),
                                   ),
-                                ),
-                                const SizedBox(height: 30),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  Text(
+                                    userData.email,
+                                    style: labelStyle.copyWith(
+                                        fontSize: 14,
+                                        color: const Color(0xff9D9D9D)),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12),
+                                decoration: BoxDecoration(
+                                    color: kTextWhite.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 12),
-                                        decoration: BoxDecoration(
-                                            color: kTextWhite.withOpacity(0.15),
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              userData.goingEventCount!.toString(), //only going data will see here
-                                              style: paragraphStyle.copyWith(
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
-                                              'Events Attended',
-                                              style: paragraphStyle.copyWith(
-                                                  fontSize: 14),
-                                            ),
-                                            // const SizedBox(height: ),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 15,
-                                                        height: 15,
-                                                        decoration: BoxDecoration(
-                                                            color: globalContoller
-                                                                    .hasActiveSubscription
-                                                                    .value
-                                                                ? kTextSuccess
-                                                                : kTextError,
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            100))),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Text(
-                                                        globalContoller.hasActiveSubscription.value
-                                                            ? "Active"
-                                                            : "Inactive",
-                                                        style: paragraphStyle.copyWith(),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                globalContoller.hasActiveSubscription.value
-                                                    ? const SizedBox()
-                                                    : OutlinedButton(
-                                                        onPressed: () {
-                                                          Get.to(() =>
-                                                              const WebViewExample());
-                                                        },
-                                                        style: OutlinedButton
-                                                            .styleFrom(
-                                                          side: const BorderSide(
-                                                              width: 1.0,
-                                                              color:
-                                                                  kPrimaryColor),
-                                                        ),
-                                                        child: const Text(
-                                                          "Renew",
-                                                          style: paragraphStyle,
-                                                        ))
-                                              ],
-                                            ),
-                                          ],
+                                    Text(
+                                      userData.goingEventCount!
+                                          .toString(), //only going data will see here
+                                      style: paragraphStyle.copyWith(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      'Events Attended',
+                                      style:
+                                          paragraphStyle.copyWith(fontSize: 14),
+                                    ),
+                                    // const SizedBox(height: ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 15,
+                                                height: 15,
+                                                decoration: BoxDecoration(
+                                                    color: globalContoller
+                                                            .hasActiveSubscription
+                                                            .value
+                                                        ? kTextSuccess
+                                                        : kTextError,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                100))),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                globalContoller
+                                                        .hasActiveSubscription
+                                                        .value
+                                                    ? "Active"
+                                                    : "Inactive",
+                                                style:
+                                                    paragraphStyle.copyWith(),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
+                                        globalContoller
+                                                .hasActiveSubscription.value
+                                            ? const SizedBox()
+                                            : OutlinedButton(
+                                                onPressed: () {
+                                                  Get.to(() =>
+                                                      const WebViewExample());
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                  side: const BorderSide(
+                                                      width: 1.0,
+                                                      color: kPrimaryColor),
+                                                ),
+                                                child: const Text(
+                                                  "Renew",
+                                                  style: paragraphStyle,
+                                                ))
+                                      ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 10),
-                                const Divider(),
-                                const SizedBox(height: 20),
-                                (homePageController.isUser.value == eventManager)
-                                    ? _userOptions(
-                                        icon: 'qrcode',
-                                        text: 'View QR Code',
-                                        svgs: 1,
-                                        ontap: () {
-                                          Navigator.pushNamed(
-                                              context, ReferFriend.routeName);
-                                        })
-                                    : _userOptions(
-                                        icon: 'user',
-                                        text: 'Refer to earn G-tokens',
-                                        svgs: 1,
-                                        ontap: () {
-                                          Navigator.pushNamed(
-                                              context, Reffer.routeName);
-                                        }),
-                                const Divider(color: Color(0xff5F5F5F)),
-                                (homePageController.isUser.value == eventManager)
-                                    ? _userOptions(
-                                        icon: 'location',
-                                        text: 'My Venues',
-                                        svgs: 1,
-                                        ontap: () {
-                                          Navigator.pushNamed(
-                                              context, Venue.routeName);
-                                        })
-                                    : const SizedBox(),
-                                (homePageController.isUser.value == eventManager)
-                                    ? const Divider(color: Color(0xff5F5F5F))
-                                    : const SizedBox(),
-                                _userOptions(
-                                  icon: 'user',
-                                  text: 'Favorites',
-                                  svgs: 2,
-                                  ontap: () {
-                                    Navigator.pushNamed(
-                                        context, Favorites.routeName);
-                                  },
-                                ),
-                                const Divider(color: Color(0xff5F5F5F)),
-                                _userOptions(
-                                    icon: 'events_unselected',
-                                    text: 'Event Calendar',
-                                    svgs: 3,
-                                    ontap: () {
-                                      Navigator.pushNamed(
-                                          context, SyncFusioCalendar.routeName);
-                                    }),
-                                const Divider(color: Color(0xff5F5F5F)),
-                                _userOptions(
-                                    icon: 'edit-preferences',
-                                    text: 'Edit Preferences',
-                                    svgs: 1,
-   
-                                    ontap: () {
-                                            globalController.hasActiveSubscription.value?Navigator.pushNamed(
-                                                context, EditPrefrence.routeName):snackBarError(context,message:'Please activate your account.');
-                                          }),
-                                const Divider(color: Color(0xff5F5F5F)),
-                                _userOptions(
-                                  icon: 'user',
-                                  text: 'Sign Out',
-                                  svgs: 4,
-                                  ontap: signOutAccount,
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                ReusableSkeletonAvatar(
-                                  height: 70,
-                                  width: 70,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: ReusableSkeletonParaGraph(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 18,
-                                    lines: 2,
-                                    randomLength: true,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 50),
-                            ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: 10,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 20),
-                              itemBuilder: (context, index) {
-                                return ReusableSkeletonAvatar(
-                                  height: 70,
-                                  width: MediaQuery.of(context).size.width,
-                                  borderRadius: BorderRadius.circular(10),
-                                );
-                              },
-                            )
                           ],
                         ),
-                      );
-                    }),
-                bottomNavigationBar: const BottomNavigationBars(),
-              )
-      ),
+                        const SizedBox(height: 10),
+                        const Divider(),
+                        const SizedBox(height: 20),
+                        (homePageController.isUser.value == eventManager)
+                            ? _userOptions(
+                                icon: 'qrcode',
+                                text: 'View QR Code',
+                                svgs: 1,
+                                ontap: () {
+                                  Navigator.pushNamed(
+                                      context, ReferFriend.routeName);
+                                })
+                            : _userOptions(
+                                icon: 'user',
+                                text: 'Refer to earn G-tokens',
+                                svgs: 1,
+                                ontap: () {
+                                  Navigator.pushNamed(
+                                      context, Reffer.routeName);
+                                }),
+                        const Divider(color: Color(0xff5F5F5F)),
+                        (homePageController.isUser.value == eventManager)
+                            ? _userOptions(
+                                icon: 'location',
+                                text: 'My Venues',
+                                svgs: 1,
+                                ontap: () {
+                                  Navigator.pushNamed(context, Venue.routeName);
+                                })
+                            : const SizedBox(),
+                        (homePageController.isUser.value == eventManager)
+                            ? const Divider(color: Color(0xff5F5F5F))
+                            : const SizedBox(),
+                        _userOptions(
+                          icon: 'user',
+                          text: 'Favorites',
+                          svgs: 2,
+                          ontap: () {
+                            Navigator.pushNamed(context, Favorites.routeName);
+                          },
+                        ),
+                        const Divider(color: Color(0xff5F5F5F)),
+                        _userOptions(
+                            icon: 'events_unselected',
+                            text: 'Event Calendar',
+                            svgs: 3,
+                            ontap: () {
+                              Navigator.pushNamed(
+                                  context, SyncFusioCalendar.routeName);
+                            }),
+                        const Divider(color: Color(0xff5F5F5F)),
+                        _userOptions(
+                            icon: 'edit-preferences',
+                            text: 'Edit Preferences',
+                            svgs: 1,
+                            ontap: () {
+                              globalController.hasActiveSubscription.value
+                                  ? Navigator.pushNamed(
+                                      context, EditPrefrence.routeName)
+                                  : snackBarError(context,
+                                      message: 'Please activate your account.');
+                            }),
+                        const Divider(color: Color(0xff5F5F5F)),
+                        _userOptions(
+                          icon: 'user',
+                          text: 'Sign Out',
+                          svgs: 4,
+                          ontap: signOutAccount,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        ReusableSkeletonAvatar(
+                          height: 70,
+                          width: 70,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: ReusableSkeletonParaGraph(
+                            width: MediaQuery.of(context).size.width,
+                            height: 18,
+                            lines: 2,
+                            randomLength: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: 10,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 20),
+                      itemBuilder: (context, index) {
+                        return ReusableSkeletonAvatar(
+                          height: 70,
+                          width: MediaQuery.of(context).size.width,
+                          borderRadius: BorderRadius.circular(10),
+                        );
+                      },
+                    )
+                  ],
+                ),
+              );
+            }),
+        bottomNavigationBar: const BottomNavigationBars(),
+      )),
     );
   }
 
@@ -393,11 +389,10 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 25),
               MyElevatedButton(
                   onPressed: () {
-                     if (advanceFilterController.checkFilterIsClearOrNot()) {
-                    return;
-                  } else {
-                    advanceFilterController.clearAllFilter();
-                  }
+                    if (advanceFilterController.checkFilterIsClearOrNot()) {
+                    } else {
+                      advanceFilterController.clearAllFilter();
+                    }
                     setState(() {
                       curentIndex.value = 0;
                     });

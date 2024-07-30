@@ -76,8 +76,8 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     controller: address1,
                     hintTxt: 'Address Line 1',
                     inputFormate: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z,\s]+$'))
+                      FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z0-9,\s]+$')
+                          /* RegExp(r'^[a-zA-Z,\s]+$') */)
                     ],
                     validationFunction: (values) {
                       var value = values.trim();
@@ -100,7 +100,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     hintTxt: "Address Line 2",
                     inputFormate: [
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z,\s]+$'))
+                         RegExp(r'^[a-zA-Z0-9,\s]+$'))
                     ],
                   ),
                   const SizedBox(height: 35),
@@ -113,7 +113,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     hintTxt: "Town/City",
                     inputFormate: [
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z,\s]+$'))
+                          RegExp(r'^[a-zA-Z0-9,\s]+$'))
                     ],
                     validationFunction: (values) {
                       var value = values.trim();
