@@ -114,20 +114,23 @@ Widget byCategory(context, categoryData) {
   );
 }
 
+int? _selectedValue;
+
 Widget sortBy(context) {
   List<Map<String, String>> sortFilter = [
     {"label": "Latest", "value": "latest"},
     {"label": "Nearest", "value": "nearest"},
     {"label": "Popular", "value": "popularity"},
+    {"label": "Price", "value": "price"},
   ];
-
-  List<bool> checkBoxValues = sortFilter
+  //  event sort todo
+  /* List<bool> checkBoxValues = sortFilter
       .map((sort) => advanceFilterController.eventSort.contains(sort["value"]))
-      .toList();
+      .toList(); */
 
   List<String> valueList =
       sortFilter.map((item) => item["label"] as String).toList();
-
+  _selectedValue=advanceFilterController.eventSortbyfilter.value.isEmpty?null:_selectedValue;
   final ExpansionTileController controller = ExpansionTileController();
   return StatefulBuilder(
     builder: (context, setState) {
@@ -145,23 +148,66 @@ Widget sortBy(context) {
                     fontSize: 14, fontWeight: FontWeight.w500),
               ),
               children: [
-                CheckboxList(
-                  options: valueList,
-                  checkBoxValues: checkBoxValues,
-                  onChangedCallback: (value, index) {
-                    setState(() {
-                      checkBoxValues[index] = value!;
-                    });
-                    if (advanceFilterController.eventSort
-                        .contains(sortFilter[index]["value"])) {
-                      advanceFilterController.eventSort
-                          .remove(sortFilter[index]["value"].toString());
-                    } else {
-                      advanceFilterController.eventSort
-                          .add(sortFilter[index]["value"].toString());
-                    }
-                  },
-                ),
+                for (int i = 0; i < sortFilter.length; i++)
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: ListTile(
+                      leading: CustomRadio(
+                        value: i,
+                        groupValue: _selectedValue ?? -1,
+                        activeColor: kPrimaryColor,
+                        inactiveColor: Colors.white,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value!;
+                               advanceFilterController.eventSortbyfilter.value =
+                              sortFilter[i]["value"].toString();
+                              print("rrr//");
+                          });
+                        },
+                      ),
+                      title: Text('${sortFilter[i]['label']}',
+                          style: paragraphStyle.copyWith(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                      onTap: () {
+                        setState(() {
+                          _selectedValue = i;
+                          advanceFilterController.eventSortbyfilter.value =
+                              sortFilter[i]["value"].toString();
+                              print("rrr//");
+                        });
+                        //  event sort todo
+
+                        /*    if (advanceFilterController.eventSort
+                            .contains(sortFilter[i]["value"])) {
+                          advanceFilterController.eventSort
+                              .remove(sortFilter[i]["value"].toString());
+                        }  */
+                      },
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
+                      child: GestureDetector(
+                        onTap: () {
+                          advanceFilterController.eventSortbyfilter.value="";
+                          _selectedValue = null;
+
+                          setState(() {});
+                        },
+                        child: Text(
+                          "Clear",
+                          style: paragraphStyle.copyWith(
+                              fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -169,6 +215,40 @@ Widget sortBy(context) {
       );
     },
   );
+}
+
+class CustomRadio extends StatelessWidget {
+  final int value;
+  final int groupValue;
+  final Color activeColor;
+  final Color inactiveColor;
+  final ValueChanged<int?> onChanged;
+
+  const CustomRadio({
+    required this.value,
+    required this.groupValue,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelected = value == groupValue;
+    return GestureDetector(
+      onTap: () {
+        onChanged(value);
+      },
+      child: Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isSelected ? activeColor : inactiveColor,
+            border: Border.all(color: kPrimaryColor, width: 1.5)),
+      ),
+    );
+  }
 }
 
 Widget byDate(context) {
@@ -203,56 +283,58 @@ Widget byDate(context) {
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-    
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'By Date',
-                style: paragraphStyle.copyWith(
-                    fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () async {
-                  await _selectDate(context);
-                },
-                child: Obx(
-                  () => Container(
-                    width: MediaQuery.of(context).size.width - 230,
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: kTextWhite.withOpacity(0.6), width: 1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Text(
-                      advanceFilterController.selectedDate.value == null
-                          ? 'MM / DD / YY'
-                          : DateFormat('MMM / d / yyyy')
-                              .format(advanceFilterController.selectedDate.value!),
-                      style: paragraphStyle.copyWith(color: kTextWhite),
-                    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'By Date',
+              style: paragraphStyle.copyWith(
+                  fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () async {
+                await _selectDate(context);
+              },
+              child: Obx(
+                () => Container(
+                  width: MediaQuery.of(context).size.width - 230,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: kTextWhite.withOpacity(0.6), width: 1),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: Text(
+                    advanceFilterController.selectedDate.value == null
+                        ? 'MM / DD / YY'
+                        : DateFormat('MMM / d / yyyy').format(
+                            advanceFilterController.selectedDate.value!),
+                    style: paragraphStyle.copyWith(color: kTextWhite),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
         GestureDetector(
-          onTap: (){
-            advanceFilterController.selectedDate.value=null;
+          onTap: () {
+            advanceFilterController.selectedDate.value = null;
           },
-          child: Text("Clear", style: paragraphStyle.copyWith(
-                      fontSize: 14, fontWeight: FontWeight.w500),),
+          child: Text(
+            "Clear",
+            style: paragraphStyle.copyWith(
+                fontSize: 14, fontWeight: FontWeight.w500),
+          ),
         )
-        ],
-      ),
-    
+      ],
+    ),
   );
 }
 

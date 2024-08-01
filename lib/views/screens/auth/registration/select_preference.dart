@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:good_times/data/common/scaffold_snackbar.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/screens/home/main_home.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
+import '../../../../data/repository/endpoints.dart';
 import '../../../../data/repository/response_data.dart';
+import '../../../../data/repository/services/event_category_drawar.dart';
 import '../../../../data/repository/services/preferences_service.dart';
 import '../../../../utils/loading.dart';
+import '../../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../widgets/common/parent_widget.dart';
 
 class SelectPrefrence extends StatefulWidget {
@@ -21,6 +25,7 @@ class SelectPrefrence extends StatefulWidget {
 
 class _SelectPrefrenceState extends State<SelectPrefrence> {
   List<int> prefrenceList = [];
+  //List preferencesList=[];
   bool waiting = false;
   @override
   void initState() {
@@ -32,6 +37,7 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
     });
   }
 
+  PreferenceController preferenceController= Get.put(PreferenceController(),permanent:true);
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -45,9 +51,16 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(height: 50),
-                  const Text(
-                    'Select your\npreferences',
-                    style: headingStyle,
+                  GestureDetector(
+                    onTap: () async{
+                     await preferenceController.eventCategory(context);
+                      print(preferenceController.prefrencecontrollerdata);
+  
+                    },
+                    child: const Text(
+                      'Select your\npreferences',
+                      style: headingStyle,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Expanded(

@@ -7,7 +7,7 @@ import '../response_data.dart';
 
 class EventCategoryDrawarService{
   Dio dio = Dio();
-  Future<ResponseModel> eventDrawarService(context) async {
+  Future<ResponseModel> eventDrawarService(context,String url) async {
     final ApiService apiService = ApiService(dio);
     try {
       ResponseModel<String?> response = await apiService.getData<String>(

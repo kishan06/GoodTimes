@@ -29,8 +29,11 @@ locationpermission(BuildContext context) {
           actions: [
             InkWell(
               onTap: () {
-                advanceFilterController.eventSort
-                    .removeWhere((element) => element == "nearest");
+              //  event sort todo
+                            advanceFilterController.eventSortbyfilter.value="";
+                
+              /*   advanceFilterController.eventSort
+                    .removeWhere((element) => element == "nearest"); */
                 Get.back();
               },
               child: const Text(
