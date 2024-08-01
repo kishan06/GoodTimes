@@ -16,6 +16,7 @@ import 'package:good_times/views/screens/event/event_preview.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:good_times/views/widgets/common/parent_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../data/repository/endpoints.dart';
 import '../../../data/repository/response_data.dart';
 import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/chat_service.dart';
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   eventCategory() async {
-    await eventCategoryDrawarService.eventDrawarService(context).then((e) {
+    await eventCategoryDrawarService.eventDrawarService(context,Endpoints.eventCategoryDrawar).then((e) {
       if (e.responseStatus == ResponseStatus.success) {
         setState(() {
           eventData = e.data;

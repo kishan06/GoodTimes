@@ -7,7 +7,11 @@ import '../data/models/home_event_modal.dart';
 
 class AdvanceFilterController extends GetxController{
   final RxList _artsEvetCategory = [].obs;
-  final RxList<String> _eventSort = <String>[].obs;
+ // final RxList<String> _eventSort = <String>[].obs;
+               //  event sort todo
+
+   final RxString eventSortbyfilter = "".obs;
+
   final RxList<String> _ageSort = <String>[].obs;
   Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
   Rx<TextEditingController> startPriceController = TextEditingController().obs;
@@ -18,7 +22,11 @@ class AdvanceFilterController extends GetxController{
 
 
   List get evetCategoryList => _artsEvetCategory;
-  List<String> get eventSort => _eventSort;
+ // List<String> get eventSort => _eventSort;
+               //  event sort todo
+
+  String get eventSort => eventSortbyfilter.value;
+
   List<String> get ageSort => _ageSort;
   String get formattedDateTime => selectedDate.value.toString().split(' ')[0];
   String get startPrice => startPriceController.value.text;
@@ -30,9 +38,9 @@ class AdvanceFilterController extends GetxController{
   void updateEvetCategory(List<String> updatedList){
     _artsEvetCategory.assignAll(updatedList);
   }
-  void eventSorts(List<String> updatedList) {
+  /* void eventSorts(List<String> updatedList) {
     _eventSort.assignAll(updatedList);
-  }
+  } */
   void ageGroup(List<String> updatedList) {
     _ageSort.assignAll(updatedList);
   }
@@ -54,7 +62,7 @@ class AdvanceFilterController extends GetxController{
 
   clearAllFilter(){
     _artsEvetCategory.clear();
-    _eventSort.clear();
+    eventSortbyfilter.value="";
     _ageSort.clear();
     selectedDate.value = null;
     startPriceController.value.clear();
@@ -64,7 +72,7 @@ class AdvanceFilterController extends GetxController{
   }
 
   bool checkFilterIsClearOrNot(){
-    if(_artsEvetCategory.isEmpty && _eventSort.isEmpty && _ageSort.isEmpty && selectedDate.value == null && startPriceController.value.text=="" && endPriceController.value.text=="" && titleController.value.text==""){
+    if(_artsEvetCategory.isEmpty && eventSortbyfilter.isEmpty && _ageSort.isEmpty && selectedDate.value == null && startPriceController.value.text=="" && endPriceController.value.text=="" && titleController.value.text==""){
       return true;
     }else{
       return false;

@@ -76,8 +76,7 @@ Drawer drawer(BuildContext context, List eventData, List<ageData>? ageGroups) {
                   child: MyElevatedButton(
                     onPressed: () async {
                       bool checknearest = false;
-                      if (advanceFilterController.eventSort
-                          .contains('nearest')) {
+                      if (advanceFilterController.eventSortbyfilter.value=="nearest") {
                         checknearest = true;
                       }
                       if (checknearest != false && latlong == null) {
