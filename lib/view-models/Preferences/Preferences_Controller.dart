@@ -8,13 +8,15 @@ import '../../data/repository/services/event_category_drawar.dart';
 
 class PreferenceController extends GetxController {
   RxList prefrencecontrollerdata = [].obs;
+  RxList<bool> selectedpreference=<bool>[].obs;
 
   eventCategory(BuildContext context) async {
     await EventCategoryDrawarService()
-        .eventDrawarService(context, Endpoints.eventCategoryDrawar)
+        .eventDrawarService(context)
         .then((e) {
       if (e.responseStatus == ResponseStatus.success) {
         prefrencecontrollerdata.value = e.data;
+        selectedpreference.value=List.filled(prefrencecontrollerdata.value.length, false);
       }
     });
       print("//r");

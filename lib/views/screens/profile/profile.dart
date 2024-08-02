@@ -14,6 +14,7 @@ import '../../../data/models/profile.dart';
 import '../../../data/repository/services/logout_service.dart';
 import '../../../data/repository/services/profile.dart';
 import '../../../utils/constant.dart';
+import '../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/auth/google_auth.dart';
 import '../../../view-models/bootomnavigation_controller.dart';
@@ -54,6 +55,8 @@ class _ProfileState extends State<Profile> {
     globalContoller.profileImgPath.value = userData.profilePhoto;
   }
 
+  PreferenceController preferenceController =
+      Get.put(PreferenceController(), permanent: true);
   @override
   Widget build(BuildContext context) {
     // log('globalContoller  ${globalContoller.profileImgPath.value}');
@@ -271,12 +274,24 @@ class _ProfileState extends State<Profile> {
                             icon: 'edit-preferences',
                             text: 'Edit Preferences',
                             svgs: 1,
-                            ontap: () {
-                              globalController.hasActiveSubscription.value
-                                  ? Navigator.pushNamed(
-                                      context, EditPrefrence.routeName)
-                                  : snackBarError(context,
-                                      message: 'Please activate your account.');
+                            ontap: () async{
+                              if (globalController
+                                  .hasActiveSubscription.value) {
+                                if (preferenceController
+                                    .prefrencecontrollerdata.isEmpty) {
+                               
+                                    await preferenceController
+                                        .eventCategory(context);
+                                    print(preferenceController
+                                        .prefrencecontrollerdata);
+                                  
+                                }
+                                Navigator.pushNamed(
+                                    context, EditPrefrence.routeName);
+                              } else {
+                                snackBarError(context,
+                                    message: 'Please activate your account.');
+                              }
                             }),
                         const Divider(color: Color(0xff5F5F5F)),
                         _userOptions(
