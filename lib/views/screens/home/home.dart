@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,6 +26,7 @@ import '../../../data/repository/services/logout_service.dart';
 import '../../../data/repository/services/profile.dart';
 import '../../../utils/constant.dart';
 import '../../../utils/helper.dart';
+import '../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/app_version.dart';
 import '../../../view-models/auth/google_auth.dart';
@@ -58,24 +60,35 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ageData>? ageList = [];
 
   String? sort;
+  PreferenceController preferenceController =
+      Get.put(PreferenceController(), permanent: true);
   @override
   void initState() {
     super.initState();
     appVersionController.initPackageInfo(context);
     ProfileService().getProfileDetails(context);
     advanceFilterServicee.advanceFilterEventServices(context);
+    if (preferenceController.prefrencecontrollerdata.isEmpty) {
+      preferenceController.eventCategory(context);
+      print(preferenceController.prefrencecontrollerdata);
+    }
     eventCategory();
     getAgeGroup();
   }
 
   eventCategory() async {
-    await eventCategoryDrawarService.eventDrawarService(context,Endpoints.eventCategoryDrawar).then((e) {
+    if(preferenceController.prefrencecontrollerdata.isEmpty){
+        await eventCategoryDrawarService.eventDrawarService(context).then((e) {
       if (e.responseStatus == ResponseStatus.success) {
         setState(() {
           eventData = e.data;
         });
       }
     });
+    }else{
+      eventData=preferenceController.prefrencecontrollerdata.value;
+    }
+  
   }
 
   getAgeGroup() {

@@ -20,6 +20,7 @@ import '../../../../utils/constant.dart';
 import '../../../../utils/helper.dart';
 import '../../../../utils/loading.dart';
 import '../../../../utils/temp.dart';
+import '../../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../../view-models/auth/google_auth.dart';
 
 import '../../../../view-models/deep_link_model.dart';
@@ -49,11 +50,17 @@ class _EmialVerifyState extends State<EmialVerify> {
   bool isChecked = false;
   // String usreType = '';
 
+  PreferenceController preferenceController =
+      Get.put(PreferenceController(), permanent: true);
   @override
   void initState() {
     super.initState();
     if (globalReferralCode != null) {
       refferalCodeController.text = globalReferralCode ?? "";
+    }
+     if (preferenceController.prefrencecontrollerdata.isEmpty) {
+      preferenceController.eventCategory(context);
+      print(preferenceController.prefrencecontrollerdata);
     }
     intTheFunc();
   }

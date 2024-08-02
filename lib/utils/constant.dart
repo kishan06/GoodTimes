@@ -99,7 +99,7 @@ MaterialColor primarySwatch = const MaterialColor(
 );
 
 
-List<dynamic> preferencesList = [
+/* List<dynamic> preferencesList = [
     {
       "id": 1,
       'img': 'assets/images/preferences_icons/entertainment.svg',
@@ -160,7 +160,7 @@ List<dynamic> preferencesList = [
       'headTxt': 'Shopping Sale',
       'selected': false
     },
-  ];
+  ]; */
   List<String> sortingtext = [
     'Within 10km',
     'Arts & Entertainment',

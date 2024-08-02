@@ -20,6 +20,8 @@ class AppVersionsService {
       // logger.e("response of app versiona data ${response.data["data"]}");
       if (response.responseStatus == ResponseStatus.success) {
         var data = response.data;
+              log("app device version check ${data}");
+
         return ResponseModel(
           responseStatus: ResponseStatus.success,
           data: AppVersionModel.fromjson(data["data"]),

@@ -130,7 +130,9 @@ Widget sortBy(context) {
 
   List<String> valueList =
       sortFilter.map((item) => item["label"] as String).toList();
-  _selectedValue=advanceFilterController.eventSortbyfilter.value.isEmpty?null:_selectedValue;
+  _selectedValue = advanceFilterController.eventSortbyfilter.value.isEmpty
+      ? null
+      : _selectedValue;
   final ExpansionTileController controller = ExpansionTileController();
   return StatefulBuilder(
     builder: (context, setState) {
@@ -149,41 +151,47 @@ Widget sortBy(context) {
               ),
               children: [
                 for (int i = 0; i < sortFilter.length; i++)
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: ListTile(
-                      leading: CustomRadio(
-                        value: i,
-                        groupValue: _selectedValue ?? -1,
-                        activeColor: kPrimaryColor,
-                        inactiveColor: Colors.white,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedValue = value!;
-                               advanceFilterController.eventSortbyfilter.value =
-                              sortFilter[i]["value"].toString();
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      child: Row(children: [
+                        CustomRadio(
+                          value: i,
+                          groupValue: _selectedValue ?? -1,
+                          activeColor: kPrimaryColor,
+                          inactiveColor: Colors.white,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedValue = value!;
+                              advanceFilterController
+                                      .eventSortbyfilter.value =
+                                  sortFilter[i]["value"].toString();
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          width:
+                              MediaQuery.of(context).size.width *
+                                  0.055,
+                        ),
+                         GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedValue = i;
+                              advanceFilterController
+                                      .eventSortbyfilter.value =
+                                  sortFilter[i]["value"].toString();
                               print("rrr//");
-                          });
-                        },
-                      ),
-                      title: Text('${sortFilter[i]['label']}',
-                          style: paragraphStyle.copyWith(
-                              fontSize: 14, fontWeight: FontWeight.w500)),
-                      onTap: () {
-                        setState(() {
-                          _selectedValue = i;
-                          advanceFilterController.eventSortbyfilter.value =
-                              sortFilter[i]["value"].toString();
-                              print("rrr//");
-                        });
-                        //  event sort todo
-
-                        /*    if (advanceFilterController.eventSort
-                            .contains(sortFilter[i]["value"])) {
-                          advanceFilterController.eventSort
-                              .remove(sortFilter[i]["value"].toString());
-                        }  */
-                      },
+                            });
+                          },
+                          child: Text('${sortFilter[i]['label']}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xffE6E6E6),
+                              )),
+                        )
+                      ]),
                     ),
                   ),
                 Padding(
@@ -194,7 +202,7 @@ Widget sortBy(context) {
                       height: MediaQuery.of(context).size.height * 0.03,
                       child: GestureDetector(
                         onTap: () {
-                          advanceFilterController.eventSortbyfilter.value="";
+                          advanceFilterController.eventSortbyfilter.value = "";
                           _selectedValue = null;
 
                           setState(() {});

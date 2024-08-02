@@ -54,7 +54,7 @@ class AdvanceFilterService {
               //  event sort todo
       final url = '$baseUrl?'
           '${evetCat.isEmpty ? '' : 'category=${encodedCategories.join(",")}&'}'
-          '${sortCat.isNotEmpty ? "sort=$sortCat":""}'
+          '${sortCat.isNotEmpty ? "sort=$sortCat&":""}'
           //'${sortCat.isNotEmpty ? "sort=${encodedSort.join(",")}&" : ""}'
           '${ageGroup.isNotEmpty ? "age_group=${ageSort.join(",")}&" : ""}'
           '${startPrice.isNotEmpty ? "price_from=$startPrice&" : ""}'
