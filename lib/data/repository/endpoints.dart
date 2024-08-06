@@ -13,14 +13,14 @@ class Endpoints {
 
   // base point urls
   //!stagging urls our server
-  // static const domain = "https://goodtimes.betadelivery.com";
-  // static const _base = "https://goodtimes.betadelivery.com/api/";
-  // static const chatDomain= "ws://chat.goodtimes.betadelivery.com/ws/chat/";
+  static const domain = "https://goodtimes.betadelivery.com";
+  static const _base = "https://goodtimes.betadelivery.com/api/";
+  static const chatDomain= "ws://chat.goodtimes.betadelivery.com/ws/chat/";
 
   //!stagging urls of client
-  static const domain = "https://staging.goodtimesltd.co.uk";
+ /*  static const domain = "https://staging.goodtimesltd.co.uk";
   static const _base = "https://staging.goodtimesltd.co.uk/api/";
-  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
+  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/"; */
 
   //!production urls of client
  /*  static const domain = "https://admin.goodtimesltd.co.uk";
