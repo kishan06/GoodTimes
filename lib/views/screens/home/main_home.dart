@@ -242,8 +242,11 @@ class _HomeMainState extends State<HomeMain> {
     // log("get user in buidcontext ${TempData.isUser}");
     // getProfileDetails();
     //  print('one signal player id ${GetStorage().read('oneSignalPlayerId')}');
+    bool val=false;
     return WillPopScope(
-      child: Obx(() => footerWidget[curentIndex.value]),
+      child: Obx(() { 
+       return footerWidget[curentIndex.value];
+       }),
       onWillPop: () async{
         if(!globalController.serverError.value){
             if (homePageController.bottomNavIndex.value == 0) {

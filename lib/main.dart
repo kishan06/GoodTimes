@@ -81,9 +81,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     listenDynamicLinks();
     _initializeServices();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
       checkFunction();
-    });
   }
 
   Future<void> _initializeServices() async {

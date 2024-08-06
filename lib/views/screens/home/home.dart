@@ -21,6 +21,7 @@ import '../../../data/repository/endpoints.dart';
 import '../../../data/repository/response_data.dart';
 import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/chat_service.dart';
+import '../../../data/repository/services/check_preference.dart';
 import '../../../data/repository/services/event_category_drawar.dart';
 import '../../../data/repository/services/logout_service.dart';
 import '../../../data/repository/services/profile.dart';
@@ -65,30 +66,46 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    appVersionController.initPackageInfo(context);
-    ProfileService().getProfileDetails(context);
-    advanceFilterServicee.advanceFilterEventServices(context);
-    if (preferenceController.prefrencecontrollerdata.isEmpty) {
-      preferenceController.eventCategory(context);
-      print(preferenceController.prefrencecontrollerdata);
-    }
-    eventCategory();
-    getAgeGroup();
+    checkFunction();
   }
 
-  eventCategory() async {
-    if(preferenceController.prefrencecontrollerdata.isEmpty){
-        await eventCategoryDrawarService.eventDrawarService(context).then((e) {
-      if (e.responseStatus == ResponseStatus.success) {
+  checkFunction() {
+    CheckPreferenceService().checkPreferenceService(context).then((value) {
+      if (value.responseStatus == ResponseStatus.success) {
+        // preference = true;
+        log('check preferences ${value.data}');
         setState(() {
-          eventData = e.data;
+          bool preference = value.data;
+          // Set the route based on the preference value here
+          if (preference) {
+            // If preference is true, navigate to HomeMain
+            appVersionController.initPackageInfo(context);
+            ProfileService().getProfileDetails(context);
+            advanceFilterServicee.advanceFilterEventServices(context);
+            if (preferenceController.prefrencecontrollerdata.isEmpty) {
+              preferenceController.eventCategory(context);
+              print(preferenceController.prefrencecontrollerdata);
+            }
+            eventCategory();
+            getAgeGroup();
+          }
         });
       }
     });
-    }else{
-      eventData=preferenceController.prefrencecontrollerdata.value;
+  }
+
+  eventCategory() async {
+    if (preferenceController.prefrencecontrollerdata.isEmpty) {
+      await eventCategoryDrawarService.eventDrawarService(context).then((e) {
+        if (e.responseStatus == ResponseStatus.success) {
+          setState(() {
+            eventData = e.data;
+          });
+        }
+      });
+    } else {
+      eventData = preferenceController.prefrencecontrollerdata.value;
     }
-  
   }
 
   getAgeGroup() {
@@ -100,9 +117,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  bool val = false;
   @override
   Widget build(BuildContext context) {
     log("advance filtered called build");
+
     return parentWidgetWithConnectivtyChecker(
       child: SafeArea(
         child: GestureDetector(
