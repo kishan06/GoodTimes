@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             }
                           },
-                          text: 'Login',
+                          text: 'Login/',
                         ),
                         const SizedBox(height: 20),
                         Row(
