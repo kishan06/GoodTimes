@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart' as getX;
@@ -20,8 +22,10 @@ import '../../../view-models/auth/google_auth.dart';
 import '../../../view-models/bootomnavigation_controller.dart';
 import '../../../view-models/deep_link_model.dart';
 import '../../../view-models/global_controller.dart';
+import '../../widgets/common/desclaimer.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../event_manager/syncfusion_calendar.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
@@ -199,16 +203,31 @@ class _ProfileState extends State<Profile> {
                                             ? const SizedBox()
                                             : OutlinedButton(
                                                 onPressed: () {
-                                                  Get.to(() =>
-                                                      const WebViewExample());
+                                                  if (globalContoller
+                                                      .hasActiveGracePeriod
+                                                      .value) {
+                                                    Get.to(() =>
+                                                        const WebViewExample());
+                                                  } else {
+                                                    if (userData
+                                                            .principalTypeName ==
+                                                        "event_user") {
+                                                      redirectsubscribe(
+                                                          context);
+                                                    }
+                                                  }
                                                 },
                                                 style: OutlinedButton.styleFrom(
                                                   side: const BorderSide(
                                                       width: 1.0,
                                                       color: kPrimaryColor),
                                                 ),
-                                                child: const Text(
-                                                  "Renew",
+                                                child: Text(
+                                                  globalContoller
+                                                          .hasActiveGracePeriod
+                                                          .value
+                                                      ? "Renew"
+                                                      : "Join Us",
                                                   style: paragraphStyle,
                                                 ))
                                       ],
@@ -274,24 +293,16 @@ class _ProfileState extends State<Profile> {
                             icon: 'edit-preferences',
                             text: 'Edit Preferences',
                             svgs: 1,
-                            ontap: () async{
-                              if (globalController
-                                  .hasActiveSubscription.value) {
-                                if (preferenceController
-                                    .prefrencecontrollerdata.isEmpty) {
-                               
-                                    await preferenceController
-                                        .eventCategory(context);
-                                    print(preferenceController
-                                        .prefrencecontrollerdata);
-                                  
-                                }
-                                Navigator.pushNamed(
-                                    context, EditPrefrence.routeName);
-                              } else {
-                                snackBarError(context,
-                                    message: 'Please activate your account.');
+                            ontap: () async {
+                              if (preferenceController
+                                  .prefrencecontrollerdata.isEmpty) {
+                                await preferenceController
+                                    .eventCategory(context);
+                                print(preferenceController
+                                    .prefrencecontrollerdata);
                               }
+                              Navigator.pushNamed(
+                                  context, EditPrefrence.routeName);
                             }),
                         const Divider(color: Color(0xff5F5F5F)),
                         _userOptions(

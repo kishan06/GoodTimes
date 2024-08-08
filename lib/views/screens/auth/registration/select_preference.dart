@@ -19,6 +19,7 @@ import '../../../../utils/temp.dart';
 import '../../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../../view-models/SubscriptionPreference.dart';
 import '../../../widgets/common/parent_widget.dart';
+import '../../../widgets/subscriptionmodule.dart';
 
 class SelectPrefrence extends StatefulWidget {
   static const String routeName = 'selectPrefrence';
@@ -42,9 +43,8 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
       preferenceController.eventCategory(context);
       print(preferenceController.prefrencecontrollerdata);
     }
-    if (TempData.userType == "event_user") {
-      profileextendedcontroller.fetchProfileExtendeddata(context);
-    }
+
+    profileextendedcontroller.fetchProfileExtendeddata(context);
   }
 
   @override
@@ -101,6 +101,7 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                     "${preferenceController.prefrencecontrollerdata.value[index].title}";
                                 return GestureDetector(
                                   onTap: () {
+                                    print("///");
                                     setState(() {
                                       preferenceController
                                               .selectedpreference[index] =
@@ -116,7 +117,12 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                                     .data!
                                                     .featureLimit!
                                                     .categoryLimit &&
-                                            TempData.userType == "event_user") {
+                                            profileextendedcontroller
+                                                    .profileextenddata
+                                                    .value
+                                                    .data!
+                                                    .principalTypeName ==
+                                                "event_user") {
                                           preferenceController
                                                   .selectedpreference[index] =
                                               false;
@@ -221,7 +227,9 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                       //           : const SizedBox(),
                       onPressed: () {
                         if (prefrenceList.length >= 1) {
-                          showWaitingDialoge(
+                              PreferenceWarning(context,(){
+                                Get.back();
+                                showWaitingDialoge(
                               context: context, loading: waiting);
                           setState(() {
                             waiting = true;
@@ -247,7 +255,36 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                               });
                               Navigator.pop(context);
                             }
+                          }); 
+                              }
+                              );
+                          /* showWaitingDialoge(
+                              context: context, loading: waiting);
+                          setState(() {
+                            waiting = true;
                           });
+                          PreferencesService()
+                              .postPreferences(context,
+                                  categoriesList: prefrenceList)
+                              .then((value) {
+                            if (value.responseStatus ==
+                                ResponseStatus.success) {
+                              setState(() {
+                                waiting = false;
+                              });
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, HomeMain.routeName);
+                            }
+                            if (value.responseStatus == ResponseStatus.failed) {
+                              snackBarError(context,
+                                  message:
+                                      "Something went wrong, please try again.");
+                              setState(() {
+                                waiting = false;
+                              });
+                              Navigator.pop(context);
+                            }
+                          }); */
                         } else {
                           snackBarError(context,
                               message: 'Please select at least one services');

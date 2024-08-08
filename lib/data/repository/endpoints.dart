@@ -7,8 +7,8 @@ var logger = Logger();
 class Endpoints {
   // base point urls
   //!local urls of bobby server
-  static const domain = "http://192.168.50.64:8000/";
-  static const _base = "http://192.168.50.64:8000/api/";
+  static const domain = "http://192.168.50.60:8000/";
+  static const _base = "http://192.168.50.60:8000/api/";
   static const chatDomain = "ws://chat.goodtimes.betadelivery.com/ws/chat/";
 
   // base point urls

@@ -52,7 +52,6 @@ class TempData {
   static String editeventEntryCost = '';    // Event Cost if it's paid entry
   static String editeventKeyGuest = '';    // Event Key guest for VIP
   static List<String> editEventTags = [];    // Event tags
-
-
-  
+  static String SubscriptionSkip="SubscriptionSkip";
+  static String StoreUserId="StoreUserId";
 }

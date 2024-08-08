@@ -19,8 +19,10 @@ import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/profile.dart';
 import '../../../data/repository/services/send_player.dart';
 import '../../../utils/constant.dart';
+import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/bootomnavigation_controller.dart';
 import '../../widgets/common/bottom_navigation.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../auth/login/login.dart';
 import '../event/event_preview.dart';
 import 'home.dart';
@@ -37,7 +39,7 @@ class HomeMain extends StatefulWidget {
 
 class _HomeMainState extends State<HomeMain> {
   HomePageController homePageController = Get.put(HomePageController());
-  GlobalController globalController = Get.put(GlobalController());
+  GlobalController globalController = Get.put(GlobalController(),permanent:true);
   bool isLoading = true;
   bool isPasswordChange = GetStorage().read('isPasswordChanged') ?? false;
   bool isAccountTransferd = false;
@@ -132,11 +134,34 @@ class _HomeMainState extends State<HomeMain> {
         .userPlayerIdService(context, playerId: GetStorage().read("player_Id"));
   }
 
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
   @override
   void initState() {
     // homePageController = Get.put(HomePageController());
     // listenDynamicLinks();
     getProfileDetails();
+    profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
+      if (profileextendedcontroller.profileextenddata.value.data != null) {
+        if (profileextendedcontroller.profileextenddata.value.data!
+                .hasActiveSubscription!.hasActiveSubscription !=
+            null) {
+          globalController.hasActiveSubscription.value =
+              profileextendedcontroller.profileextenddata.value.data!
+                  .hasActiveSubscription!.hasActiveSubscription!;
+        }
+        if (globalController.hasActiveGracePeriod.value =
+            profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.inGracePeriod !=
+                null) {
+          globalController.hasActiveGracePeriod.value =
+              globalController.hasActiveGracePeriod.value =
+                  profileextendedcontroller.profileextenddata.value.data!
+                      .hasActiveSubscription!.inGracePeriod!;
+        }
+      }
+    });
+
     senUserPlayer();
     super.initState();
   }
@@ -147,13 +172,12 @@ class _HomeMainState extends State<HomeMain> {
       if (value.responseStatus == ResponseStatus.success) {
         ProfileModel data = value.data;
         globalController.email.value = data.email;
-        globalController.accountIsActive.value = data.accoutIsActive;
         if (data.principalTypeName == "event_user") {
           homePageController.isUser.value = eventUser;
         } else if (data.principalTypeName == "event_manager") {
           homePageController.isUser.value = eventManager;
         }
-        if (data.hasActiveSubscription == true) {
+        /*  if (data.hasActiveSubscription == true) {
           globalController.hasActiveSubscription.value =
               data.hasActiveSubscription;
           globalController.hasActiveGracePeriod.value = false;
@@ -161,7 +185,7 @@ class _HomeMainState extends State<HomeMain> {
           globalController.hasActiveSubscription.value = false;
           globalController.hasActiveGracePeriod.value =
               data.hasActiveGracePeriod;
-        }
+        } */
         if (data.principalTypeName == "event_manager") {
           checkIsPasswordChage();
         } else {
@@ -242,26 +266,25 @@ class _HomeMainState extends State<HomeMain> {
     // log("get user in buidcontext ${TempData.isUser}");
     // getProfileDetails();
     //  print('one signal player id ${GetStorage().read('oneSignalPlayerId')}');
-    bool val=false;
+    bool val = false;
     return WillPopScope(
-      child: Obx(() { 
-       return footerWidget[curentIndex.value];
-       }),
-      onWillPop: () async{
-        if(!globalController.serverError.value){
-            if (homePageController.bottomNavIndex.value == 0) {
-          return showExitPopup();
+      child: Obx(() {
+        return footerWidget[curentIndex.value];
+      }),
+      onWillPop: () async {
+        if (!globalController.serverError.value) {
+          if (homePageController.bottomNavIndex.value == 0) {
+            return showExitPopup();
+          } else {
+            homePageController.updateBottomNavIndex(0);
+            return Future.value(false);
+          }
         } else {
-          homePageController.updateBottomNavIndex(0);
+          advanceFilterController.clearAllFilter();
+          await AdvanceFilterService().advanceFilterEventServices(context);
+          globalController.serverError.value = false;
           return Future.value(false);
         }
-        }else{
-           advanceFilterController.clearAllFilter();
-                 await AdvanceFilterService().advanceFilterEventServices(context);
-                  globalController.serverError.value=false;
-          return Future.value(false);
-        }
-      
       },
     );
   }

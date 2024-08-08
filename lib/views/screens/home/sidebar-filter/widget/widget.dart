@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../../utils/constant.dart';
 import '../../../../../utils/helper.dart';
+import '../../../../../view-models/Preferences/Preferences_Controller.dart';
+import '../../../../../view-models/SubscriptionPreference.dart';
 import '../../../../../view-models/advance_filter_controller.dart';
 import 'reuseable_checkbox.dart';
 
@@ -67,6 +69,10 @@ Widget byCategory(context, categoryData) {
     categoryDetails.add(element.title);
   }
 
+  PreferenceController preferenceController =
+      Get.put(PreferenceController(), permanent: true);
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
   List<bool> checkBoxValues = categoryDetails
       .map((category) =>
           advanceFilterController.evetCategoryList.contains(category))
@@ -92,6 +98,7 @@ Widget byCategory(context, categoryData) {
                     options: categoryDetails,
                     checkBoxValues: checkBoxValues,
                     onChangedCallback: (value, index) {
+                      
                       setState(() {
                         checkBoxValues[index] = value!;
                       });

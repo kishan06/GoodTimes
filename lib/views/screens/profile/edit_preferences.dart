@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,8 +17,12 @@ import '../../../data/repository/services/preferences_service.dart';
 import '../../../data/models/get_preferences_model.dart';
 import '../../../utils/loading.dart';
 import '../../../view-models/Preferences/Preferences_Controller.dart';
+import '../../../view-models/SubscriptionPreference.dart';
+import '../../widgets/common/desclaimer.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
+import '../subscription/open_website.dart';
 
 class EditPrefrence extends StatefulWidget {
   static const String routeName = 'editPrefrence';
@@ -32,6 +37,8 @@ class EditPrefrenceState extends State<EditPrefrence> {
   bool waiting = false;
   bool isLoading = true;
   PreferenceController preferenceController = Get.find<PreferenceController>();
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.find<ProfileExtendedDataController>();
   @override
   void initState() {
     super.initState();
@@ -120,6 +127,12 @@ class EditPrefrenceState extends State<EditPrefrence> {
             ),
             const SizedBox(height: 20),
             Obx(() {
+              if (preferenceController.selectedpreference.isEmpty &&
+                  preferenceController.prefrencecontrollerdata.isNotEmpty) {
+                preferenceController.selectedpreference.value = List.filled(
+                    preferenceController.prefrencecontrollerdata.value.length,
+                    false);
+              }
               return Expanded(
                 child: GridView.builder(
                   shrinkWrap: true,
@@ -134,18 +147,31 @@ class EditPrefrenceState extends State<EditPrefrence> {
 
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          preferenceController.selectedpreference[index] =
-                              !preferenceController.selectedpreference[index];
-                          if (preferenceController.selectedpreference[index] ==
-                              true) {
-                            prefrencesList.add(preferenceController
-                                .prefrencecontrollerdata.value[index].id);
-                          } else {
-                            prefrencesList.remove(preferenceController
-                                .prefrencecontrollerdata.value[index].id);
-                          }
-                        });
+                        if (profileextendedcontroller
+                                .profileextenddata
+                                .value
+                                .data!
+                                .hasActiveSubscription!
+                                .hasActiveSubscription! ||
+                            profileextendedcontroller.profileextenddata.value
+                                .data!.hasActiveSubscription!.inGracePeriod!) {
+                          setState(() {
+                            preferenceController.selectedpreference[index] =
+                                !preferenceController.selectedpreference[index];
+                            if (preferenceController
+                                    .selectedpreference[index] ==
+                                true) {
+                              prefrencesList.add(preferenceController
+                                  .prefrencecontrollerdata.value[index].id);
+                            } else {
+                              prefrencesList.remove(preferenceController
+                                  .prefrencecontrollerdata.value[index].id);
+                            }
+                          });
+                        } else {
+                          Get.snackbar(
+                              "Join Us", "Please Subscribe to Edit the preferences.");
+                        }
                       },
                       child: Align(
                         alignment: Alignment.center,
@@ -219,40 +245,58 @@ class EditPrefrenceState extends State<EditPrefrence> {
                 onPressed: waiting
                     ? null
                     : () {
-                        if (prefrencesList.length >= 1) {
-                          showWaitingDialoge(
-                              context: context, loading: waiting);
-                          setState(() {
-                            waiting = true;
-                          });
-                          PreferencesService()
-                              .postPreferences(context,
-                                  categoriesList: prefrencesList)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, HomeMain.routeName);
-                              setState(() {
-                                waiting = false;
-                              });
-                            }
-                            if (value.responseStatus == ResponseStatus.failed) {
-                              snackBarError(context,
-                                  message:
-                                      "Something went wrong, please try again.");
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          });
+                        if (profileextendedcontroller
+                                .profileextenddata
+                                .value
+                                .data!
+                                .hasActiveSubscription!
+                                .hasActiveSubscription! ||
+                            profileextendedcontroller.profileextenddata.value
+                                .data!.hasActiveSubscription!.inGracePeriod!) {
+                          if (prefrencesList.length >= 1) {
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
+                            setState(() {
+                              waiting = true;
+                            });
+                            PreferencesService()
+                                .postPreferences(context,
+                                    categoriesList: prefrencesList)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                Navigator.pop(context);
+                                Navigator.pushNamed(
+                                    context, HomeMain.routeName);
+                                setState(() {
+                                  waiting = false;
+                                });
+                              }
+                              if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                snackBarError(context,
+                                    message:
+                                        "Something went wrong, please try again.");
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          } else {
+                            snackBarError(context,
+                                message: 'Please select at least one services');
+                          }
                         } else {
-                          snackBarError(context,
-                              message: 'Please select at least one services');
+                          redirectsubscribe(context);
                         }
                       },
-                text: 'Continue'),
+                text: profileextendedcontroller.profileextenddata.value.data!
+                            .hasActiveSubscription!.hasActiveSubscription! ||
+                        profileextendedcontroller.profileextenddata.value.data!
+                            .hasActiveSubscription!.inGracePeriod!
+                    ? 'Continue'
+                    : "Join Us"),
             // TextButton(
             //   onPressed: () {
             //     Navigator.pushNamed(context, SubScription.routeName);

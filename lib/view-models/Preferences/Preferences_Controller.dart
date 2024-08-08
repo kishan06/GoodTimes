@@ -9,6 +9,7 @@ import '../../data/repository/services/event_category_drawar.dart';
 class PreferenceController extends GetxController {
   RxList prefrencecontrollerdata = [].obs;
   RxList<bool> selectedpreference=<bool>[].obs;
+  RxList storeselectedPreferenceId=[].obs;
 
   eventCategory(BuildContext context) async {
     await EventCategoryDrawarService()

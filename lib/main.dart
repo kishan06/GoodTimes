@@ -71,7 +71,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool preference = false;
-  GlobalController globalController = Get.put(GlobalController());
   String? isLoggedIn = GetStorage().read('accessToken');
   dynamic profileStatus = GetStorage().read('profileStatus');
   bool introSliderShow = GetStorage().read('introSlider') ?? true;
@@ -126,6 +125,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
