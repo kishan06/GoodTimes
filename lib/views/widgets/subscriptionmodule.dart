@@ -8,11 +8,13 @@ import 'package:get_storage/get_storage.dart';
 
 import '../../utils/constant.dart';
 import '../../utils/temp.dart';
+import '../../view-models/SubscriptionPreference.dart';
 import '../screens/subscription/open_website.dart';
 import 'common/button.dart';
 import 'common/desclaimer.dart';
 import 'signout.dart';
-
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.find<ProfileExtendedDataController>();
 Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
   if (usertype == "event_user") {
     return showDialog(
@@ -58,7 +60,9 @@ Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
                       padding: const EdgeInsets.only(right: 20),
                       child: MyElevatedButton(
                           onPressed: () {
-                            redirectsubscribe(context);
+                            redirectsubscribe(context).then((value) async{ 
+                        await      profileextendedcontroller
+            .fetchProfileExtendeddata(context);});
                           },
                           text: 'Join Us'),
                     ),
@@ -101,7 +105,9 @@ Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
           const SizedBox(height: 20),
           MyElevatedButton(
               onPressed: () {
-                redirectsubscribe(context);
+                redirectsubscribe(context).then((value) async{ 
+                        await      profileextendedcontroller
+            .fetchProfileExtendeddata(context);});;
               },
               text: 'Join Us'),
           TextButton(

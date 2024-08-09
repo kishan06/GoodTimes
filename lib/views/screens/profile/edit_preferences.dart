@@ -1,6 +1,6 @@
 import 'dart:ffi';
 import 'dart:io';
-
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,9 @@ class EditPrefrenceState extends State<EditPrefrence> {
         prefrencesList = data.preferenceList;
         for (int i = 0; i < prefrencesList.length; i++) {
           int index = prefrencesList[i];
-          preferenceController.selectedpreference[index - 1] = true;
+          if (preferenceController.selectedpreference.isNotEmpty) {
+            preferenceController.selectedpreference[index - 1] = true;
+          }
         }
         setState(() {
           isLoading = false;
@@ -169,8 +171,8 @@ class EditPrefrenceState extends State<EditPrefrence> {
                             }
                           });
                         } else {
-                          Get.snackbar(
-                              "Join Us", "Please Subscribe to Edit the preferences.");
+                          Get.snackbar("Join Us",
+                              "Please Subscribe to Edit the preferences.");
                         }
                       },
                       child: Align(
@@ -288,7 +290,10 @@ class EditPrefrenceState extends State<EditPrefrence> {
                                 message: 'Please select at least one services');
                           }
                         } else {
-                          redirectsubscribe(context);
+                          redirectsubscribe(context).then((value) async {
+                            await profileextendedcontroller
+                                .fetchProfileExtendeddata(context);
+                          });
                         }
                       },
                 text: profileextendedcontroller.profileextenddata.value.data!

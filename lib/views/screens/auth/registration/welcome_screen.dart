@@ -12,7 +12,7 @@ import 'select_user_type.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const String routeName = '/welcome-screen';
-   WelcomeScreen({super.key});
+  WelcomeScreen({super.key});
   PreferenceController preferenceController =
       Get.put(PreferenceController(), permanent: true);
   @override
@@ -66,14 +66,17 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 25),
               MyElevatedButton(
                   onPressed: () {
-                    preferenceController.selectedpreference.value=[];
+                    preferenceController.selectedpreference.value = [];
+                    preferenceController.storeselectedPreferenceId.value = [];
                     Navigator.pushNamed(context, SelectUserType.routeName);
                   },
                   text: 'Join Good Times'),
               const SizedBox(height: 25),
               myElevatedButtonOutline(
                 onPressed: () {
-                  preferenceController.selectedpreference.value=[];
+                  preferenceController.selectedpreference.value = [];
+                  preferenceController.storeselectedPreferenceId.value = [];
+
                   Navigator.pushNamed(context, LoginScreen.routeName);
                 },
                 text: 'Login',

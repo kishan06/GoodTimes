@@ -84,19 +84,19 @@ class _HomeScreenState extends State<HomeScreen> {
     var checkifskip = GetStorage().read(TempData.SubscriptionSkip);
     String userid = GetStorage().read(TempData.StoreUserId) ??
         globalController.email.value.toString();
-    if (globalController.email == userid && checkifskip != true) {
-      if (profileextendedcontroller.profileextenddata.value.data != null) {
+    if (globalController.email != userid || checkifskip != true) {
+     /*  if (profileextendedcontroller.profileextenddata.value.data != null) {
         if (profileextendedcontroller
                 .profileextenddata.value.data!.principalTypeName ==
             'event_user') {
           Subscriptionmodule(context, "event_user");
         }
-      } else {
+      }  */
         profileextendedcontroller
             .fetchProfileExtendeddata(context)
             .then((value) {
           if (profileextendedcontroller.profileextenddata.value.data != null) {
-            if (profileextendedcontroller.profileextenddata.value.data!
+            /* if (profileextendedcontroller.profileextenddata.value.data!
                     .hasActiveSubscription!.hasActiveSubscription !=
                 null) {
               globalController.hasActiveSubscription.value =
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   globalController.hasActiveGracePeriod.value =
                       profileextendedcontroller.profileextenddata.value.data!
                           .hasActiveSubscription!.inGracePeriod!;
-            }
+            } */
 
             if (profileextendedcontroller
                     .profileextenddata.value.data!.principalTypeName ==
@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           }
         });
-      }
+      
     }
   }
 
@@ -653,17 +653,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .data!
                                     .hasActiveSubscription!
                                     .inGracePeriod!)) {
-                          PreferencesService()
-                              .getPreferencesServices(context)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              PreferencesModel data = value.data;
-                              preferenceController
-                                  .storeselectedPreferenceId.value
-                                  .addAll(data.preferenceList);
-                            }
-                          });
+                          if (preferenceController
+                              .storeselectedPreferenceId.value.isEmpty) {
+                            PreferencesService()
+                                .getPreferencesServices(context)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                PreferencesModel data = value.data;
+                                preferenceController
+                                    .storeselectedPreferenceId.value
+                                    .addAll(data.preferenceList);
+                              }
+                            });
+                          }
                         }
                       },
                       child: Container(

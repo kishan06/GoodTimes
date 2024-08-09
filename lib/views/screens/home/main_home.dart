@@ -142,7 +142,7 @@ class _HomeMainState extends State<HomeMain> {
     // listenDynamicLinks();
     getProfileDetails();
     profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
-      if (profileextendedcontroller.profileextenddata.value.data != null) {
+     /*  if (profileextendedcontroller.profileextenddata.value.data != null) {
         if (profileextendedcontroller.profileextenddata.value.data!
                 .hasActiveSubscription!.hasActiveSubscription !=
             null) {
@@ -159,7 +159,7 @@ class _HomeMainState extends State<HomeMain> {
                   profileextendedcontroller.profileextenddata.value.data!
                       .hasActiveSubscription!.inGracePeriod!;
         }
-      }
+      } */
     });
 
     senUserPlayer();

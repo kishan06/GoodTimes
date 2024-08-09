@@ -79,7 +79,7 @@ class Data {
 class HasActiveSubscription {
   bool? hasActiveSubscription;
   bool? inGracePeriod;
-  Null? gracePeriodEndDate;
+  String? gracePeriodEndDate;
 
   HasActiveSubscription(
       {this.hasActiveSubscription,
