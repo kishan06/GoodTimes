@@ -44,7 +44,7 @@ import '../../views/screens/event_manager/syncfusion_calendar.dart';
 
 final Map<String, WidgetBuilder> routes = {
   IntroSlider.routeName: (context) => const IntroSlider(),
-  WelcomeScreen.routeName: (context) => const WelcomeScreen(),
+  WelcomeScreen.routeName: (context) =>  WelcomeScreen(),
   LoginScreen.routeName: (context) => const LoginScreen(),
   SelectUserType.routeName: (context) => const SelectUserType(),
   EmialVerify.routeName: (context) => const EmialVerify(),

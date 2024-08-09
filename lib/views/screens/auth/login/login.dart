@@ -293,18 +293,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   loginWithConditions(value) {  
-    if (value.data["preference"] == false) {
-      Navigator.pushNamed(context, SelectPrefrence.routeName);
-    }
-    if (value.data["preference"] == true) {
-      Navigator.pushNamed(context, HomeMain.routeName);
-    }
+    
     if (value.data["complete"] == false) {
       Navigator.pushNamed(context, CompleteDetails.routeName,
           arguments: value.data["email"]);
-    }
-    if (value.data["complete"] == true) {
+    }else if (value.data["preference"] == false) {
+      Navigator.pushNamed(context, SelectPrefrence.routeName);
+    }if (value.data["preference"] == true && value.data["complete"] == true) {
       Navigator.pushNamed(context, HomeMain.routeName);
     }
+    
   }
 }

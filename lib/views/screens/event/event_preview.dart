@@ -32,6 +32,7 @@ import '../../../view-models/deep_link_model.dart';
 import '../../../view-models/evevnt_filter_controller.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../event_manager/edit_event.dart/edit_event_title.dart';
 import 'map_view.dart';
 
@@ -192,552 +193,538 @@ class _EventPreviewState extends State<EventPreview> {
                               style: headingStyle.copyWith(fontSize: 24),
                             ),
                             const SizedBox(height: 13),
-                            ImageFiltered(
-                              imageFilter: ImageFilter.blur(
-                                  sigmaX: !(globalController
-                                              .hasActiveSubscription.value ||
-                                          globalController
-                                              .hasActiveGracePeriod.value)
-                                      ? 5.0
-                                      : 0.0,
-                                  sigmaY: !(globalController
-                                              .hasActiveSubscription.value ||
-                                          globalController
-                                              .hasActiveGracePeriod.value)
-                                      ? 5.0
-                                      : 0.0),
-                              child: IgnorePointer(
-                                ignoring: !(globalController
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    globalController
+                                            .hasActiveSubscription.value
+                                        ? Get.to(() => ChatScreens(
+                                              eventIds: eventInnerPreview,
+                                            ))
+                                        : snackBarError(context,
+                                            message:
+                                                'Please activate your account.');
+                                  },
+                                  child: Container(
+                                    width: 166,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: kTextWhite.withOpacity(0.18),
+                                      borderRadius:
+                                          BorderRadius.circular(5),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                            'assets/svg/message-circle.svg'),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          'Join Live Chat',
+                                          style: paragraphStyle.copyWith(
+                                              color:
+                                                  const Color(0xffC5C5C5)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Location',
+                                      style: labelStyle.copyWith(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                 /*    if ((globalController
                                             .hasActiveSubscription.value ||
                                         globalController
-                                            .hasActiveGracePeriod.value)
-                                    ? true
-                                    : false,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
+                                            .hasActiveGracePeriod.value)) */
+                                      TextButton(
+                                        onPressed: () async {
+                                           if (!(globalController
+                                            .hasActiveSubscription.value ||
                                         globalController
-                                                .hasActiveSubscription.value
-                                            ? Get.to(() => ChatScreens(
-                                                  eventIds: eventInnerPreview,
-                                                ))
-                                            : snackBarError(context,
-                                                message:
-                                                    'Please activate your account.');
-                                      },
-                                      child: Container(
-                                        width: 166,
-                                        height: 44,
-                                        decoration: BoxDecoration(
-                                          color: kTextWhite.withOpacity(0.18),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                                'assets/svg/message-circle.svg'),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              'Join Live Chat',
-                                              style: paragraphStyle.copyWith(
-                                                  color:
-                                                      const Color(0xffC5C5C5)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Location',
-                                          style: labelStyle.copyWith(
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        if ((globalController
-                                                .hasActiveSubscription.value ||
-                                            globalController
-                                                .hasActiveGracePeriod.value))
-                                          TextButton(
-                                            onPressed: () async {
-                                              currentmarkerIcon =
-                                                  await getCustomMarker(
-                                                      "assets/images/themelocation.png",
-                                                      60,
-                                                      80);
-                                              /* BitmapDescriptor
-                                                      .defaultMarker; */
-                                              LatLng destinationlatlng = LatLng(
-                                                  double.parse(data
-                                                      .venu.latitude
-                                                      .toString()),
-                                                  double.parse(data
-                                                      .venu.longitude
-                                                      .toString()));
-                                              globaldestinationmarkers = Marker(
-                                                markerId: const MarkerId(
-                                                    "_sourceLocation"), //google
-                                                icon: currentmarkerIcon,
-                                                position: destinationlatlng,
-                                                onTap: () {
-                                                  showModalBottomSheet(
-                                                    isScrollControlled: true,
-                                                    context: context,
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return Container(
-                                                        width: double.infinity,
-                                                        decoration: const BoxDecoration(
-                                                            color: Colors.black,
-                                                            borderRadius: BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        15.0),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        15.0))),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(16),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
+                                            .hasActiveGracePeriod.value)){
+                                              Subscriptionmodule(context,"event_user");
+                                            }else{
+                                          currentmarkerIcon =
+                                              await getCustomMarker(
+                                                  "assets/images/themelocation.png",
+                                                  60,
+                                                  80);
+                                          /* BitmapDescriptor
+                                                  .defaultMarker; */
+                                          LatLng destinationlatlng = LatLng(
+                                              double.parse(data
+                                                  .venu.latitude
+                                                  .toString()),
+                                              double.parse(data
+                                                  .venu.longitude
+                                                  .toString()));
+                                          globaldestinationmarkers = Marker(
+                                            markerId: const MarkerId(
+                                                "_sourceLocation"), //google
+                                            icon: currentmarkerIcon,
+                                            position: destinationlatlng,
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                context: context,
+                                                backgroundColor:
+                                                    Colors.white,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                    width: double.infinity,
+                                                    decoration: const BoxDecoration(
+                                                        color: Colors.black,
+                                                        borderRadius: BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(
+                                                                    15.0),
+                                                            topRight: Radius
+                                                                .circular(
+                                                                    15.0))),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets
+                                                              .all(16),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize
+                                                                .min,
+                                                        children: [
+                                                          Text(
+                                                            "${data.title!.capitalizeFirst}",
+                                                            style: headingStyle
+                                                                .copyWith(
+                                                                    fontSize:
+                                                                        24),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 13),
+                                                          Row(
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
                                                             children: [
-                                                              Text(
-                                                                "${data.title!.capitalizeFirst}",
-                                                                style: headingStyle
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            24),
+                                                              const Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                color:
+                                                                    kPrimaryColor,
                                                               ),
                                                               const SizedBox(
-                                                                  height: 13),
-                                                              Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                    Icons
-                                                                        .location_on,
-                                                                    color:
-                                                                        kPrimaryColor,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                      width:
-                                                                          10),
-                                                                  Expanded(
-                                                                      child: Text(
-                                                                          "${data.venu.address}",
-                                                                          style:
-                                                                              paragraphStyle))
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 16),
-                                                              Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                    Icons
-                                                                        .watch_later_outlined,
-                                                                    color:
-                                                                        kPrimaryColor,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                      width:
-                                                                          10),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                        "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
-                                                                        style:
-                                                                            paragraphStyle),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 16),
-                                                              const Divider(),
-                                                              const SizedBox(
-                                                                  height: 12),
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                      'About this event',
-                                                                      style: labelStyle.copyWith(
-                                                                          fontWeight:
-                                                                              FontWeight.w500)),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                  Text(
-                                                                      "${data.description!.capitalizeFirst}",
+                                                                  width:
+                                                                      10),
+                                                              Expanded(
+                                                                  child: Text(
+                                                                      "${data.venu.address}",
                                                                       style:
-                                                                          paragraphStyle),
-                                                                  data.keyGuest ==
-                                                                              ' ' ||
-                                                                          data.keyGuest ==
-                                                                              null
-                                                                      ? const SizedBox(
-                                                                          height:
-                                                                              15)
-                                                                      : const SizedBox(),
-                                                                  data.keyGuest!
-                                                                          .isNotEmpty
-                                                                      ? Text(
-                                                                          'Key Guest',
-                                                                          style:
-                                                                              labelStyle.copyWith(fontWeight: FontWeight.w500))
-                                                                      : const SizedBox(),
-                                                                  data.keyGuest!
-                                                                          .isNotEmpty
-                                                                      ? const SizedBox(
-                                                                          height:
-                                                                              5)
-                                                                      : const SizedBox(),
-                                                                  data.keyGuest!
-                                                                          .isNotEmpty
-                                                                      ? Text(
-                                                                          "${data.keyGuest!.capitalizeFirst}",
-                                                                          style:
-                                                                              paragraphStyle)
-                                                                      : const SizedBox(),
-                                                                  data.couponCode!
-                                                                          .isNotEmpty
-                                                                      ? const SizedBox(
-                                                                          height:
-                                                                              15)
-                                                                      : const SizedBox(),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 16),
+                                                                          paragraphStyle))
                                                             ],
                                                           ),
-                                                        ),
-                                                      );
-                                                    },
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Icon(
+                                                                Icons
+                                                                    .watch_later_outlined,
+                                                                color:
+                                                                    kPrimaryColor,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width:
+                                                                      10),
+                                                              Expanded(
+                                                                child: Text(
+                                                                    "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
+                                                                    style:
+                                                                        paragraphStyle),
+                                                              )
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          const Divider(),
+                                                          const SizedBox(
+                                                              height: 12),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                  'About this event',
+                                                                  style: labelStyle.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight.w500)),
+                                                              const SizedBox(
+                                                                  height:
+                                                                      5),
+                                                              Text(
+                                                                  "${data.description!.capitalizeFirst}",
+                                                                  style:
+                                                                      paragraphStyle),
+                                                              data.keyGuest ==
+                                                                          ' ' ||
+                                                                      data.keyGuest ==
+                                                                          null
+                                                                  ? const SizedBox(
+                                                                      height:
+                                                                          15)
+                                                                  : const SizedBox(),
+                                                              data.keyGuest!
+                                                                      .isNotEmpty
+                                                                  ? Text(
+                                                                      'Key Guest',
+                                                                      style:
+                                                                          labelStyle.copyWith(fontWeight: FontWeight.w500))
+                                                                  : const SizedBox(),
+                                                              data.keyGuest!
+                                                                      .isNotEmpty
+                                                                  ? const SizedBox(
+                                                                      height:
+                                                                          5)
+                                                                  : const SizedBox(),
+                                                              data.keyGuest!
+                                                                      .isNotEmpty
+                                                                  ? Text(
+                                                                      "${data.keyGuest!.capitalizeFirst}",
+                                                                      style:
+                                                                          paragraphStyle)
+                                                                  : const SizedBox(),
+                                                              data.couponCode!
+                                                                      .isNotEmpty
+                                                                  ? const SizedBox(
+                                                                      height:
+                                                                          15)
+                                                                  : const SizedBox(),
+                                                              const SizedBox(
+                                                                  height:
+                                                                      5),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   );
                                                 },
                                               );
-                                              Get.to(() => MapViews(
-                                                    eventLocation: LatLng(
-                                                        double.parse(data
-                                                            .venu.latitude
-                                                            .toString()),
-                                                        double.parse(data
-                                                            .venu.longitude
-                                                            .toString())),
-                                                  ));
                                             },
-                                            child: Text(
-                                              "Show Map",
-                                              style: paragraphStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: kPrimaryColor,
-                                              ),
-                                            ),
+                                          );
+                                          Get.to(() => MapViews(
+                                                eventLocation: LatLng(
+                                                    double.parse(data
+                                                        .venu.latitude
+                                                        .toString()),
+                                                    double.parse(data
+                                                        .venu.longitude
+                                                        .toString())),
+                                              ));
+                                          }  },
+                                        child: Text(
+                                          "Show Map",
+                                          style: paragraphStyle.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: kPrimaryColor,
                                           ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 15),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on,
-                                          color: kPrimaryColor,
                                         ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                            child: Text("${data.venu.address}",
-                                                style: paragraphStyle))
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Icon(
-                                          Icons.watch_later_outlined,
-                                          color: kPrimaryColor,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Text(
-                                              "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
-                                              style: paragraphStyle),
-                                        )
-                                      ],
-                                    )
+                                      ),
                                   ],
                                 ),
-                              ),
+                                const SizedBox(height: 15),
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: kPrimaryColor,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                        child: Text("${data.venu.address}",
+                                            style: paragraphStyle))
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later_outlined,
+                                      color: kPrimaryColor,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                          "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
+                                          style: paragraphStyle),
+                                    )
+                                  ],
+                                )
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      ImageFiltered(
-                        imageFilter: ImageFilter.blur(
-                            sigmaX: !(globalController
-                                        .hasActiveSubscription.value ||
-                                    globalController.hasActiveGracePeriod.value)
-                                ? 5.0
-                                : 0.0,
-                            sigmaY: !(globalController
-                                        .hasActiveSubscription.value ||
-                                    globalController.hasActiveGracePeriod.value)
-                                ? 5.0
-                                : 0.0),
-                        child: IgnorePointer(
-                          ignoring: !(globalController
-                                      .hasActiveSubscription.value ||
-                                  globalController.hasActiveGracePeriod.value)
-                              ? true
-                              : false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                              const Divider(),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: scaffoldPadding),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('About this event',
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          const Divider(),
+                          const SizedBox(height: 12),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: scaffoldPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('About this event',
+                                    style: labelStyle.copyWith(
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 5),
+                                Text("${data.description!.capitalizeFirst}",
+                                    style: paragraphStyle),
+                                data.keyGuest == ' ' ||
+                                        data.keyGuest == null
+                                    ? const SizedBox(height: 15)
+                                    : const SizedBox(),
+                                data.keyGuest!.isNotEmpty
+                                    ? Text('Key Guest',
                                         style: labelStyle.copyWith(
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 5),
-                                    Text("${data.description!.capitalizeFirst}",
-                                        style: paragraphStyle),
-                                    data.keyGuest == ' ' ||
-                                            data.keyGuest == null
-                                        ? const SizedBox(height: 15)
-                                        : const SizedBox(),
-                                    data.keyGuest!.isNotEmpty
-                                        ? Text('Key Guest',
-                                            style: labelStyle.copyWith(
-                                                fontWeight: FontWeight.w500))
-                                        : const SizedBox(),
-                                    data.keyGuest!.isNotEmpty
-                                        ? const SizedBox(height: 5)
-                                        : const SizedBox(),
-                                    data.keyGuest!.isNotEmpty
-                                        ? Text(
-                                            "${data.keyGuest!.capitalizeFirst}",
-                                            style: paragraphStyle)
-                                        : const SizedBox(),
-                                    data.couponCode!.isNotEmpty
-                                        ? const SizedBox(height: 15)
-                                        : const SizedBox(),
-                                    data.couponCode!.isNotEmpty
-                                        ? Text('Coupon Code',
-                                            style: labelStyle.copyWith(
-                                                fontWeight: FontWeight.w500))
-                                        : const SizedBox(),
-                                    data.couponCode!.isNotEmpty
-                                        ? const SizedBox(height: 5)
-                                        : const SizedBox(),
-                                    data.couponCode!.isNotEmpty
-                                        ? Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                  "${data.couponCode!.capitalizeFirst}",
-                                                  style: paragraphStyle),
-                                              const SizedBox(width: 10),
-                                              GestureDetector(
-                                                  onTap: () {
-                                                    EasyDebounce.debounce(
-                                                        'my-debouncer',
-                                                        const Duration(
-                                                            milliseconds: 500),
-                                                        () {
-                                                      CopyClipboardAndSahreController()
-                                                          .copyToClipboard(
-                                                              context,
-                                                              data.couponCode);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.content_copy_rounded,
-                                                    color: kPrimaryColor,
-                                                    size: 25,
-                                                  )),
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                    data.couponCodeDescription!.isNotEmpty
-                                        ? const SizedBox(height: 15)
-                                        : const SizedBox(),
-                                    data.couponCodeDescription!.isNotEmpty
-                                        ? Text('Coupon Code Descriptions',
-                                            style: labelStyle.copyWith(
-                                                fontWeight: FontWeight.w500))
-                                        : const SizedBox(),
-                                    data.couponCodeDescription!.isNotEmpty
-                                        ? const SizedBox(height: 5)
-                                        : const SizedBox(),
-                                    data.couponCodeDescription!.isNotEmpty
-                                        ? Text(
-                                            "${data.couponCodeDescription!.capitalizeFirst}",
-                                            style: paragraphStyle)
-                                        : const SizedBox(),
-                                    const SizedBox(height: 5),
+                                            fontWeight: FontWeight.w500))
+                                    : const SizedBox(),
+                                data.keyGuest!.isNotEmpty
+                                    ? const SizedBox(height: 5)
+                                    : const SizedBox(),
+                                data.keyGuest!.isNotEmpty
+                                    ? Text(
+                                        "${data.keyGuest!.capitalizeFirst}",
+                                        style: paragraphStyle)
+                                    : const SizedBox(),
+                                data.couponCode!.isNotEmpty
+                                    ? const SizedBox(height: 15)
+                                    : const SizedBox(),
+                                data.couponCode!.isNotEmpty
+                                    ? Text('Coupon Code',
+                                        style: labelStyle.copyWith(
+                                            fontWeight: FontWeight.w500))
+                                    : const SizedBox(),
+                                data.couponCode!.isNotEmpty
+                                    ? const SizedBox(height: 5)
+                                    : const SizedBox(),
+                                data.couponCode!.isNotEmpty
+                                    ? Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              "${data.couponCode!.capitalizeFirst}",
+                                              style: paragraphStyle),
+                                          const SizedBox(width: 10),
+                                          GestureDetector(
+                                              onTap: () {
+                                                EasyDebounce.debounce(
+                                                    'my-debouncer',
+                                                    const Duration(
+                                                        milliseconds: 500),
+                                                    () {
+                                                  CopyClipboardAndSahreController()
+                                                      .copyToClipboard(
+                                                          context,
+                                                          data.couponCode);
+                                                });
+                                              },
+                                              child: const Icon(
+                                                Icons.content_copy_rounded,
+                                                color: kPrimaryColor,
+                                                size: 25,
+                                              )),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                                data.couponCodeDescription!.isNotEmpty
+                                    ? const SizedBox(height: 15)
+                                    : const SizedBox(),
+                                data.couponCodeDescription!.isNotEmpty
+                                    ? Text('Coupon Code Descriptions',
+                                        style: labelStyle.copyWith(
+                                            fontWeight: FontWeight.w500))
+                                    : const SizedBox(),
+                                data.couponCodeDescription!.isNotEmpty
+                                    ? const SizedBox(height: 5)
+                                    : const SizedBox(),
+                                data.couponCodeDescription!.isNotEmpty
+                                    ? Text(
+                                        "${data.couponCodeDescription!.capitalizeFirst}",
+                                        style: paragraphStyle)
+                                    : const SizedBox(),
+                                const SizedBox(height: 5),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Divider(),
+                          const SizedBox(height: 12),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: scaffoldPadding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Popularity',
+                                      style: labelStyle.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: _popularityModal,
+                                      child: Text(
+                                        'Learn More',
+                                        style: paragraphStyle.copyWith(
+                                          color: kPrimaryColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(height: 16),
-                              const Divider(),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: scaffoldPadding),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                const SizedBox(height: 13),
+                                Row(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Popularity',
-                                          style: labelStyle.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: _popularityModal,
-                                          child: Text(
-                                            'Learn More',
-                                            style: paragraphStyle.copyWith(
-                                              color: kPrimaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 13),
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                            'assets/images/event/blue_flame.png'),
-                                        const SizedBox(width: 8),
-                                        const Text('Hype’s through the roof',
-                                            style: paragraphStyle),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 40),
-                                    Text('For this event?',
-                                        style: labelStyle.copyWith(
-                                            fontWeight: FontWeight.w500)),
-                                    const SizedBox(height: 15),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: (data.interactions == null)
-                                              ? myElevatedButtonOutline(
+                                    Image.asset(
+                                        'assets/images/event/blue_flame.png'),
+                                    const SizedBox(width: 8),
+                                    const Text('Hype’s through the roof',
+                                        style: paragraphStyle),
+                                  ],
+                                ),
+                                const SizedBox(height: 40),
+                                Text('For this event?',
+                                    style: labelStyle.copyWith(
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 15),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: (data.interactions == null)
+                                          ? myElevatedButtonOutline(
+                                              onPressed: () {
+                                                globalController
+                                                        .hasActiveSubscription
+                                                        .value
+                                                    ? GetEventServices()
+                                                        .eventIntrestedAndGoing(
+                                                        context,
+                                                        eventId:
+                                                            eventInnerPreview,
+                                                        intrestedAndGoing:
+                                                            'interested',
+                                                      )
+                                                    : snackBarError(context,
+                                                        message:
+                                                            'Please activate your account.');
+                                                // setState(() {});
+                                              },
+                                              text: 'Interested')
+                                          : (data.interactions != null &&
+                                                  data.interactions ==
+                                                      'interested')
+                                              ? MyElevatedButton(
                                                   onPressed: () {
                                                     globalController
                                                             .hasActiveSubscription
                                                             .value
                                                         ? GetEventServices()
                                                             .eventIntrestedAndGoing(
+                                                                context,
+                                                                eventId:
+                                                                    eventInnerPreview,
+                                                                intrestedAndGoing:
+                                                                    'interested')
+                                                        : snackBarError(
+                                                            context,
+                                                            message:
+                                                                'Please activate your account.');
+                                                    setState(() {});
+                                                  },
+                                                  text: 'Interested')
+                                              : myElevatedButtonOutline(
+                                                  onPressed: () {
+                                                    globalController
+                                                            .hasActiveSubscription
+                                                            .value
+                                                        ? GetEventServices()
+                                                            .eventIntrestedAndGoing(
+                                                                context,
+                                                                eventId:
+                                                                    eventInnerPreview,
+                                                                intrestedAndGoing:
+                                                                    'interested')
+                                                        : snackBarError(
+                                                            context,
+                                                            message:
+                                                                'Please activate your account.');
+                                                    setState(() {});
+                                                  },
+                                                  text: 'Interested'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      flex: 3,
+                                      child: (data.interactions == null)
+                                          ? myElevatedButtonOutline(
+                                              onPressed: () {
+                                                globalController
+                                                        .hasActiveSubscription
+                                                        .value
+                                                    ? GetEventServices()
+                                                        .eventIntrestedAndGoing(
                                                             context,
                                                             eventId:
                                                                 eventInnerPreview,
                                                             intrestedAndGoing:
-                                                                'interested',
-                                                          )
-                                                        : snackBarError(context,
-                                                            message:
-                                                                'Please activate your account.');
-                                                    // setState(() {});
-                                                  },
-                                                  text: 'Interested')
-                                              : (data.interactions != null &&
-                                                      data.interactions ==
-                                                          'interested')
-                                                  ? MyElevatedButton(
-                                                      onPressed: () {
-                                                        globalController
-                                                                .hasActiveSubscription
-                                                                .value
-                                                            ? GetEventServices()
-                                                                .eventIntrestedAndGoing(
-                                                                    context,
-                                                                    eventId:
-                                                                        eventInnerPreview,
-                                                                    intrestedAndGoing:
-                                                                        'interested')
-                                                            : snackBarError(
-                                                                context,
-                                                                message:
-                                                                    'Please activate your account.');
-                                                        setState(() {});
-                                                      },
-                                                      text: 'Interested')
-                                                  : myElevatedButtonOutline(
-                                                      onPressed: () {
-                                                        globalController
-                                                                .hasActiveSubscription
-                                                                .value
-                                                            ? GetEventServices()
-                                                                .eventIntrestedAndGoing(
-                                                                    context,
-                                                                    eventId:
-                                                                        eventInnerPreview,
-                                                                    intrestedAndGoing:
-                                                                        'interested')
-                                                            : snackBarError(
-                                                                context,
-                                                                message:
-                                                                    'Please activate your account.');
-                                                        setState(() {});
-                                                      },
-                                                      text: 'Interested'),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          flex: 3,
-                                          child: (data.interactions == null)
-                                              ? myElevatedButtonOutline(
+                                                                'going')
+                                                    : snackBarError(context,
+                                                        message:
+                                                            'Please activate your account.');
+                                                setState(() {});
+                                              },
+                                              text: 'Going')
+                                          : (data.interactions != null &&
+                                                  data.interactions ==
+                                                      'going')
+                                              ? MyElevatedButton(
                                                   onPressed: () {
                                                     globalController
                                                             .hasActiveSubscription
@@ -749,273 +736,250 @@ class _EventPreviewState extends State<EventPreview> {
                                                                     eventInnerPreview,
                                                                 intrestedAndGoing:
                                                                     'going')
-                                                        : snackBarError(context,
+                                                        : snackBarError(
+                                                            context,
                                                             message:
                                                                 'Please activate your account.');
                                                     setState(() {});
                                                   },
                                                   text: 'Going')
-                                              : (data.interactions != null &&
-                                                      data.interactions ==
-                                                          'going')
-                                                  ? MyElevatedButton(
-                                                      onPressed: () {
-                                                        globalController
-                                                                .hasActiveSubscription
-                                                                .value
-                                                            ? GetEventServices()
-                                                                .eventIntrestedAndGoing(
-                                                                    context,
-                                                                    eventId:
-                                                                        eventInnerPreview,
-                                                                    intrestedAndGoing:
-                                                                        'going')
-                                                            : snackBarError(
+                                              : myElevatedButtonOutline(
+                                                  onPressed: () {
+                                                    globalController
+                                                            .hasActiveSubscription
+                                                            .value
+                                                        ? GetEventServices()
+                                                            .eventIntrestedAndGoing(
                                                                 context,
-                                                                message:
-                                                                    'Please activate your account.');
-                                                        setState(() {});
-                                                      },
-                                                      text: 'Going')
-                                                  : myElevatedButtonOutline(
-                                                      onPressed: () {
-                                                        globalController
-                                                                .hasActiveSubscription
-                                                                .value
-                                                            ? GetEventServices()
-                                                                .eventIntrestedAndGoing(
-                                                                    context,
-                                                                    eventId:
-                                                                        eventInnerPreview,
-                                                                    intrestedAndGoing:
-                                                                        'going')
-                                                            : snackBarError(
-                                                                context,
-                                                                message:
-                                                                    'Please activate your account.');
-                                                        setState(() {});
-                                                      },
-                                                      text: 'Going'),
-                                        ),
-                                        const Expanded(
-                                            flex: 2, child: SizedBox())
-                                      ],
+                                                                eventId:
+                                                                    eventInnerPreview,
+                                                                intrestedAndGoing:
+                                                                    'going')
+                                                        : snackBarError(
+                                                            context,
+                                                            message:
+                                                                'Please activate your account.');
+                                                    setState(() {});
+                                                  },
+                                                  text: 'Going'),
                                     ),
+                                    const Expanded(
+                                        flex: 2, child: SizedBox())
                                   ],
                                 ),
-                              ),
-                              const SizedBox(height: 30),
-                              const Divider(),
-                              const SizedBox(height: 30),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: scaffoldPadding),
-                                child: Column(
-                                  children: [
-                                    data.eventReview.isNotEmpty
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text('Reviews & Ratings',
-                                                  style: labelStyle.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  reviewList(data);
-                                                },
-                                                child: Text('View All',
-                                                    style:
-                                                        paragraphStyle.copyWith(
-                                                            color:
-                                                                kPrimaryColor)),
-                                              ),
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                    data.eventReview.isNotEmpty
-                                        ? Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.star,
-                                                color: kPrimaryColor,
-                                                size: 22,
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Text('5.0',
-                                                  style: labelStyle.copyWith(
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                    data.eventReview.isNotEmpty
-                                        ? const SizedBox(height: 10)
-                                        : const SizedBox(),
-                                    data.eventReview.isNotEmpty
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          const Divider(),
+                          const SizedBox(height: 30),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: scaffoldPadding),
+                            child: Column(
+                              children: [
+                                data.eventReview.isNotEmpty
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Reviews & Ratings',
+                                              style: labelStyle.copyWith(
+                                                  fontWeight:
+                                                      FontWeight.w500)),
+                                          GestureDetector(
+                                            onTap: () {
+                                              reviewList(data);
+                                            },
+                                            child: Text('View All',
+                                                style:
+                                                    paragraphStyle.copyWith(
+                                                        color:
+                                                            kPrimaryColor)),
+                                          ),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                                data.eventReview.isNotEmpty
+                                    ? Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: kPrimaryColor,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text('5.0',
+                                              style: labelStyle.copyWith(
+                                                  color: kPrimaryColor,
+                                                  fontWeight:
+                                                      FontWeight.w500)),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                                data.eventReview.isNotEmpty
+                                    ? const SizedBox(height: 10)
+                                    : const SizedBox(),
+                                data.eventReview.isNotEmpty
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    "${data.eventReview[0].reviewUserData.firstName} ${data.eventReview[0].reviewUserData.lastName}",
+                                                    style: paragraphStyle),
+                                                Row(
                                                   children: [
                                                     Text(
-                                                        "${data.eventReview[0].reviewUserData.firstName} ${data.eventReview[0].reviewUserData.lastName}",
-                                                        style: paragraphStyle),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          data.eventReview[0]
-                                                              .reviewStar
-                                                              .toString(),
-                                                          style: paragraphStyle
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontSize: 12),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 5),
-                                                        Row(
-                                                          children:
-                                                              List.generate(
-                                                            5,
-                                                            (index) => index <
-                                                                    data
-                                                                        .eventReview[
-                                                                            0]
-                                                                        .reviewStar
-                                                                ? const Icon(
-                                                                    Icons.star,
-                                                                    size: 15,
-                                                                  )
-                                                                : const Icon(
-                                                                    Icons
-                                                                        .star_border,
-                                                                    size: 15,
-                                                                  ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 5),
-                                                    Text(
                                                       data.eventReview[0]
-                                                          .reviewText,
+                                                          .reviewStar
+                                                          .toString(),
                                                       style: paragraphStyle
                                                           .copyWith(
-                                                        fontSize: 14,
-                                                        color: const Color(
-                                                            0xff8C8C8C),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: 12),
+                                                    ),
+                                                    const SizedBox(
+                                                        width: 5),
+                                                    Row(
+                                                      children:
+                                                          List.generate(
+                                                        5,
+                                                        (index) => index <
+                                                                data
+                                                                    .eventReview[
+                                                                        0]
+                                                                    .reviewStar
+                                                            ? const Icon(
+                                                                Icons.star,
+                                                                size: 15,
+                                                              )
+                                                            : const Icon(
+                                                                Icons
+                                                                    .star_border,
+                                                                size: 15,
+                                                              ),
                                                       ),
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        : const SizedBox(),
-                                    data.eventReview.isNotEmpty
-                                        ? const SizedBox(height: 30)
-                                        : const SizedBox(),
-                                    // Padding( padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),child:
-                                    // ),
-                                    myElevatedButtonOutline(
-                                      onPressed: () {
-                                        globalController
-                                                .hasActiveSubscription.value
-                                            ? _rateThisEvent()
-                                            : snackBarError(context,
-                                                message:
-                                                    'Please activate your account.');
-                                      },
-                                      text: 'Help Boost the Event Rating',
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  data.eventReview[0]
+                                                      .reviewText,
+                                                  style: paragraphStyle
+                                                      .copyWith(
+                                                    fontSize: 14,
+                                                    color: const Color(
+                                                        0xff8C8C8C),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                                data.eventReview.isNotEmpty
+                                    ? const SizedBox(height: 30)
+                                    : const SizedBox(),
+                                // Padding( padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),child:
+                                // ),
+                                myElevatedButtonOutline(
+                                  onPressed: () {
+                                    globalController
+                                            .hasActiveSubscription.value
+                                        ? _rateThisEvent()
+                                        : snackBarError(context,
+                                            message:
+                                                'Please activate your account.');
+                                  },
+                                  text: 'Help Boost the Event Rating',
+                                ),
+                                const SizedBox(height: 30),
+                              ],
+                            ),
+                          ),
+                          const Divider(),
+                          const SizedBox(height: 40),
+                          GestureDetector(
+                            onTap: () {
+                              globalController.hasActiveSubscription.value
+                                  ? _viewManagerProfile(data: data)
+                                  : snackBarError(context,
+                                      message:
+                                          'Please activate your account.');
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: scaffoldPadding),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(100),
+                                      child: data.venu.createdBy
+                                                  .profilePhoto ==
+                                              ''
+                                          ? Image.asset(
+                                              'assets/images/avatar.jpg',
+                                              width: 67,
+                                              height: 67,
+                                              fit: BoxFit.cover)
+                                          : Image.network(
+                                              data.venu.createdBy
+                                                  .profilePhoto,
+                                              width: 67,
+                                              height: 67,
+                                              fit: BoxFit.cover),
                                     ),
-                                    const SizedBox(height: 30),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      'Organized By',
+                                      style: paragraphStyle.copyWith(
+                                          fontSize: 12,
+                                          color: const Color(0xff8C8C8C)),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      "${data.venu.createdBy.firstName.capitalizeFirst} ${data.venu.createdBy.lastName.capitalizeFirst}",
+                                      style: paragraphStyle.copyWith(
+                                          fontSize: 18,
+                                          color: const Color(0xffE3E3E3),
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      data.venu.createdBy.email,
+                                      style: paragraphStyle.copyWith(
+                                        fontSize: 14,
+                                        color: const Color(0xff8C8C8C),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      "Click here for more info",
+                                      style: paragraphStyle.copyWith(
+                                          fontSize: 16,
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ],
                                 ),
                               ),
-                              const Divider(),
-                              const SizedBox(height: 40),
-                              GestureDetector(
-                                onTap: () {
-                                  globalController.hasActiveSubscription.value
-                                      ? _viewManagerProfile(data: data)
-                                      : snackBarError(context,
-                                          message:
-                                              'Please activate your account.');
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: scaffoldPadding),
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          child: data.venu.createdBy
-                                                      .profilePhoto ==
-                                                  ''
-                                              ? Image.asset(
-                                                  'assets/images/avatar.jpg',
-                                                  width: 67,
-                                                  height: 67,
-                                                  fit: BoxFit.cover)
-                                              : Image.network(
-                                                  data.venu.createdBy
-                                                      .profilePhoto,
-                                                  width: 67,
-                                                  height: 67,
-                                                  fit: BoxFit.cover),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          'Organized By',
-                                          style: paragraphStyle.copyWith(
-                                              fontSize: 12,
-                                              color: const Color(0xff8C8C8C)),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          "${data.venu.createdBy.firstName.capitalizeFirst} ${data.venu.createdBy.lastName.capitalizeFirst}",
-                                          style: paragraphStyle.copyWith(
-                                              fontSize: 18,
-                                              color: const Color(0xffE3E3E3),
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          data.venu.createdBy.email,
-                                          style: paragraphStyle.copyWith(
-                                            fontSize: 14,
-                                            color: const Color(0xff8C8C8C),
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          "Click here for more info",
-                                          style: paragraphStyle.copyWith(
-                                              fontSize: 16,
-                                              color: kPrimaryColor,
-                                              fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 30),
-                            ],
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 30),
+                        ],
                       ),
                     ],
                   )),

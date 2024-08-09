@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart' as getX;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:good_times/view-models/SubscriptionPreference.dart';
 import 'package:good_times/views/screens/event_manager/refer_friend.dart';
 import 'package:good_times/views/screens/event_manager/venue/venue.dart';
 import 'package:good_times/views/screens/favorites/favorites.dart';
@@ -20,8 +23,10 @@ import '../../../view-models/auth/google_auth.dart';
 import '../../../view-models/bootomnavigation_controller.dart';
 import '../../../view-models/deep_link_model.dart';
 import '../../../view-models/global_controller.dart';
+import '../../widgets/common/desclaimer.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../event_manager/syncfusion_calendar.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
@@ -44,6 +49,7 @@ class _ProfileState extends State<Profile> {
   HomePageController homePageController = getX.Get.find();
   GlobalController globalContoller = getX.Get.put(GlobalController());
   String? refresh;
+  PreferenceController preferenceController = Get.find<PreferenceController>();
 
   checkReferesh(userData) async {
     refresh = await getX.Get.to(() => EditProfile(profileData: userData),
@@ -54,9 +60,8 @@ class _ProfileState extends State<Profile> {
     }
     globalContoller.profileImgPath.value = userData.profilePhoto;
   }
-
-  PreferenceController preferenceController =
-      Get.put(PreferenceController(), permanent: true);
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.find<ProfileExtendedDataController>();
   @override
   Widget build(BuildContext context) {
     // log('globalContoller  ${globalContoller.profileImgPath.value}');
@@ -151,8 +156,7 @@ class _ProfileState extends State<Profile> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      userData.goingEventCount!
-                                          .toString(), //only going data will see here
+                                     profileextendedcontroller.profileextenddata.value.data!.goingEventsCount!.toString(), //only going data will see here
                                       style: paragraphStyle.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -199,16 +203,31 @@ class _ProfileState extends State<Profile> {
                                             ? const SizedBox()
                                             : OutlinedButton(
                                                 onPressed: () {
-                                                  Get.to(() =>
-                                                      const WebViewExample());
+                                                  if (globalContoller
+                                                      .hasActiveGracePeriod
+                                                      .value) {
+                                                    Get.to(() =>
+                                                        const WebViewExample());
+                                                  } else {
+                                                    if (userData
+                                                            .principalTypeName ==
+                                                        "event_user") {
+                                                      redirectsubscribe(
+                                                          context);
+                                                    }
+                                                  }
                                                 },
                                                 style: OutlinedButton.styleFrom(
                                                   side: const BorderSide(
                                                       width: 1.0,
                                                       color: kPrimaryColor),
                                                 ),
-                                                child: const Text(
-                                                  "Renew",
+                                                child: Text(
+                                                  globalContoller
+                                                          .hasActiveGracePeriod
+                                                          .value
+                                                      ? "Renew"
+                                                      : "Join Us",
                                                   style: paragraphStyle,
                                                 ))
                                       ],
@@ -274,24 +293,16 @@ class _ProfileState extends State<Profile> {
                             icon: 'edit-preferences',
                             text: 'Edit Preferences',
                             svgs: 1,
-                            ontap: () async{
-                              if (globalController
-                                  .hasActiveSubscription.value) {
-                                if (preferenceController
-                                    .prefrencecontrollerdata.isEmpty) {
-                               
-                                    await preferenceController
-                                        .eventCategory(context);
-                                    print(preferenceController
-                                        .prefrencecontrollerdata);
-                                  
-                                }
-                                Navigator.pushNamed(
-                                    context, EditPrefrence.routeName);
-                              } else {
-                                snackBarError(context,
-                                    message: 'Please activate your account.');
+                            ontap: () async {
+                              if (preferenceController
+                                  .prefrencecontrollerdata.isEmpty) {
+                                await preferenceController
+                                    .eventCategory(context);
+                                print(preferenceController
+                                    .prefrencecontrollerdata);
                               }
+                              Navigator.pushNamed(
+                                  context, EditPrefrence.routeName);
                             }),
                         const Divider(color: Color(0xff5F5F5F)),
                         _userOptions(
@@ -408,9 +419,9 @@ class _ProfileState extends State<Profile> {
                     } else {
                       advanceFilterController.clearAllFilter();
                     }
-                    setState(() {
+                   
                       curentIndex.value = 0;
-                    });
+                  
                     SignOutAccountService().signOutAccountService(context);
                     GetStorage().write('accessToken', null);
                     GetStorage().write('profileStatus', null);

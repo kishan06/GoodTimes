@@ -6,7 +6,7 @@ import '../api_services.dart';
 import '../endpoints.dart';
 import '../response_data.dart';
 
-class CheckPreferenceService{
+class CheckPreferenceService {
   Dio dio = Dio();
   Future checkPreferenceService(context) async {
     final ApiService apiService = ApiService(dio);
@@ -22,7 +22,8 @@ class CheckPreferenceService{
         // API call was successful
         var data = response.data["data"];
         log('data api services of preference $data');
-        return ResponseModel(responseStatus: ResponseStatus.success, data: data);
+        return ResponseModel(
+            responseStatus: ResponseStatus.success, data: data);
         // Do something with the data
       } else {
         // API call failed

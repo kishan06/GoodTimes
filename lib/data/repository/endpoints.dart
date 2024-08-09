@@ -7,8 +7,8 @@ var logger = Logger();
 class Endpoints {
   // base point urls
   //!local urls of bobby server
-/*   static const domain = "http://192.168.50.67:8000/";
-  static const _base = "http://192.168.50.67:8000/api/";
+/*   static const domain = "http://192.168.50.71:8000/";
+  static const _base = "http://192.168.50.71:8000/api/";
   static const chatDomain = "ws://chat.goodtimes.betadelivery.com/ws/chat/"; */
 
   // base point urls
@@ -142,4 +142,5 @@ class Endpoints {
   static const accountTransfer = _base + "account/transfer-check/";
   static const accountTransferDone = _base + "account/transfer-check/";
   static const eventCategoryDrawar = _base + "events/preferences/";
+  static const profileextendeddata=_base + "account/profile/extended-data/";
 }

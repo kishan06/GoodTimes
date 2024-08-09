@@ -17,16 +17,20 @@ import 'package:good_times/views/screens/event/event_preview.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:good_times/views/widgets/common/parent_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../data/models/get_preferences_model.dart';
 import '../../../data/repository/endpoints.dart';
 import '../../../data/repository/response_data.dart';
 import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../data/repository/services/chat_service.dart';
+import '../../../data/repository/services/check_preference.dart';
 import '../../../data/repository/services/event_category_drawar.dart';
 import '../../../data/repository/services/logout_service.dart';
 import '../../../data/repository/services/profile.dart';
 import '../../../utils/constant.dart';
 import '../../../utils/helper.dart';
+import '../../../utils/temp.dart';
 import '../../../view-models/Preferences/Preferences_Controller.dart';
+import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/app_version.dart';
 import '../../../view-models/auth/google_auth.dart';
@@ -35,6 +39,7 @@ import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
 import '../../widgets/common/desclaimer.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../auth/registration/welcome_screen.dart';
 import 'sidebar-filter/sidebar_filter.dart';
 import '../subscription/open_website.dart';
@@ -62,33 +67,101 @@ class _HomeScreenState extends State<HomeScreen> {
   String? sort;
   PreferenceController preferenceController =
       Get.put(PreferenceController(), permanent: true);
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
+
   @override
   void initState() {
     super.initState();
-    appVersionController.initPackageInfo(context);
-    ProfileService().getProfileDetails(context);
-    advanceFilterServicee.advanceFilterEventServices(context);
-    if (preferenceController.prefrencecontrollerdata.isEmpty) {
-      preferenceController.eventCategory(context);
-      print(preferenceController.prefrencecontrollerdata);
-    }
-    eventCategory();
-    getAgeGroup();
+    checkFunction();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await _showInitialBottomSheet();
+    });
+    //Subscriptionmodule(context,"event_user");
   }
 
-  eventCategory() async {
-    if(preferenceController.prefrencecontrollerdata.isEmpty){
-        await eventCategoryDrawarService.eventDrawarService(context).then((e) {
-      if (e.responseStatus == ResponseStatus.success) {
+  Future<void> _showInitialBottomSheet() async {
+    var checkifskip = GetStorage().read(TempData.SubscriptionSkip);
+    String userid = GetStorage().read(TempData.StoreUserId) ??
+        globalController.email.value.toString();
+    if (globalController.email != userid || checkifskip != true) {
+     /*  if (profileextendedcontroller.profileextenddata.value.data != null) {
+        if (profileextendedcontroller
+                .profileextenddata.value.data!.principalTypeName ==
+            'event_user') {
+          Subscriptionmodule(context, "event_user");
+        }
+      }  */
+        profileextendedcontroller
+            .fetchProfileExtendeddata(context)
+            .then((value) {
+          if (profileextendedcontroller.profileextenddata.value.data != null) {
+            /* if (profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.hasActiveSubscription !=
+                null) {
+              globalController.hasActiveSubscription.value =
+                  profileextendedcontroller.profileextenddata.value.data!
+                      .hasActiveSubscription!.hasActiveSubscription!;
+            }
+            if (globalController.hasActiveGracePeriod.value =
+                profileextendedcontroller.profileextenddata.value.data!
+                        .hasActiveSubscription!.inGracePeriod !=
+                    null) {
+              globalController.hasActiveGracePeriod.value =
+                  globalController.hasActiveGracePeriod.value =
+                      profileextendedcontroller.profileextenddata.value.data!
+                          .hasActiveSubscription!.inGracePeriod!;
+            } */
+
+            if (profileextendedcontroller
+                    .profileextenddata.value.data!.principalTypeName ==
+                'event_user') {
+              Subscriptionmodule(context, "event_user",
+                  email: globalController.email.value);
+            }
+          }
+        });
+      
+    }
+  }
+
+  checkFunction() {
+    CheckPreferenceService().checkPreferenceService(context).then((value) {
+      if (value.responseStatus == ResponseStatus.success) {
+        // preference = true;
+        log('check preferences ${value.data}');
         setState(() {
-          eventData = e.data;
+          bool preference = value.data;
+          // Set the route based on the preference value here
+          if (preference) {
+            // If preference is true, navigate to HomeMain
+            appVersionController.initPackageInfo(context);
+            ProfileService().getProfileDetails(context);
+            advanceFilterServicee.advanceFilterEventServices(context);
+            if (preferenceController.prefrencecontrollerdata.isEmpty) {
+              preferenceController.eventCategory(context);
+              print(preferenceController.prefrencecontrollerdata);
+            }
+            eventCategory();
+            getAgeGroup();
+          }
         });
       }
     });
-    }else{
-      eventData=preferenceController.prefrencecontrollerdata.value;
+  }
+
+  eventCategory() async {
+    if (preferenceController.prefrencecontrollerdata.isEmpty) {
+      await eventCategoryDrawarService.eventDrawarService(context).then((e) {
+        if (e.responseStatus == ResponseStatus.success) {
+          setState(() {
+            eventData = e.data;
+          });
+        }
+      });
+    } else {
+      eventData = preferenceController.prefrencecontrollerdata.value;
     }
-  
   }
 
   getAgeGroup() {
@@ -103,15 +176,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     log("advance filtered called build");
+
     return parentWidgetWithConnectivtyChecker(
       child: SafeArea(
-        child: GestureDetector(
-            onTap: () {
-              unfoucsKeyboard(context);
-            },
-            child: Stack(
-              children: [
-                Scaffold(
+        child: GestureDetector(onTap: () {
+          unfoucsKeyboard(context);
+        }, child: Obx(() {
+          return Stack(
+            children: [
+              Scaffold(
                   key: _scaffoldKey,
                   drawer: Builder(
                     builder: (scaffoldContext) =>
@@ -186,64 +259,64 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ),
                                           /*  eventWidget(
-                                            eventId: data[0].id,
-                                            img: data[0].thumbnail,
-                                            title: data[0]
-                                                .title!
-                                                .capitalizeFirst
-                                                .toString(),
-                                            price: data[0].entryFee,
-                                            date: data[0].startDate,
-                                          ),
-                                          data.length > 1
-                                              ? eventWidget(
-                                                  eventId: data[1].id,
-                                                  img: data[1].thumbnail,
-                                                  title: data[1]
-                                                      .title!
-                                                      .capitalizeFirst
-                                                      .toString(),
-                                                  price: data[1].entryFee,
-                                                  date: data[1].startDate,
-                                                )
-                                              : const SizedBox(),
-                                          data.length > 2
-                                              ? eventWidget(
-                                                  eventId: data[2].id,
-                                                  img: data[2].thumbnail,
-                                                  title: data[2]
-                                                      .title!
-                                                      .capitalizeFirst
-                                                      .toString(),
-                                                  price: data[2].entryFee,
-                                                  date: data[2].startDate,
-                                                )
-                                              : const SizedBox(),
-                                          data.length > 3
-                                              ? eventWidget(
-                                                  eventId: data[3].id,
-                                                  img: data[3].thumbnail,
-                                                  title: data[3]
-                                                      .title!
-                                                      .capitalizeFirst
-                                                      .toString(),
-                                                  price: data[3].entryFee,
-                                                  date: data[3].startDate,
-                                                )
-                                              : const SizedBox(),
-                                          data.length > 4
-                                              ? eventWidget(
-                                                  eventId: data[4].id,
-                                                  img: data[4].thumbnail,
-                                                  title: data[4]
-                                                      .title!
-                                                      .capitalizeFirst
-                                                      .toString(),
-                                                  price: data[4].entryFee,
-                                                  date: data[4].startDate,
-                                                )
-                                              : const SizedBox(),
-                                           */
+                                                eventId: data[0].id,
+                                                img: data[0].thumbnail,
+                                                title: data[0]
+                                                    .title!
+                                                    .capitalizeFirst
+                                                    .toString(),
+                                                price: data[0].entryFee,
+                                                date: data[0].startDate,
+                                              ),
+                                              data.length > 1
+                                                  ? eventWidget(
+                                                      eventId: data[1].id,
+                                                      img: data[1].thumbnail,
+                                                      title: data[1]
+                                                          .title!
+                                                          .capitalizeFirst
+                                                          .toString(),
+                                                      price: data[1].entryFee,
+                                                      date: data[1].startDate,
+                                                    )
+                                                  : const SizedBox(),
+                                              data.length > 2
+                                                  ? eventWidget(
+                                                      eventId: data[2].id,
+                                                      img: data[2].thumbnail,
+                                                      title: data[2]
+                                                          .title!
+                                                          .capitalizeFirst
+                                                          .toString(),
+                                                      price: data[2].entryFee,
+                                                      date: data[2].startDate,
+                                                    )
+                                                  : const SizedBox(),
+                                              data.length > 3
+                                                  ? eventWidget(
+                                                      eventId: data[3].id,
+                                                      img: data[3].thumbnail,
+                                                      title: data[3]
+                                                          .title!
+                                                          .capitalizeFirst
+                                                          .toString(),
+                                                      price: data[3].entryFee,
+                                                      date: data[3].startDate,
+                                                    )
+                                                  : const SizedBox(),
+                                              data.length > 4
+                                                  ? eventWidget(
+                                                      eventId: data[4].id,
+                                                      img: data[4].thumbnail,
+                                                      title: data[4]
+                                                          .title!
+                                                          .capitalizeFirst
+                                                          .toString(),
+                                                      price: data[4].entryFee,
+                                                      date: data[4].startDate,
+                                                    )
+                                                  : const SizedBox(),
+                                               */
                                           ImageFiltered(
                                             imageFilter: ImageFilter.blur(
                                                 sigmaX: !(globalController
@@ -299,53 +372,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  bottomNavigationBar: !(globalController
-                              .hasActiveSubscription.value ||
-                          globalController.hasActiveGracePeriod.value)
-                      ? Container(
-                          padding: const EdgeInsets.only(
-                              top: 40, left: 50, right: 50, bottom: 40),
-                          width: double.infinity,
-                          decoration:
-                              BoxDecoration(color: kTextWhite.withOpacity(0.3)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'You are just one step away, to explore all the events',
-                                style: paragraphStyle.copyWith(
-                                    fontWeight: FontWeight.w500),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 20),
-                              MyElevatedButton(
-                                  onPressed: () {
-                                    if (Platform.isIOS) {
-                                      // Open in Safari on iOS
-                                      showDesclaimer(context);
-                                    } else {
-                                      Get.to(() => const WebViewExample());
-                                    }
-                                  },
-                                  text: 'Join Us'),
-                              TextButton(
-                                  onPressed: () {
-                                    signOutAccount();
-                                  },
-                                  child: Text(
-                                    "Sign Out",
-                                    style: paragraphStyle.copyWith(
-                                        color: kPrimaryColor),
-                                  ))
-                            ],
-                          ),
-                        )
-                      : const BottomNavigationBars(),
-                ),
-              ],
-            )),
+                  bottomNavigationBar:
+                      profileextendedcontroller.profileextenddata.value.data !=
+                              null
+                          ? (!(globalController.hasActiveSubscription.value ||
+                                      globalController
+                                          .hasActiveGracePeriod.value) &&
+                                  profileextendedcontroller.profileextenddata
+                                          .value.data!.principalTypeName !=
+                                      "event_user")
+                              ? Subscriptionmodule(context, "event_manager")
+                              : const BottomNavigationBars()
+                          : null),
+            ],
+          );
+        })),
       ),
     );
   }
@@ -595,6 +636,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                 await Geolocator.getCurrentPosition();
                             latlong =
                                 LatLng(currentP.latitude, currentP.longitude);
+                          }
+                        }
+                        if (profileextendedcontroller.profileextenddata.value
+                                    .data!.principalTypeName ==
+                                "event_user" &&
+                            !(profileextendedcontroller
+                                    .profileextenddata
+                                    .value
+                                    .data!
+                                    .hasActiveSubscription!
+                                    .hasActiveSubscription! ||
+                                profileextendedcontroller
+                                    .profileextenddata
+                                    .value
+                                    .data!
+                                    .hasActiveSubscription!
+                                    .inGracePeriod!)) {
+                          if (preferenceController
+                              .storeselectedPreferenceId.value.isEmpty) {
+                            PreferencesService()
+                                .getPreferencesServices(context)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                PreferencesModel data = value.data;
+                                preferenceController
+                                    .storeselectedPreferenceId.value
+                                    .addAll(data.preferenceList);
+                              }
+                            });
                           }
                         }
                       },

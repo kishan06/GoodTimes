@@ -5,10 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/models/event_age_group_model.dart';
 import 'package:good_times/data/repository/endpoints.dart';
+import 'package:good_times/views/widgets/subscriptionmodule.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../utils/constant.dart';
 import '../../../../../utils/helper.dart';
+import '../../../../../view-models/Preferences/Preferences_Controller.dart';
+import '../../../../../view-models/SubscriptionPreference.dart';
 import '../../../../../view-models/advance_filter_controller.dart';
 import 'reuseable_checkbox.dart';
 
@@ -61,19 +64,46 @@ Widget serachByLocation(context) {
 }
 
 Widget byCategory(context, categoryData) {
-  List<String> categoryDetails = [];
+  List categoryDetails = [];
 
   for (var element in categoryData) {
-    categoryDetails.add(element.title);
+    categoryDetails.add({"title": element.title, "id": element.id});
   }
 
+  PreferenceController preferenceController = Get.find<PreferenceController>();
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.find<ProfileExtendedDataController>();
   List<bool> checkBoxValues = categoryDetails
       .map((category) =>
           advanceFilterController.evetCategoryList.contains(category))
       .toList();
+  if (!(profileextendedcontroller.profileextenddata.value.data!
+          .hasActiveSubscription!.hasActiveSubscription! ||
+      profileextendedcontroller.profileextenddata.value.data!
+          .hasActiveSubscription!.inGracePeriod!)) {
+    categoryDetails.sort((a, b) {
+      print(a);
+      print(b);
+      int indexA =
+          preferenceController.storeselectedPreferenceId.value.indexOf(a['id']);
+      print(indexA);
+      int indexB =
+          preferenceController.storeselectedPreferenceId.value.indexOf(b['id']);
+      print(indexA);
+
+      if (indexA == -1)
+        indexA = preferenceController.storeselectedPreferenceId.value.length;
+      if (indexB == -1)
+        indexB = preferenceController.storeselectedPreferenceId.value.length;
+
+      return indexA.compareTo(indexB);
+    });
+  }
+
   final ExpansionTileController controller = ExpansionTileController();
   return StatefulBuilder(
     builder: (context, setState) {
+      print(preferenceController.storeselectedPreferenceId.value.contains(1));
       return Column(
         children: [
           Theme(
@@ -91,18 +121,60 @@ Widget byCategory(context, categoryData) {
                   CheckboxList(
                     options: categoryDetails,
                     checkBoxValues: checkBoxValues,
+                    storedpreferencelist: profileextendedcontroller
+                                .profileextenddata
+                                .value
+                                .data!
+                                .principalTypeName ==
+                            "event_user"
+                        ? preferenceController.storeselectedPreferenceId.value
+                        : [],
+                    preference: true,
+                    hasSubscription: profileextendedcontroller
+                        .profileextenddata
+                        .value
+                        .data!
+                        .hasActiveSubscription!
+                        .hasActiveSubscription!,
                     onChangedCallback: (value, index) {
-                      setState(() {
-                        checkBoxValues[index] = value!;
-                      });
+                      if (!(profileextendedcontroller
+                              .profileextenddata
+                              .value
+                              .data!
+                              .hasActiveSubscription!
+                              .hasActiveSubscription! ||
+                          profileextendedcontroller.profileextenddata.value
+                              .data!.hasActiveSubscription!.inGracePeriod!)) {
+                        if (preferenceController.storeselectedPreferenceId.value
+                            .contains(categoryDetails[index]['id'])) {
+                          setState(() {
+                            checkBoxValues[index] = value!;
+                          });
 
-                      if (advanceFilterController.evetCategoryList
-                          .contains(categoryDetails[index])) {
-                        advanceFilterController.evetCategoryList
-                            .remove(categoryDetails[index]);
+                          if (advanceFilterController.evetCategoryList
+                              .contains(categoryDetails[index])) {
+                            advanceFilterController.evetCategoryList
+                                .remove(categoryDetails[index]);
+                          } else {
+                            advanceFilterController.evetCategoryList
+                                .add(categoryDetails[index]);
+                          }
+                        } else {
+                          Subscriptionmodule(context, "event_user");
+                        }
                       } else {
-                        advanceFilterController.evetCategoryList
-                            .add(categoryDetails[index]);
+                        setState(() {
+                          checkBoxValues[index] = value!;
+                        });
+
+                        if (advanceFilterController.evetCategoryList
+                            .contains(categoryDetails[index])) {
+                          advanceFilterController.evetCategoryList
+                              .remove(categoryDetails[index]);
+                        } else {
+                          advanceFilterController.evetCategoryList
+                              .add(categoryDetails[index]);
+                        }
                       }
                     },
                   ),
@@ -164,23 +236,19 @@ Widget sortBy(context) {
                           onChanged: (value) {
                             setState(() {
                               _selectedValue = value!;
-                              advanceFilterController
-                                      .eventSortbyfilter.value =
+                              advanceFilterController.eventSortbyfilter.value =
                                   sortFilter[i]["value"].toString();
                             });
                           },
                         ),
                         SizedBox(
-                          width:
-                              MediaQuery.of(context).size.width *
-                                  0.055,
+                          width: MediaQuery.of(context).size.width * 0.055,
                         ),
-                         GestureDetector(
+                        GestureDetector(
                           onTap: () {
                             setState(() {
                               _selectedValue = i;
-                              advanceFilterController
-                                      .eventSortbyfilter.value =
+                              advanceFilterController.eventSortbyfilter.value =
                                   sortFilter[i]["value"].toString();
                               print("rrr//");
                             });

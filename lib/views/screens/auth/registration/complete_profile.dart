@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/repository/services/registration_services.dart';
 import 'package:good_times/utils/constant.dart';
+import 'package:good_times/utils/temp.dart';
 import 'package:good_times/view-models/deep_link_model.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:good_times/views/widgets/common/textformfield.dart';
 import '../../../../data/repository/response_data.dart';
 import '../../../../utils/helper.dart';
 import '../../../../utils/loading.dart';
+import '../../../../view-models/SubscriptionPreference.dart';
 import '../../../../view-models/location_controller.dart';
 import '../../../widgets/common/parent_widget.dart';
 import 'select_preference.dart';
@@ -40,12 +42,12 @@ class _CompleteDetailsState extends State<CompleteDetails> {
     if (globalReferralCode != null) {
       refferalCodeController.text = globalReferralCode ?? "";
     }
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(TempData.userType);
     final emailArgument = ModalRoute.of(context)!.settings.arguments;
     return parentWidgetWithConnectivtyChecker(
       child: Scaffold(
@@ -138,15 +140,22 @@ class _CompleteDetailsState extends State<CompleteDetails> {
                     hintTxt: '*******',
                     validationFunction: (values) {
                       var trimmedValue = values.trim();
-                      if (trimmedValue != values) return 'Spaces are not allowed at the start or end';
+                      if (trimmedValue != values)
+                        return 'Spaces are not allowed at the start or end';
                       if (trimmedValue.isEmpty) return 'Enter password';
                       if (trimmedValue.length < 8) return 'Min 8 characters';
-                      if (trimmedValue.contains(' ')) return 'Spaces are not allowed';
-                      if (!RegExp(r'(?=.*[a-z])').hasMatch(trimmedValue)) return 'One lowercase';
-                      if (!RegExp(r'(?=.*[A-Z])').hasMatch(trimmedValue)) return 'One uppercase';
-                      if (!RegExp(r'(?=.*\d)').hasMatch(trimmedValue)) return 'One number';
-                      if (!RegExp(r'(?=.*[@#$%^&+=])').hasMatch(trimmedValue)) return 'One special character';
-                      if (trimmedValue.length > 18) return 'Exceeds 18 character limit';
+                      if (trimmedValue.contains(' '))
+                        return 'Spaces are not allowed';
+                      if (!RegExp(r'(?=.*[a-z])').hasMatch(trimmedValue))
+                        return 'One lowercase';
+                      if (!RegExp(r'(?=.*[A-Z])').hasMatch(trimmedValue))
+                        return 'One uppercase';
+                      if (!RegExp(r'(?=.*\d)').hasMatch(trimmedValue))
+                        return 'One number';
+                      if (!RegExp(r'(?=.*[@#$%^&+=])').hasMatch(trimmedValue))
+                        return 'One special character';
+                      if (trimmedValue.length > 18)
+                        return 'Exceeds 18 character limit';
 
                       return null; // Return null if the password is valid
                     },
@@ -176,7 +185,7 @@ class _CompleteDetailsState extends State<CompleteDetails> {
                     ),
                     hintTxt: '*******',
                     validationFunction: (values) {
-                       if (values.contains(' ')) return 'Spaces are not allowed';
+                      if (values.contains(' ')) return 'Spaces are not allowed';
                       var value = values.trim();
                       if (value == null || value.isEmpty) {
                         return 'Enter confirm your password';
@@ -209,7 +218,7 @@ class _CompleteDetailsState extends State<CompleteDetails> {
                         setState(() {
                           autovalidateMode = AutovalidateMode.always;
                         });
-                       unfoucsKeyboard(context);
+                        unfoucsKeyboard(context);
                         _key.currentState!.validate();
                         if (_key.currentState!.validate() == true) {
                           showWaitingDialoge(
@@ -227,14 +236,16 @@ class _CompleteDetailsState extends State<CompleteDetails> {
                                       refferalCodeController.text)
                               .then(
                             (value) {
-                              if (value.responseStatus == ResponseStatus.success) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
                                 setState(() {
                                   waiting = false;
                                 });
-                                LocationController().getCurrentLocation(Get.context!); //send user location while login
+                                LocationController().getCurrentLocation(Get
+                                    .context!); //send user location while login
                                 Navigator.pop(context);
-                                Navigator.pushReplacementNamed(context, SelectPrefrence.routeName);
-
+                                Navigator.pushReplacementNamed(
+                                    context, SelectPrefrence.routeName);
                               }
                               if (value.responseStatus ==
                                   ResponseStatus.failed) {

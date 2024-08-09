@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
 // import '../../../../data/models/test_moddedl.dart';
 // import '../../../../data/resources/services/faq.dart';
+import '../../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../widgets/common/parent_widget.dart';
 import '../login/login.dart';
 import 'select_user_type.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const String routeName = '/welcome-screen';
-  const WelcomeScreen({super.key});
-
+  WelcomeScreen({super.key});
+  PreferenceController preferenceController =
+      Get.put(PreferenceController(), permanent: true);
   @override
   Widget build(BuildContext context) {
     return parentWidgetWithConnectivtyChecker(
@@ -33,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
               //       List<TestModel> data =   snapshot.data;
               //       return Text(data[3].title,style: headingStyle,);
               //     }
-      
+
               //      if (snapshot.connectionState == ConnectionState.none &&
               //         snapshot.hasData) {
               //       return const Text('Denied the data');
@@ -41,7 +44,7 @@ class WelcomeScreen extends StatelessWidget {
               //     return const CircularProgressIndicator();
               //   },
               // ),
-      
+
               const SizedBox(height: 65),
               Image.asset(
                 'assets/images/logo.png',
@@ -63,12 +66,17 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 25),
               MyElevatedButton(
                   onPressed: () {
+                    preferenceController.selectedpreference.value = [];
+                    preferenceController.storeselectedPreferenceId.value = [];
                     Navigator.pushNamed(context, SelectUserType.routeName);
                   },
                   text: 'Join Good Times'),
               const SizedBox(height: 25),
               myElevatedButtonOutline(
                 onPressed: () {
+                  preferenceController.selectedpreference.value = [];
+                  preferenceController.storeselectedPreferenceId.value = [];
+
                   Navigator.pushNamed(context, LoginScreen.routeName);
                 },
                 text: 'Login',
