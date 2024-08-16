@@ -42,6 +42,11 @@ class _WebViewExampleState extends State<WebViewExample> {
                 snackBarSuccess(context,message: 'Payment successful.');
           
               }
+              if(url =="${Endpoints.domain}/subscriptions/subscription-cancel-success/"){
+                 Navigator.pushNamedAndRemoveUntil(context, HomeMain.routeName, (route) => false);
+                snackBarSuccess(context,message: 'Subscription Recurring cancel successful.');
+              }
+              //subscription-cancel-success/
               if(url =="${Endpoints.domain}/subscriptions/failed/"){
                  Navigator.pushNamedAndRemoveUntil(context, HomeMain.routeName, (route) => false);
                 snackBarError(context,message: 'Payment Failed, Please go back and try again.');
@@ -56,7 +61,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           ),
               )
               ..loadRequest(Uri.parse(
-            '${Endpoints.domain}/subscriptions/stripe/?token=${GetStorage().read('accessToken')}'))),
+            '${Endpoints.domain}/subscriptions/active/?token=${GetStorage().read('accessToken')}'))),
         ),
       ),
     );

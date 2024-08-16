@@ -54,4 +54,7 @@ class TempData {
   static List<String> editEventTags = [];    // Event tags
   static String SubscriptionSkip="SubscriptionSkip";
   static String StoreUserId="StoreUserId";
+  static String forceEditPref="forceedit";
+  static String categorylimit="categorylimit";
+  static bool? forceedit;
 }

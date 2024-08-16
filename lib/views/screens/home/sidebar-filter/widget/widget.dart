@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -63,124 +65,151 @@ Widget serachByLocation(context) {
   );
 }
 
+PreferenceController preferenceController = Get.find<PreferenceController>();
+ProfileExtendedDataController profileextendedcontroller =
+    Get.find<ProfileExtendedDataController>();
 Widget byCategory(context, categoryData) {
   List categoryDetails = [];
-
+  List mapcategoryDetails = [];
   for (var element in categoryData) {
-    categoryDetails.add({"title": element.title, "id": element.id});
+    mapcategoryDetails.add({"title": element.title, "id": element.id});
   }
+  bool hasActiveOrGraceSubscription = profileextendedcontroller
+          .profileextenddata
+          .value
+          .data!
+          .hasActiveSubscription!
+          .hasActiveSubscription! ||
+      profileextendedcontroller
+          .profileextenddata.value.data!.hasActiveSubscription!.inGracePeriod!;
 
-  PreferenceController preferenceController = Get.find<PreferenceController>();
-  ProfileExtendedDataController profileextendedcontroller =
-      Get.find<ProfileExtendedDataController>();
-  List<bool> checkBoxValues = categoryDetails
-      .map((category) =>
-          advanceFilterController.evetCategoryList.contains(category))
-      .toList();
-  if (!(profileextendedcontroller.profileextenddata.value.data!
-          .hasActiveSubscription!.hasActiveSubscription! ||
-      profileextendedcontroller.profileextenddata.value.data!
-          .hasActiveSubscription!.inGracePeriod!)) {
-    categoryDetails.sort((a, b) {
-      print(a);
-      print(b);
+  if (!hasActiveOrGraceSubscription) {
+    mapcategoryDetails.sort((a, b) {
       int indexA =
           preferenceController.storeselectedPreferenceId.value.indexOf(a['id']);
-      print(indexA);
       int indexB =
           preferenceController.storeselectedPreferenceId.value.indexOf(b['id']);
-      print(indexA);
 
-      if (indexA == -1)
-        indexA = preferenceController.storeselectedPreferenceId.value.length;
-      if (indexB == -1)
-        indexB = preferenceController.storeselectedPreferenceId.value.length;
+      indexA = indexA == -1
+          ? preferenceController.storeselectedPreferenceId.value.length
+          : indexA;
+      indexB = indexB == -1
+          ? preferenceController.storeselectedPreferenceId.value.length
+          : indexB;
 
       return indexA.compareTo(indexB);
     });
   }
+  categoryDetails =
+      mapcategoryDetails.map((element) => element['title']).toList();
 
+  /*  for (var element in mapcategoryDetails) {
+    categoryDetails.add(element['title']);
+  } */
+  List<bool> checkBoxValues = categoryDetails
+      .map((category) =>
+          advanceFilterController.evetCategoryList.contains(category))
+      .toList();
   final ExpansionTileController controller = ExpansionTileController();
   return StatefulBuilder(
     builder: (context, setState) {
       print(preferenceController.storeselectedPreferenceId.value.contains(1));
-      return Column(
-        children: [
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: ExpansionTile(
-                iconColor: kTextWhite,
-                collapsedIconColor: kTextWhite,
-                controller: controller,
-                title: Text(
-                  'By Category',
-                  style: paragraphStyle.copyWith(
-                      fontSize: 14, fontWeight: FontWeight.w500),
-                ),
-                children: [
-                  CheckboxList(
-                    options: categoryDetails,
-                    checkBoxValues: checkBoxValues,
-                    storedpreferencelist: profileextendedcontroller
-                                .profileextenddata
-                                .value
-                                .data!
-                                .principalTypeName ==
-                            "event_user"
-                        ? preferenceController.storeselectedPreferenceId.value
-                        : [],
-                    preference: true,
-                    hasSubscription: profileextendedcontroller
-                        .profileextenddata
-                        .value
-                        .data!
-                        .hasActiveSubscription!
-                        .hasActiveSubscription!,
-                    onChangedCallback: (value, index) {
-                      if (!(profileextendedcontroller
-                              .profileextenddata
-                              .value
-                              .data!
-                              .hasActiveSubscription!
-                              .hasActiveSubscription! ||
-                          profileextendedcontroller.profileextenddata.value
-                              .data!.hasActiveSubscription!.inGracePeriod!)) {
-                        if (preferenceController.storeselectedPreferenceId.value
-                            .contains(categoryDetails[index]['id'])) {
-                          setState(() {
-                            checkBoxValues[index] = value!;
-                          });
-
-                          if (advanceFilterController.evetCategoryList
-                              .contains(categoryDetails[index])) {
-                            advanceFilterController.evetCategoryList
-                                .remove(categoryDetails[index]);
+      return Obx(
+       () {
+       /*   if (preferenceController
+                                    .storeselectedPreferenceId.value.isEmpty) {
+                                  await PreferencesService()
+                                      .getPreferencesServices(context)
+                                      .then((value) {
+                                    if (value.responseStatus ==
+                                        ResponseStatus.success) {
+                                      PreferencesModel data = value.data;
+                                      preferenceController
+                                          .storeselectedPreferenceId.value
+                                          .addAll(data.preferenceList);
+                                    }
+                                  });
+                                } */
+          return Column(
+            children: [
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                    iconColor: kTextWhite,
+                    collapsedIconColor: kTextWhite,
+                    controller: controller,
+                    title: Text(
+                      'By Category',
+                      style: paragraphStyle.copyWith(
+                          fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                    children: [
+                      CheckboxList(
+                        options: categoryDetails,
+                        mapoption: mapcategoryDetails,
+                        checkBoxValues: checkBoxValues,
+                        storedpreferencelist: profileextendedcontroller
+                                    .profileextenddata
+                                    .value
+                                    .data!
+                                    .principalTypeName ==
+                                "event_user"
+                            ? preferenceController.storeselectedPreferenceId.value
+                            : [],
+                        preference: true,
+                        hasSubscription: profileextendedcontroller
+                            .profileextenddata
+                            .value
+                            .data!
+                            .hasActiveSubscription!
+                            .hasActiveSubscription!,
+                        onChangedCallback: (value, index) {
+                          if (!(profileextendedcontroller
+                                  .profileextenddata
+                                  .value
+                                  .data!
+                                  .hasActiveSubscription!
+                                  .hasActiveSubscription! ||
+                              profileextendedcontroller.profileextenddata.value
+                                  .data!.hasActiveSubscription!.inGracePeriod!)) {
+                            if (preferenceController.storeselectedPreferenceId.value
+                                .contains(mapcategoryDetails[index]['id'])) {
+                              setState(() {
+                                checkBoxValues[index] = value!;
+                              });
+          
+                              if (advanceFilterController.evetCategoryList
+                                  .contains(categoryDetails[index])) {
+                                advanceFilterController.evetCategoryList
+                                    .remove(categoryDetails[index]);
+                              } else {
+                                advanceFilterController.evetCategoryList
+                                    .add(categoryDetails[index]);
+                              }
+                            } else {
+                              Subscriptionmodule(context, "event_user");
+                            }
                           } else {
-                            advanceFilterController.evetCategoryList
-                                .add(categoryDetails[index]);
+                            setState(() {
+                              checkBoxValues[index] = value!;
+                            });
+          
+                            if (advanceFilterController.evetCategoryList
+                                .contains(categoryDetails[index])) {
+                              advanceFilterController.evetCategoryList
+                                  .remove(categoryDetails[index]);
+                            } else {
+                              advanceFilterController.evetCategoryList
+                                  .add(categoryDetails[index]);
+                            }
                           }
-                        } else {
-                          Subscriptionmodule(context, "event_user");
-                        }
-                      } else {
-                        setState(() {
-                          checkBoxValues[index] = value!;
-                        });
-
-                        if (advanceFilterController.evetCategoryList
-                            .contains(categoryDetails[index])) {
-                          advanceFilterController.evetCategoryList
-                              .remove(categoryDetails[index]);
-                        } else {
-                          advanceFilterController.evetCategoryList
-                              .add(categoryDetails[index]);
-                        }
-                      }
-                    },
-                  ),
-                ]),
-          ),
-        ],
+                        },
+                      ),
+                    ]),
+              ),
+            ],
+          );
+        }
       );
     },
   );
@@ -389,10 +418,14 @@ Widget byDate(context) {
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   child: Text(
                     advanceFilterController.selectedDate.value == null
-                        ? 'MM / DD / YY'
-                        : DateFormat('MMM / d / yyyy').format(
+                        ? 'MM / DD / YYYY'
+                        : DateFormat('MM / dd / yyyy').format(
                             advanceFilterController.selectedDate.value!),
-                    style: paragraphStyle.copyWith(color: kTextWhite),
+                    style: paragraphStyle.copyWith(
+                        color:
+                            advanceFilterController.selectedDate.value == null
+                                ? kTextgrey
+                                : kTextWhite),
                   ),
                 ),
               ),
@@ -421,7 +454,7 @@ Widget byPriceRange() {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'By Event price',
+          'By Event Price',
           style: paragraphStyle.copyWith(
               fontSize: 14, fontWeight: FontWeight.w500),
         ),
@@ -445,6 +478,7 @@ Widget byPriceRange() {
                     SizedBox(
                       height: 40,
                       child: TextFormField(
+                        textAlignVertical: TextAlignVertical.bottom,
                         style: const TextStyle(
                           color: kTextWhite,
                           fontFamily: 'Poppins',
@@ -499,6 +533,7 @@ Widget byPriceRange() {
                     SizedBox(
                       height: 40,
                       child: TextFormField(
+                        textAlignVertical: TextAlignVertical.bottom,
                         style: const TextStyle(
                           color: kTextWhite,
                           fontFamily: 'Poppins',
@@ -573,7 +608,7 @@ Widget ageGroup(context, List<ageData>? ageGroups) {
               collapsedIconColor: kTextWhite,
               controller: controller,
               title: Text(
-                'Age group',
+                'Age Group',
                 style: paragraphStyle.copyWith(
                     fontSize: 14, fontWeight: FontWeight.w500),
               ),

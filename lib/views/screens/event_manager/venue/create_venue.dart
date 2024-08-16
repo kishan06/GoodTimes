@@ -136,9 +136,9 @@ class _CreateVenuState extends State<CreateVenue> {
                                   color: kTextError, fontSize: 12),
                             ),
                             const SizedBox(height: 40),
-                            const Text('Add Photos', style: labelStyle),
+                            const Text('Add Photo', style: labelStyle),
                             Text(
-                              'Photos',
+                              'Photo',
                               style: paragraphStyle.copyWith(
                                   color: const Color(0xffA8A8A8)),
                             ),

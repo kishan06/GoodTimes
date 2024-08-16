@@ -214,7 +214,7 @@ class _EditCreateEventState extends State<EditEvent> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Add event Information',
+                              const Text('Add event information',
                                   style: headingStyle),
                               const SizedBox(height: 40),
                               Text(

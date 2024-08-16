@@ -42,13 +42,8 @@ class ProfileExtendedDataController extends GetxController{
                       .hasActiveSubscription!.inGracePeriod!;
         }
       }
-        print("r");
-        // API call was successful
-       
-      } else {
-        // API call failed
-        // Handle the failure
-      }
+     
+      } 
     } catch (e) {
       // Handle any exceptions
     }

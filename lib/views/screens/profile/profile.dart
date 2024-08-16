@@ -177,7 +177,9 @@ class _ProfileState extends State<Profile> {
                                                 decoration: BoxDecoration(
                                                     color: globalContoller
                                                             .hasActiveSubscription
-                                                            .value
+                                                            .value || globalContoller
+                                                        .hasActiveGracePeriod
+                                                        .value
                                                         ? kTextSuccess
                                                         : kTextError,
                                                     borderRadius:
@@ -189,6 +191,8 @@ class _ProfileState extends State<Profile> {
                                               Text(
                                                 globalContoller
                                                         .hasActiveSubscription
+                                                        .value || globalContoller
+                                                        .hasActiveGracePeriod
                                                         .value
                                                     ? "Active"
                                                     : "Inactive",
@@ -198,12 +202,13 @@ class _ProfileState extends State<Profile> {
                                             ],
                                           ),
                                         ),
-                                        globalContoller
-                                                .hasActiveSubscription.value
-                                            ? const SizedBox()
-                                            : OutlinedButton(
+                                        OutlinedButton(
                                                 onPressed: () {
-                                                  if (globalContoller
+                                                   redirectsubscribe(
+                                                          context).then((value) {
+                    profileextendedcontroller.fetchProfileExtendeddata(context);
+                  });
+                                                 /*  if (globalContoller
                                                       .hasActiveGracePeriod
                                                       .value) {
                                                     Get.to(() =>
@@ -215,7 +220,7 @@ class _ProfileState extends State<Profile> {
                                                       redirectsubscribe(
                                                           context);
                                                     }
-                                                  }
+                                                  } */
                                                 },
                                                 style: OutlinedButton.styleFrom(
                                                   side: const BorderSide(
@@ -223,7 +228,9 @@ class _ProfileState extends State<Profile> {
                                                       color: kPrimaryColor),
                                                 ),
                                                 child: Text(
-                                                  globalContoller
+                                                  globalContoller.hasActiveSubscription.value
+                                                  ?"View"
+                                                  :globalContoller
                                                           .hasActiveGracePeriod
                                                           .value
                                                       ? "Renew"

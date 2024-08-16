@@ -23,6 +23,13 @@ const headingStyle = TextStyle(
   color: kTextWhite,
   height: 1.5,
 );
+const appbarheadingStyle = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w600,
+  fontFamily: 'Poppins',
+  color: kTextWhite,
+  height: 1.5,
+);
 
 const labelStyle = TextStyle(
   fontSize: 18,

@@ -20,7 +20,6 @@ class PreferenceController extends GetxController {
         selectedpreference.value=List.filled(prefrencecontrollerdata.value.length, false);
       }
     });
-      print("//r");
 
   }
 }

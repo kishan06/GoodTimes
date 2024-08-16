@@ -151,7 +151,6 @@ class _StringMultilineTagsState extends State<StringMultilineTags> {
                                                     color: Colors.white),
                                               ),
                                               onTap: () {
-                                                //print("$tag selected");
                                               },
                                             ),
                                             const SizedBox(width: 4.0),
@@ -388,7 +387,6 @@ class _StringAutoCompleteTagsState extends State<StringAutoCompleteTags> {
                                                   color: Colors.white),
                                             ),
                                             onTap: () {
-                                              //print("$tag selected");
                                             },
                                           ),
                                           const SizedBox(width: 4.0),
@@ -567,7 +565,6 @@ class _StringTagsState extends State<StringTags> {
                                               color: Colors.white),
                                         ),
                                         onTap: () {
-                                          //print("$tag selected");
                                         },
                                       ),
                                       const SizedBox(width: 4.0),

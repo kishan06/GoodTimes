@@ -181,7 +181,7 @@ class _CreateEventState extends State<CreateEvent> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Add event Information',
+                              const Text('Add event information',
                                   style: headingStyle),
                               const SizedBox(height: 40),
                               Text(

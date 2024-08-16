@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
 // import '../../../../data/models/test_moddedl.dart';
 // import '../../../../data/resources/services/faq.dart';
+import '../../../../utils/temp.dart';
 import '../../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../widgets/common/parent_widget.dart';
 import '../login/login.dart';
@@ -68,6 +70,8 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () {
                     preferenceController.selectedpreference.value = [];
                     preferenceController.storeselectedPreferenceId.value = [];
+                    GetStorage().write(TempData.forceEditPref, false);
+
                     Navigator.pushNamed(context, SelectUserType.routeName);
                   },
                   text: 'Join Good Times'),
@@ -76,6 +80,7 @@ class WelcomeScreen extends StatelessWidget {
                 onPressed: () {
                   preferenceController.selectedpreference.value = [];
                   preferenceController.storeselectedPreferenceId.value = [];
+                  GetStorage().write(TempData.forceEditPref, false);
 
                   Navigator.pushNamed(context, LoginScreen.routeName);
                 },

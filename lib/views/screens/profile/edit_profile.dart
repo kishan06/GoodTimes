@@ -37,6 +37,8 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final TextEditingController _fNameController = TextEditingController();
   final TextEditingController _lNameController = TextEditingController();
+    final TextEditingController _businessnamecontroller = TextEditingController();
+
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _instaController = TextEditingController();
   final TextEditingController _facebookController = TextEditingController();
@@ -58,7 +60,7 @@ class _EditProfileState extends State<EditProfile> {
     _linkedinController.text = widget.profileData!.linkedin ?? '';
     _youtubeController.text = widget.profileData!.youtube ?? '';
     _websiteController.text = widget.profileData!.website ?? '';
-    _phoneController.text = widget.profileData!.phone??'';
+    _phoneController.text = widget.profileData!.phone ?? '';
   }
 
   @override
@@ -102,17 +104,28 @@ class _EditProfileState extends State<EditProfile> {
                                 log("globalContoller.profileImgPath.value ${globalContoller.profileImgPath.value}");
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
-                                  child: (globalContoller.profileImgPath.value =='' && widget.profileData!.profilePhoto == '')
+                                  child: (globalContoller
+                                                  .profileImgPath.value ==
+                                              '' &&
+                                          widget.profileData!.profilePhoto ==
+                                              '')
                                       ? Image.asset(
                                           'assets/images/avatar.jpg',
                                           width: 118,
                                           height: 118,
                                           fit: BoxFit.cover,
                                         )
-                                      : (globalContoller.profileImgPath.value.contains('/data/user/0/com.goodtimes') ||
-                                              globalContoller.profileImgPath.value.contains('/Users/macos/Library/Developer') ||
-                                              globalContoller.profileImgPath.value.contains('/private/var/mobile/')
-                                              )
+                                      : (globalContoller.profileImgPath.value
+                                                  .contains(
+                                                      '/data/user/0/com.goodtimes') ||
+                                              globalContoller
+                                                  .profileImgPath.value
+                                                  .contains(
+                                                      '/Users/macos/Library/Developer') ||
+                                              globalContoller
+                                                  .profileImgPath.value
+                                                  .contains(
+                                                      '/private/var/mobile/'))
                                           ? ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(100),
@@ -175,6 +188,7 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         const SizedBox(height: 38),
+
                         const Text('First Name', style: labelStyle),
                         textFormField(
                           controller: _fNameController,
@@ -221,16 +235,33 @@ class _EditProfileState extends State<EditProfile> {
                           },
                         ),
                         const SizedBox(height: 35),
+                        if (widget.profileData != null)
+                          Visibility(
+                            visible: widget.profileData!.principalTypeName ==
+                                "event_manager",
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Business Name', style: labelStyle),
+                                textFormField(
+                                  controller: _businessnamecontroller,
+                                ),
+                              ],
+                            ),
+                          ),
+                        const SizedBox(height: 35),
+
                         const Text('Phone No', style: labelStyle),
                         textFormField(
                           controller: _phoneController,
                           inputFormate: [
-                            FilteringTextInputFormatter(RegExp(r'^\+?[0-9]+$'),allow: true)
+                            FilteringTextInputFormatter(RegExp(r'^\+?[0-9]+$'),
+                                allow: true)
                           ],
                           validationFunction: (values) {
                             var value = values.trim();
                             if (value == null || value.isEmpty) {
-                              return "Please enter you mobile number";
+                              return "Please enter your mobile number";
                             }
                             if (value.length < 8) {
                               return 'Please enter valid phone number';
@@ -262,10 +293,21 @@ class _EditProfileState extends State<EditProfile> {
                           controller: _youtubeController,
                         ),
                         const SizedBox(height: 35),
-                        const Text('Website', style: labelStyle),
-                        textFormField(
-                          controller: _websiteController,
-                        ),
+                        if (widget.profileData != null)
+                          Visibility(
+                            visible: widget.profileData!.principalTypeName ==
+                                "event_manager",
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Website', style: labelStyle),
+                                textFormField(
+                                  controller: _websiteController,
+                                ),
+                              ],
+                            ),
+                          ),
+
                         // const Spacer(),
                         const SizedBox(height: 55),
                         MyElevatedButton(
@@ -286,6 +328,7 @@ class _EditProfileState extends State<EditProfile> {
                                 context,
                                 fName: _fNameController.text,
                                 lastName: _lNameController.text,
+                                businessname: _businessnamecontroller.text,
                                 profileImg: (globalContoller
                                             .profileImgPath.value
                                             .contains(
@@ -311,7 +354,8 @@ class _EditProfileState extends State<EditProfile> {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
-                                  snackBarSuccess(context, message: 'Profile successfully updated');
+                                  snackBarSuccess(context,
+                                      message: 'Profile successfully updated');
                                   if (arg == "fromProfile") {
                                     Get.to(() => const HomeMain());
                                   }
@@ -376,7 +420,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ],
       );
-      
+
       // ignore: unnecessary_null_comparison
       if (croppedImg != null) {
         globalContoller.profileImgPath.value = croppedImg.path;

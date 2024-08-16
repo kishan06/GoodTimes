@@ -11,6 +11,7 @@ import '../endpoints.dart';
 import '../response_data.dart';
 
 RxBool filterLoder = false.obs;
+RxBool allowfilter = true.obs;
 
 class AdvanceFilterService {
   Dio dio = Dio();
@@ -39,7 +40,7 @@ class AdvanceFilterService {
 
       final List<String> encodedCategories =
           evetCat.map((category) => Uri.encodeComponent(category)).toList();
-     /*  final List<String> encodedSort =
+      /*  final List<String> encodedSort =
           sortCat.map((sort) => Uri.encodeComponent(sort)).toList(); */
       final List<String> ageSort =
           ageGroup.map((age) => Uri.encodeComponent(age)).toList();
@@ -51,10 +52,10 @@ class AdvanceFilterService {
       final longitude = positionMap?["longitude"];
 
       // Construct the complete URL with query parameters
-              //  event sort todo
+      //  event sort todo
       final url = '$baseUrl?'
           '${evetCat.isEmpty ? '' : 'category=${encodedCategories.join(",")}&'}'
-          '${sortCat.isNotEmpty ? "sort=$sortCat&":""}'
+          '${sortCat.isNotEmpty ? "sort=$sortCat&" : ""}'
           //'${sortCat.isNotEmpty ? "sort=${encodedSort.join(",")}&" : ""}'
           '${ageGroup.isNotEmpty ? "age_group=${ageSort.join(",")}&" : ""}'
           '${startPrice.isNotEmpty ? "price_from=$startPrice&" : ""}'
@@ -72,12 +73,18 @@ class AdvanceFilterService {
         advanceFilterController.eventModalcontroller.value =
             data.map((e) => HomeEventsModel.fromJson(e)).toList();
         logger.f('data api services of filtred events $data');
+        Future.delayed(Duration(milliseconds: 200), () {
+          allowfilter.value = true;
+        });
         return data.map((e) => HomeEventsModel.fromJson(e)).toList();
       } else {
         filterLoder.value = false;
+        allowfilter.value = true;
       }
     } catch (e) {
       filterLoder.value = false;
+      allowfilter.value = true;
+
       // Handle any exceptions
     }
   }

@@ -4,12 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:good_times/data/common/scaffold_snackbar.dart';
 import 'package:good_times/data/models/ProfileExtend_model.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/screens/home/main_home.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
+import '../../../../data/common/dialog.dart';
 import '../../../../data/repository/endpoints.dart';
 import '../../../../data/repository/response_data.dart';
 import '../../../../data/repository/services/event_category_drawar.dart';
@@ -39,11 +41,18 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
   @override
   void initState() {
     super.initState();
+    TempData.forceedit = GetStorage().read(TempData.forceEditPref);
+    if (TempData.forceedit!) {
+          int categorylimit = GetStorage().read(TempData.categorylimit);
+
+      Future.delayed(const Duration(seconds: 1), () {
+        forceeditprefdialog(context, number: categorylimit.toString());
+      });
+    }
     if (preferenceController.prefrencecontrollerdata.isEmpty) {
       preferenceController.eventCategory(context);
       print(preferenceController.prefrencecontrollerdata);
     }
-
     profileextendedcontroller.fetchProfileExtendeddata(context);
   }
 
@@ -227,37 +236,38 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                       //           : const SizedBox(),
                       onPressed: () {
                         if (prefrenceList.length >= 1) {
-                              PreferenceWarning(context,(){
-                                Get.back();
-                                showWaitingDialoge(
-                              context: context, loading: waiting);
-                          setState(() {
-                            waiting = true;
-                          });
-                          PreferencesService()
-                              .postPreferences(context,
-                                  categoriesList: prefrenceList)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, HomeMain.routeName);
-                            }
-                            if (value.responseStatus == ResponseStatus.failed) {
-                              snackBarError(context,
-                                  message:
-                                      "Something went wrong, please try again.");
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          }); 
+                          PreferenceWarning(context, () {
+                            Get.back();
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
+                            setState(() {
+                              waiting = true;
+                            });
+                            PreferencesService()
+                                .postPreferences(context,
+                                    categoriesList: prefrenceList)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                                Navigator.pushNamed(
+                                    context, HomeMain.routeName);
                               }
-                              );
+                              if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                snackBarError(context,
+                                    message:
+                                        "Something went wrong, please try again.");
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          });
                           /* showWaitingDialoge(
                               context: context, loading: waiting);
                           setState(() {
