@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import '../../view-models/location_controller.dart';
 import '../../views/screens/home/sidebar-filter/widget/widget.dart';
 
-locationpermission(BuildContext context) {
+locationpermission(BuildContext context,
+    {String text = "To sort by nearest", bool filter = true}) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -17,8 +18,8 @@ locationpermission(BuildContext context) {
           insetPadding: const EdgeInsets.symmetric(vertical: 10),
           content: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: const Text(
-              "To sort by nearest, Good Times requires access to your device's location. Please enable location permissions in your device settings.",
+            child: Text(
+              "$text, Good Times requires access to your device's location. Please enable location permissions in your device settings.",
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 16,
@@ -29,11 +30,10 @@ locationpermission(BuildContext context) {
           actions: [
             InkWell(
               onTap: () {
-              //  event sort todo
-                            advanceFilterController.eventSortbyfilter.value="";
-                
-              /*   advanceFilterController.eventSort
-                    .removeWhere((element) => element == "nearest"); */
+                if (filter) {
+                  advanceFilterController.eventSortbyfilter.value = "";
+                }
+
                 Get.back();
               },
               child: const Text(

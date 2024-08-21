@@ -70,7 +70,6 @@ void listenDynamicLinks() async {
     if (data.containsKey('+clicked_branch_link') &&
         data['+clicked_branch_link'] == true) {
       log('------------------------------------Link clicked----------------------------------------------');
-      //  debugPrint('Custom string: ${data['custom_string']}');
       log('Custom number: $data');
        
         if (data.containsKey('event_id')) {

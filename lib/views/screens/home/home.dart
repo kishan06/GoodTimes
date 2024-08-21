@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
@@ -29,6 +30,7 @@ import '../../../data/repository/services/profile.dart';
 import '../../../utils/constant.dart';
 import '../../../utils/helper.dart';
 import '../../../utils/temp.dart';
+import '../../../view-models/Organisation_Controller.dart';
 import '../../../view-models/Preferences/Preferences_Controller.dart';
 import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/advance_filter_controller.dart';
@@ -40,6 +42,7 @@ import '../../widgets/common/bottom_sheet.dart';
 import '../../widgets/common/desclaimer.dart';
 import '../../widgets/common/skeleton.dart';
 import '../../widgets/subscriptionmodule.dart';
+import '../auth/registration/select_preference.dart';
 import '../auth/registration/welcome_screen.dart';
 import 'sidebar-filter/sidebar_filter.dart';
 import '../subscription/open_website.dart';
@@ -69,60 +72,77 @@ class _HomeScreenState extends State<HomeScreen> {
       Get.put(PreferenceController(), permanent: true);
   ProfileExtendedDataController profileextendedcontroller =
       Get.put(ProfileExtendedDataController(), permanent: true);
-
+  OrganisationController organisationController =
+      Get.put(OrganisationController(), permanent: true);
   @override
   void initState() {
     super.initState();
+    allowfilter.value = false;
     checkFunction();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _showInitialBottomSheet();
+      if (profileextendedcontroller.profileextenddata.value.data != null) {
+        if (profileextendedcontroller
+                    .profileextenddata.value.data!.principalTypeName ==
+                "event_user" &&
+            !(profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.hasActiveSubscription! ||
+                profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.inGracePeriod!)) {
+          if (preferenceController.storeselectedPreferenceId.value.isEmpty) {
+            PreferencesService().getPreferencesServices(context).then((value) {
+              if (value.responseStatus == ResponseStatus.success) {
+                PreferencesModel data = value.data;
+                preferenceController.storeselectedPreferenceId.value
+                    .addAll(data.preferenceList);
+              }
+            });
+          }
+        }
+      }
+      if (organisationController.Organisationdatacontroller.value.data ==
+          null) {
+        organisationController.getOrganisationData(context);
+      }
     });
-    //Subscriptionmodule(context,"event_user");
   }
 
   Future<void> _showInitialBottomSheet() async {
     var checkifskip = GetStorage().read(TempData.SubscriptionSkip);
     String userid = GetStorage().read(TempData.StoreUserId) ??
         globalController.email.value.toString();
-    if (globalController.email != userid || checkifskip != true) {
-     /*  if (profileextendedcontroller.profileextenddata.value.data != null) {
-        if (profileextendedcontroller
-                .profileextenddata.value.data!.principalTypeName ==
-            'event_user') {
-          Subscriptionmodule(context, "event_user");
-        }
-      }  */
-        profileextendedcontroller
-            .fetchProfileExtendeddata(context)
-            .then((value) {
-          if (profileextendedcontroller.profileextenddata.value.data != null) {
-            /* if (profileextendedcontroller.profileextenddata.value.data!
-                    .hasActiveSubscription!.hasActiveSubscription !=
-                null) {
-              globalController.hasActiveSubscription.value =
-                  profileextendedcontroller.profileextenddata.value.data!
-                      .hasActiveSubscription!.hasActiveSubscription!;
-            }
-            if (globalController.hasActiveGracePeriod.value =
-                profileextendedcontroller.profileextenddata.value.data!
-                        .hasActiveSubscription!.inGracePeriod !=
-                    null) {
-              globalController.hasActiveGracePeriod.value =
-                  globalController.hasActiveGracePeriod.value =
-                      profileextendedcontroller.profileextenddata.value.data!
-                          .hasActiveSubscription!.inGracePeriod!;
-            } */
 
-            if (profileextendedcontroller
+    profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
+      if (profileextendedcontroller.profileextenddata.value.data != null) {
+        if (profileextendedcontroller
                     .profileextenddata.value.data!.principalTypeName ==
-                'event_user') {
-              Subscriptionmodule(context, "event_user",
-                  email: globalController.email.value);
-            }
+                'event_user' &&
+            !(profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.hasActiveSubscription! ||
+                profileextendedcontroller.profileextenddata.value.data!
+                    .hasActiveSubscription!.inGracePeriod!)) {
+          if (globalController.email != userid || checkifskip != true) {
+            Subscriptionmodule(context, "event_user",
+                email: globalController.email.value);
           }
-        });
-      
-    }
+          if (profileextendedcontroller
+                  .profileextenddata.value.data!.principalpreferencecount! >
+              profileextendedcontroller
+                  .profileextenddata.value.data!.featureLimit!.categoryLimit!) {
+            GetStorage().write(TempData.forceEditPref, true);
+            GetStorage().write(
+                TempData.StoreUserId, globalController.email.value.toString());
+
+            GetStorage().write(
+                TempData.categorylimit,
+                profileextendedcontroller.profileextenddata.value.data!
+                    .featureLimit!.categoryLimit!);
+            TempData.forceedit = true;
+            Get.offNamed(SelectPrefrence.routeName);
+          }
+        }
+      }
+    });
   }
 
   checkFunction() {
@@ -130,22 +150,21 @@ class _HomeScreenState extends State<HomeScreen> {
       if (value.responseStatus == ResponseStatus.success) {
         // preference = true;
         log('check preferences ${value.data}');
-        setState(() {
-          bool preference = value.data;
-          // Set the route based on the preference value here
-          if (preference) {
-            // If preference is true, navigate to HomeMain
-            appVersionController.initPackageInfo(context);
-            ProfileService().getProfileDetails(context);
-            advanceFilterServicee.advanceFilterEventServices(context);
-            if (preferenceController.prefrencecontrollerdata.isEmpty) {
-              preferenceController.eventCategory(context);
-              print(preferenceController.prefrencecontrollerdata);
-            }
-            eventCategory();
-            getAgeGroup();
+
+        bool preference = value.data;
+        // Set the route based on the preference value here
+        if (preference) {
+          // If preference is true, navigate to HomeMain
+          appVersionController.initPackageInfo(context);
+          ProfileService().getProfileDetails(context);
+          advanceFilterServicee.advanceFilterEventServices(context);
+          if (preferenceController.prefrencecontrollerdata.isEmpty) {
+            preferenceController.eventCategory(context);
+            print(preferenceController.prefrencecontrollerdata);
           }
-        });
+          eventCategory();
+          getAgeGroup();
+        }
       }
     });
   }
@@ -258,65 +277,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }),
                                             ),
                                           ),
-                                          /*  eventWidget(
-                                                eventId: data[0].id,
-                                                img: data[0].thumbnail,
-                                                title: data[0]
-                                                    .title!
-                                                    .capitalizeFirst
-                                                    .toString(),
-                                                price: data[0].entryFee,
-                                                date: data[0].startDate,
-                                              ),
-                                              data.length > 1
-                                                  ? eventWidget(
-                                                      eventId: data[1].id,
-                                                      img: data[1].thumbnail,
-                                                      title: data[1]
-                                                          .title!
-                                                          .capitalizeFirst
-                                                          .toString(),
-                                                      price: data[1].entryFee,
-                                                      date: data[1].startDate,
-                                                    )
-                                                  : const SizedBox(),
-                                              data.length > 2
-                                                  ? eventWidget(
-                                                      eventId: data[2].id,
-                                                      img: data[2].thumbnail,
-                                                      title: data[2]
-                                                          .title!
-                                                          .capitalizeFirst
-                                                          .toString(),
-                                                      price: data[2].entryFee,
-                                                      date: data[2].startDate,
-                                                    )
-                                                  : const SizedBox(),
-                                              data.length > 3
-                                                  ? eventWidget(
-                                                      eventId: data[3].id,
-                                                      img: data[3].thumbnail,
-                                                      title: data[3]
-                                                          .title!
-                                                          .capitalizeFirst
-                                                          .toString(),
-                                                      price: data[3].entryFee,
-                                                      date: data[3].startDate,
-                                                    )
-                                                  : const SizedBox(),
-                                              data.length > 4
-                                                  ? eventWidget(
-                                                      eventId: data[4].id,
-                                                      img: data[4].thumbnail,
-                                                      title: data[4]
-                                                          .title!
-                                                          .capitalizeFirst
-                                                          .toString(),
-                                                      price: data[4].entryFee,
-                                                      date: data[4].startDate,
-                                                    )
-                                                  : const SizedBox(),
-                                               */
                                           ImageFiltered(
                                             imageFilter: ImageFilter.blur(
                                                 sigmaX: !(globalController
@@ -587,109 +547,126 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Container(
-                          height: 40,
-                          decoration: BoxDecoration(
-                              color: const Color(0xff676767).withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: CupertinoSearchTextField(
-                            controller:
-                                advanceFilterController.titleController.value,
-                            style: const TextStyle(color: kTextWhite),
-                            decoration: const BoxDecoration(),
-                            placeholder: "Search",
-                            prefixIcon: const Icon(
-                              CupertinoIcons.search,
-                              color: kPrimaryColor,
-                            ),
-                            suffixIcon: const Icon(
-                              CupertinoIcons.xmark_circle_fill,
-                              color: kPrimaryColor,
-                            ),
-                            onSuffixTap: () {
-                              advanceFilterController.titleController.value
-                                  .clear();
-                              advanceFilterServicee
-                                  .advanceFilterEventServices(context);
-                              unfoucsKeyboard(context);
-                            },
-                            onChanged: (e) {
-                              if (e.length > 2) {
-                                advanceFilterController.homeFilterLocation(e);
-                                advanceFilterServicee
-                                    .advanceFilterEventServices(context);
-                              }
-                            },
-                          )),
-                    ),
+                    !allowfilter.value
+                        ? ReusableSkeletonAvatar(
+                            height: 40,
+                            width: 242,
+                            borderRadius: BorderRadius.circular(5),
+                          )
+                        : Expanded(
+                            child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: const Color(0xff676767)
+                                        .withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: CupertinoSearchTextField(
+                                  controller: advanceFilterController
+                                      .titleController.value,
+                                  style: const TextStyle(color: kTextWhite),
+                                  decoration: const BoxDecoration(),
+                                  placeholder: "Search",
+                                  prefixIcon: const Icon(
+                                    CupertinoIcons.search,
+                                    color: kPrimaryColor,
+                                  ),
+                                  suffixIcon: const Icon(
+                                    CupertinoIcons.xmark_circle_fill,
+                                    color: kPrimaryColor,
+                                  ),
+                                  onSuffixTap: () {
+                                    advanceFilterController
+                                        .titleController.value
+                                        .clear();
+                                    advanceFilterServicee
+                                        .advanceFilterEventServices(context);
+                                    unfoucsKeyboard(context);
+                                  },
+                                  onChanged: (e) {
+                                    if (e.length > 2) {
+                                      advanceFilterController
+                                          .homeFilterLocation(e);
+                                      advanceFilterServicee
+                                          .advanceFilterEventServices(context);
+                                    }
+                                  },
+                                )),
+                          ),
                     const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () async {
-                        _scaffoldKey.currentState?.openDrawer();
-                        if (latlong == null) {
-                          LocationPermission permission =
-                              await Geolocator.checkPermission();
-                          if (permission == LocationPermission.whileInUse ||
-                              permission == LocationPermission.always) {
-                            Position currentP =
-                                await Geolocator.getCurrentPosition();
-                            latlong =
-                                LatLng(currentP.latitude, currentP.longitude);
-                          }
-                        }
-                        if (profileextendedcontroller.profileextenddata.value
-                                    .data!.principalTypeName ==
-                                "event_user" &&
-                            !(profileextendedcontroller
-                                    .profileextenddata
-                                    .value
-                                    .data!
-                                    .hasActiveSubscription!
-                                    .hasActiveSubscription! ||
-                                profileextendedcontroller
-                                    .profileextenddata
-                                    .value
-                                    .data!
-                                    .hasActiveSubscription!
-                                    .inGracePeriod!)) {
-                          if (preferenceController
-                              .storeselectedPreferenceId.value.isEmpty) {
-                            PreferencesService()
-                                .getPreferencesServices(context)
-                                .then((value) {
-                              if (value.responseStatus ==
-                                  ResponseStatus.success) {
-                                PreferencesModel data = value.data;
-                                preferenceController
-                                    .storeselectedPreferenceId.value
-                                    .addAll(data.preferenceList);
+                    !allowfilter.value
+                        ? ReusableSkeletonAvatar(
+                            height: 40,
+                            width: 87,
+                            borderRadius: BorderRadius.circular(5),
+                          )
+                        : InkWell(
+                            onTap: () async {
+                              if (latlong == null) {
+                                LocationPermission permission =
+                                    await Geolocator.checkPermission();
+                                if (permission ==
+                                        LocationPermission.whileInUse ||
+                                    permission == LocationPermission.always) {
+                                  Position currentP =
+                                      await Geolocator.getCurrentPosition();
+                                  latlong = LatLng(
+                                      currentP.latitude, currentP.longitude);
+                                }
                               }
-                            });
-                          }
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff676767).withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // const Icon(Icons.settings, color: kPrimaryColor),
-                            SvgPicture.asset("assets/svg/settings.svg"),
-                            const SizedBox(width: 5),
-                            Text(
-                              "Filter",
-                              style: paragraphStyle.copyWith(color: kTextWhite),
+                              if (profileextendedcontroller.profileextenddata
+                                          .value.data!.principalTypeName ==
+                                      "event_user" &&
+                                  !(profileextendedcontroller
+                                          .profileextenddata
+                                          .value
+                                          .data!
+                                          .hasActiveSubscription!
+                                          .hasActiveSubscription! ||
+                                      profileextendedcontroller
+                                          .profileextenddata
+                                          .value
+                                          .data!
+                                          .hasActiveSubscription!
+                                          .inGracePeriod!)) {
+                                if (preferenceController
+                                    .storeselectedPreferenceId.value.isEmpty) {
+                                  await PreferencesService()
+                                      .getPreferencesServices(context)
+                                      .then((value) {
+                                    if (value.responseStatus ==
+                                        ResponseStatus.success) {
+                                      PreferencesModel data = value.data;
+                                      preferenceController
+                                          .storeselectedPreferenceId.value
+                                          .addAll(data.preferenceList);
+                                    }
+                                  });
+                                }
+                              }
+                              _scaffoldKey.currentState?.openDrawer();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff676767).withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // const Icon(Icons.settings, color: kPrimaryColor),
+                                  SvgPicture.asset("assets/svg/settings.svg"),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    "Filter",
+                                    style: paragraphStyle.copyWith(
+                                        color: kTextWhite),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    )
+                          )
                   ],
                 ),
               ),

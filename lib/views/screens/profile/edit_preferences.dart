@@ -115,7 +115,8 @@ class EditPrefrenceState extends State<EditPrefrence> {
         ),
       );
     }
-    return Scaffold(
+    else{
+       return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: kPrimaryColor),
       ),
@@ -134,6 +135,9 @@ class EditPrefrenceState extends State<EditPrefrence> {
                 preferenceController.selectedpreference.value = List.filled(
                     preferenceController.prefrencecontrollerdata.value.length,
                     false);
+                      callTheApi().then((value) {
+        print(preferenceController.prefrencecontrollerdata);
+      });
               }
               return Expanded(
                 child: GridView.builder(
@@ -315,5 +319,7 @@ class EditPrefrenceState extends State<EditPrefrence> {
         ),
       ),
     );
+    }
+   
   }
 }

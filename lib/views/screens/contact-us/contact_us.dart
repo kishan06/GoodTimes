@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:good_times/data/repository/response_data.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/screens/home/main_home.dart';
@@ -11,6 +12,7 @@ import 'package:good_times/views/widgets/common/textformfield.dart';
 
 import '../../../data/repository/services/contact_us.dart';
 import '../../../utils/loading.dart';
+import '../../../view-models/Organisation_Controller.dart';
 import '../../widgets/common/parent_widget.dart';
 
 class ContactUS extends StatefulWidget {
@@ -29,6 +31,21 @@ class _ContactUSState extends State<ContactUS> {
   final messageController = TextEditingController();
   bool waiting = false;
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+    OrganisationController organisationController = Get.find<OrganisationController>();
+  String address="";
+  String contact="";
+  String email="";
+    @override
+    void initState() {
+      if(organisationController.Organisationdatacontroller.value.data!=null){
+    address=organisationController.Organisationdatacontroller.value.data!.address!;
+      contact= organisationController.Organisationdatacontroller.value.data!.contactUsPhone!;
+      email=organisationController.Organisationdatacontroller.value.data!.contactUsEmail!;
+      }
+     
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return parentWidgetWithConnectivtyChecker(
@@ -51,13 +68,13 @@ class _ContactUSState extends State<ContactUS> {
                 children: [
                   Expanded(
                       child: Text(
-                    '123 Main Street, London, SW1A 1AA, United Kingdom',
+                    address,
                     style: paragraphStyle.copyWith(fontSize: 14),
                   )),
                   const SizedBox(width: 20),
                   Expanded(
                     child: Text(
-                      '(7845124512)\ngoodtimes@gmail.com',
+                      '($contact)\n$email',
                       style: paragraphStyle.copyWith(fontSize: 14),
                     ),
                   ),

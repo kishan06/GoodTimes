@@ -21,6 +21,7 @@ class ProfileExtenddataModel {
 
 class Data {
   String? principalTypeName;
+  int? principalpreferencecount;
   int? inviteCount;
   bool? registerComplete;
   HasActiveSubscription? hasActiveSubscription;
@@ -32,6 +33,7 @@ class Data {
 
   Data(
       {this.principalTypeName,
+      this.principalpreferencecount,
       this.inviteCount,
       this.registerComplete,
       this.hasActiveSubscription,
@@ -43,6 +45,7 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     principalTypeName = json['principal_type_name'];
+    principalpreferencecount=json['principal_preference_count'];
     inviteCount = json['invite_count'];
     registerComplete = json['register_complete'];
     hasActiveSubscription = json['has_active_subscription'] != null
@@ -60,6 +63,7 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['principal_type_name'] = this.principalTypeName;
+    data['principal_preference_count']=this.principalTypeName;
     data['invite_count'] = this.inviteCount;
     data['register_complete'] = this.registerComplete;
     if (this.hasActiveSubscription != null) {

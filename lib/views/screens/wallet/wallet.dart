@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ import '../../../utils/loading.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
+import '../../widgets/subscriptionmodule.dart';
 import '../profile/add_bank_details.dart';
 
 class Wallet extends StatefulWidget {
@@ -75,7 +77,8 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                 FutureBuilder(
                   future: WallerService().walletService(context),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
                       var data = snapshot.data;
                       return _walletArea(coins: data, totalConis: data);
                     }
@@ -470,15 +473,18 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
               onPressed: () {
                 globalController.logger
                     .e("check bank details added or not $bankDetailsValue");
-                globalController.hasActiveSubscription.value
-                    ? checkBankDetails().then((value) {
-                        bankDetailsValue
-                            ? withdrawalRequest()
-                            : Navigator.pushNamed(
-                                context, AddBankDetails.routeName);
+                globalController.hasActiveSubscription.value ||
+                        globalController.hasActiveGracePeriod.value
+                    ? EasyDebounce.debounce(
+                        'my-debouncer', const Duration(milliseconds: 200), () {
+                        checkBankDetails().then((value) {
+                          bankDetailsValue
+                              ? withdrawalRequest()
+                              : Navigator.pushNamed(
+                                  context, AddBankDetails.routeName);
+                        });
                       })
-                    : snackBarError(context,
-                        message: "Please activate your account.");
+                    : Subscriptionmodule(context, "event_user");
               },
               text: 'Sell G-Token',
             ),
@@ -550,67 +556,66 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
           backgroundColor: kTextBlack,
           // title: const Text("My title"),
           content: FutureBuilder(
-              future: WallerService().reffralRecords(context),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<ReffralRecordsModel> data = snapshot.data;
-                  return data.isNotEmpty
-                      ? SizedBox(
-                          // height: MediaQuery.of(context).size.height*0.8,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                        "G-Token : ${data[index].coins}",
+            future: WallerService().reffralRecords(context),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<ReffralRecordsModel> data = snapshot.data;
+                return data.isNotEmpty
+                    ? SizedBox(
+                        // height: MediaQuery.of(context).size.height*0.8,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Text("G-Token : ${data[index].coins}",
+                                      style: paragraphStyle),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      WallerService().reffralRedeem(context,
+                                          uniqueToken: data[index].uniqueToken);
+                                      Navigator.pop(context);
+                                      setState(() {});
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        width: 1,
+                                        color: kPrimaryColor.withOpacity(0.7),
+                                      ),
+                                    ),
+                                    child: const Text("Sell",
                                         style: paragraphStyle),
                                   ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        WallerService().reffralRedeem(context,uniqueToken:data[index].uniqueToken);
-                                        Navigator.pop(context);
-                                        setState(() {});
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        side: BorderSide(
-                                          width: 1,
-                                          color: kPrimaryColor.withOpacity(0.7),
-                                        ),
-                                      ),
-                                      child: const Text("Sell",
-                                          style: paragraphStyle),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                            separatorBuilder: (context, index) =>
-                                Divider(color: kPrimaryColor.withOpacity(0.4)),
+                                ),
+                              ],
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              Divider(color: kPrimaryColor.withOpacity(0.4)),
+                        ),
+                      )
+                    : const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: 50),
+                          Center(
+                            child: Text("No Data found", style: paragraphStyle),
                           ),
-                        )
-                      : const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(height: 50),
-                            Center(
-                              child:
-                                  Text("No Data found", style: paragraphStyle),
-                            ),
-                          ],
-                        );
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
+                        ],
+                      );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
 
           actions: [
             TextButton(
@@ -689,7 +694,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                       setState(() {
                         _autovalidateMode = AutovalidateMode.always;
                       });
-                     unfoucsKeyboard(context);
+                      unfoucsKeyboard(context);
                       // _key.currentState!.validate();
                       if (_key.currentState!.validate()) {
                         showWaitingDialoge(context: context, loading: waiting);

@@ -6,15 +6,16 @@ class ReusableSkeletonAvatar extends StatelessWidget {
   final double height;
   final BorderRadius borderRadius;
   final bool randomWidth;
-  
+  Widget? widget;
 
-  const ReusableSkeletonAvatar({
-    Key? key,
-    required this.width,
-    required this.height,
-    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.randomWidth = false,
-  }) : super(key: key);
+  ReusableSkeletonAvatar(
+      {Key? key,
+      required this.width,
+      required this.height,
+      this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+      this.randomWidth = false,
+      this.widget})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +36,20 @@ class ReusableSkeletonAvatar extends StatelessWidget {
           1,
         ],
       ),
-      child: SkeletonAvatar(
-        style: SkeletonAvatarStyle(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          width: width,
-          height: height,
-          borderRadius:borderRadius,
-          randomWidth: randomWidth,
-        ),
-      ),
+      child: widget == null
+          ? SkeletonAvatar(
+              style: SkeletonAvatarStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                width: width,
+                height: height,
+                borderRadius: borderRadius,
+                randomWidth: randomWidth,
+              ),
+            )
+          : widget!,
     );
   }
 }
-
 
 class ReusableSkeletonParaGraph extends StatelessWidget {
   final double width;
@@ -86,17 +88,14 @@ class ReusableSkeletonParaGraph extends StatelessWidget {
       ),
       child: SkeletonParagraph(
         style: SkeletonParagraphStyle(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          lineStyle: SkeletonLineStyle(
-          width: width,
-          height: height,
-          borderRadius:borderRadius,
-          randomLength: randomLength
-          ),
-          lines: lines,
-          spacing: 12
-
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            lineStyle: SkeletonLineStyle(
+                width: width,
+                height: height,
+                borderRadius: borderRadius,
+                randomLength: randomLength),
+            lines: lines,
+            spacing: 12),
       ),
     );
   }

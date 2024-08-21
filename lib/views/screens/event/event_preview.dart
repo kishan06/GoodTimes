@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/common/scaffold_snackbar.dart';
 import 'package:good_times/data/repository/response_data.dart';
@@ -20,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Globalconstant/constant.dart';
 import '../../../Globalconstant/constantfunction.dart';
+import '../../../data/common/locationwidget.dart';
 import '../../../data/models/events_model.dart';
 import '../../../data/repository/services/create_chat.dart';
 import '../../../data/repository/services/event_count.dart';
@@ -27,9 +29,11 @@ import '../../../data/repository/services/event_review.dart';
 import '../../../data/repository/services/event_share_count.dart';
 import '../../../data/repository/services/get_event_services.dart';
 import '../../../utils/loading.dart';
+import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/copy_clipboard.dart';
 import '../../../view-models/deep_link_model.dart';
 import '../../../view-models/evevnt_filter_controller.dart';
+import '../../../view-models/location_controller.dart';
 import '../../widgets/common/parent_widget.dart';
 import '../../widgets/common/skeleton.dart';
 import '../../widgets/subscriptionmodule.dart';
@@ -60,8 +64,8 @@ class _EventPreviewState extends State<EventPreview> {
         .eventCountReportServices(context, id: Get.arguments[0]);
     sliderImage = [];
   }
-
-
+  ProfileExtendedDataController profileextendedcontroller = Get.find<ProfileExtendedDataController>();
+     
   @override
   Widget build(BuildContext context) {
     final List<dynamic>? arg =
@@ -100,72 +104,63 @@ class _EventPreviewState extends State<EventPreview> {
                   appBar: AppBar(
                     iconTheme: const IconThemeData(color: kPrimaryColor),
                     actions: [
-                      eventsData != null
-                          ? !globalController.hasActiveSubscription.value
-                              ? const SizedBox()
-                              : IconButton(
-                                  onPressed: () {
-                                    if (canEdit) {
-                                      Get.to(
-                                        () => EditEventTitile(eventData: data),
-                                      );
-                                    } else {
-                                      snackBarError(context,
-                                          message:
-                                              'Event editing is permissible exclusively within a 48-hour window prior.');
-                                    }
-                                  },
-                                  icon: const Icon(Icons.edit),
-                                )
-                          : const SizedBox(),
-                      !(globalController.hasActiveSubscription.value ||
-                              globalController.hasActiveGracePeriod.value)
-                          ? const SizedBox()
-                          : IconButton(
-                              onPressed: () {
-                                // Navigator.pushNamed(context, Favorites.routeName);
-                                GetEventServices()
-                                    .eventLike(context, eventId: data.id)
-                                    .then((value) {
-                                  if (value.responseStatus ==
-                                      ResponseStatus.success) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                              icon: data.isLiked!
-                                  ? const Icon(Icons.favorite)
-                                  : const Icon(Icons.favorite_outline),
-                            ),
-                      !globalController.hasActiveSubscription.value
-                          ? const SizedBox()
-                          : GestureDetector(
-                              onTap: () {
-                                EasyDebounce.debounce('my-debouncer',
-                                    const Duration(milliseconds: 700), () {
-                                  initDeepLinkData(
-                                      eventInnerPreview, 'event_id');
-                                  generateLink(context).then((value) {
-                                    CopyClipboardAndSahreController().shareLink(
-                                        data: value,
-                                        message:
-                                            "Hey there! I've got something super exciting to share with you – an event you won't want to miss! Click the link to get all the juicy details! 🎉");
-                                  }).then((value) {
-                                    EventShareCountReportServices()
-                                        .eventShareCountReportServices(context,
-                                            id: Get.arguments[0]);
-                                  });
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/share.png',
-                                  width: 25,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            )
+                      if(profileextendedcontroller.profileextenddata.value.data!.principalTypeName=="event_manager")
+                      IconButton(
+                        onPressed: () {
+                          if (canEdit) {
+                            Get.to(
+                              () => EditEventTitile(eventData: data),
+                            );
+                          } else {
+                            snackBarError(context,
+                                message:
+                                    'Event editing is permissible exclusively within a 48-hour window prior.');
+                          }
+                        },
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Navigator.pushNamed(context, Favorites.routeName);
+                          GetEventServices()
+                              .eventLike(context, eventId: data.id)
+                              .then((value) {
+                            if (value.responseStatus ==
+                                ResponseStatus.success) {
+                              setState(() {});
+                            }
+                          });
+                        },
+                        icon: data.isLiked!
+                            ? const Icon(Icons.favorite)
+                            : const Icon(Icons.favorite_outline),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          EasyDebounce.debounce(
+                              'my-debouncer', const Duration(seconds: 1), () {
+                            initDeepLinkData(eventInnerPreview, 'event_id');
+                            generateLink(context).then((value) {
+                              CopyClipboardAndSahreController().shareLink(
+                                  data: value,
+                                  message:
+                                      "Hey there! I've got something super exciting to share with you – an event you won't want to miss! Click the link to get all the juicy details! 🎉");
+                            }).then((value) {
+                              EventShareCountReportServices()
+                                  .eventShareCountReportServices(context,
+                                      id: Get.arguments[0]);
+                            });
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'assets/images/share.png',
+                            width: 25,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   body: SingleChildScrollView(
@@ -198,22 +193,24 @@ class _EventPreviewState extends State<EventPreview> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    globalController
+                                    Get.to(() => ChatScreens(
+                                          eventIds: eventInnerPreview,
+                                        ));
+                                    /* globalController
                                             .hasActiveSubscription.value
                                         ? Get.to(() => ChatScreens(
                                               eventIds: eventInnerPreview,
                                             ))
                                         : snackBarError(context,
                                             message:
-                                                'Please activate your account.');
+                                                'Please activate your account.'); */
                                   },
                                   child: Container(
                                     width: 166,
                                     height: 44,
                                     decoration: BoxDecoration(
                                       color: kTextWhite.withOpacity(0.18),
-                                      borderRadius:
-                                          BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
@@ -227,8 +224,7 @@ class _EventPreviewState extends State<EventPreview> {
                                         Text(
                                           'Join Live Chat',
                                           style: paragraphStyle.copyWith(
-                                              color:
-                                                  const Color(0xffC5C5C5)),
+                                              color: const Color(0xffC5C5C5)),
                                         ),
                                       ],
                                     ),
@@ -244,221 +240,59 @@ class _EventPreviewState extends State<EventPreview> {
                                       style: labelStyle.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                 /*    if ((globalController
+                                    /*    if ((globalController
                                             .hasActiveSubscription.value ||
                                         globalController
                                             .hasActiveGracePeriod.value)) */
-                                      TextButton(
-                                        onPressed: () async {
-                                           if (!(globalController
-                                            .hasActiveSubscription.value ||
-                                        globalController
-                                            .hasActiveGracePeriod.value)){
-                                              Subscriptionmodule(context,"event_user");
-                                            }else{
-                                          currentmarkerIcon =
-                                              await getCustomMarker(
-                                                  "assets/images/themelocation.png",
-                                                  60,
-                                                  80);
-                                          /* BitmapDescriptor
-                                                  .defaultMarker; */
-                                          LatLng destinationlatlng = LatLng(
-                                              double.parse(data
-                                                  .venu.latitude
-                                                  .toString()),
-                                              double.parse(data
-                                                  .venu.longitude
-                                                  .toString()));
-                                          globaldestinationmarkers = Marker(
-                                            markerId: const MarkerId(
-                                                "_sourceLocation"), //google
-                                            icon: currentmarkerIcon,
-                                            position: destinationlatlng,
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                isScrollControlled: true,
-                                                context: context,
-                                                backgroundColor:
-                                                    Colors.white,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    decoration: const BoxDecoration(
-                                                        color: Colors.black,
-                                                        borderRadius: BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(
-                                                                    15.0),
-                                                            topRight: Radius
-                                                                .circular(
-                                                                    15.0))),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets
-                                                              .all(16),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisSize:
-                                                            MainAxisSize
-                                                                .min,
-                                                        children: [
-                                                          Text(
-                                                            "${data.title!.capitalizeFirst}",
-                                                            style: headingStyle
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        24),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 13),
-                                                          Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                color:
-                                                                    kPrimaryColor,
-                                                              ),
-                                                              const SizedBox(
-                                                                  width:
-                                                                      10),
-                                                              Expanded(
-                                                                  child: Text(
-                                                                      "${data.venu.address}",
-                                                                      style:
-                                                                          paragraphStyle))
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 16),
-                                                          Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const Icon(
-                                                                Icons
-                                                                    .watch_later_outlined,
-                                                                color:
-                                                                    kPrimaryColor,
-                                                              ),
-                                                              const SizedBox(
-                                                                  width:
-                                                                      10),
-                                                              Expanded(
-                                                                child: Text(
-                                                                    "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
-                                                                    style:
-                                                                        paragraphStyle),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 16),
-                                                          const Divider(),
-                                                          const SizedBox(
-                                                              height: 12),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                  'About this event',
-                                                                  style: labelStyle.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight.w500)),
-                                                              const SizedBox(
-                                                                  height:
-                                                                      5),
-                                                              Text(
-                                                                  "${data.description!.capitalizeFirst}",
-                                                                  style:
-                                                                      paragraphStyle),
-                                                              data.keyGuest ==
-                                                                          ' ' ||
-                                                                      data.keyGuest ==
-                                                                          null
-                                                                  ? const SizedBox(
-                                                                      height:
-                                                                          15)
-                                                                  : const SizedBox(),
-                                                              data.keyGuest!
-                                                                      .isNotEmpty
-                                                                  ? Text(
-                                                                      'Key Guest',
-                                                                      style:
-                                                                          labelStyle.copyWith(fontWeight: FontWeight.w500))
-                                                                  : const SizedBox(),
-                                                              data.keyGuest!
-                                                                      .isNotEmpty
-                                                                  ? const SizedBox(
-                                                                      height:
-                                                                          5)
-                                                                  : const SizedBox(),
-                                                              data.keyGuest!
-                                                                      .isNotEmpty
-                                                                  ? Text(
-                                                                      "${data.keyGuest!.capitalizeFirst}",
-                                                                      style:
-                                                                          paragraphStyle)
-                                                                  : const SizedBox(),
-                                                              data.couponCode!
-                                                                      .isNotEmpty
-                                                                  ? const SizedBox(
-                                                                      height:
-                                                                          15)
-                                                                  : const SizedBox(),
-                                                              const SizedBox(
-                                                                  height:
-                                                                      5),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 16),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          );
-                                          Get.to(() => MapViews(
-                                                eventLocation: LatLng(
-                                                    double.parse(data
-                                                        .venu.latitude
-                                                        .toString()),
-                                                    double.parse(data
-                                                        .venu.longitude
-                                                        .toString())),
-                                              ));
-                                          }  },
-                                        child: Text(
-                                          "Show Map",
-                                          style: paragraphStyle.copyWith(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: kPrimaryColor,
-                                          ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        if (!(globalController
+                                                .hasActiveSubscription.value ||
+                                            globalController
+                                                .hasActiveGracePeriod.value)) {
+                                          Subscriptionmodule(
+                                              context, "event_user");
+                                        } else {
+                                          if (latlong == null) {
+                                            LocationPermission permission =
+                                                await Geolocator
+                                                    .checkPermission();
+                                            if (permission ==
+                                                    LocationPermission
+                                                        .whileInUse ||
+                                                permission ==
+                                                    LocationPermission.always) {
+                                              Position currentP =
+                                                  await Geolocator
+                                                      .getCurrentPosition();
+                                              latlong = LatLng(
+                                                  currentP.latitude,
+                                                  currentP.longitude);
+                                                    await mapbottomsheet( data);
+                                            } else {
+                                              await locationpermission(context,
+                                                  text: "To show map",
+                                                  filter: false);
+                                            }
+                                          } else {
+                                           await mapbottomsheet( data);
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        "Show Map",
+                                        style: paragraphStyle.copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: kPrimaryColor,
                                         ),
                                       ),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 15),
                                 Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Icon(
                                       Icons.location_on,
@@ -472,8 +306,7 @@ class _EventPreviewState extends State<EventPreview> {
                                 ),
                                 const SizedBox(height: 16),
                                 Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Icon(
                                       Icons.watch_later_outlined,
@@ -510,8 +343,7 @@ class _EventPreviewState extends State<EventPreview> {
                                 const SizedBox(height: 5),
                                 Text("${data.description!.capitalizeFirst}",
                                     style: paragraphStyle),
-                                data.keyGuest == ' ' ||
-                                        data.keyGuest == null
+                                data.keyGuest == ' ' || data.keyGuest == null
                                     ? const SizedBox(height: 15)
                                     : const SizedBox(),
                                 data.keyGuest!.isNotEmpty
@@ -523,8 +355,7 @@ class _EventPreviewState extends State<EventPreview> {
                                     ? const SizedBox(height: 5)
                                     : const SizedBox(),
                                 data.keyGuest!.isNotEmpty
-                                    ? Text(
-                                        "${data.keyGuest!.capitalizeFirst}",
+                                    ? Text("${data.keyGuest!.capitalizeFirst}",
                                         style: paragraphStyle)
                                     : const SizedBox(),
                                 data.couponCode!.isNotEmpty
@@ -552,11 +383,9 @@ class _EventPreviewState extends State<EventPreview> {
                                                 EasyDebounce.debounce(
                                                     'my-debouncer',
                                                     const Duration(
-                                                        milliseconds: 500),
-                                                    () {
+                                                        milliseconds: 500), () {
                                                   CopyClipboardAndSahreController()
-                                                      .copyToClipboard(
-                                                          context,
+                                                      .copyToClipboard(context,
                                                           data.couponCode);
                                                 });
                                               },
@@ -640,20 +469,13 @@ class _EventPreviewState extends State<EventPreview> {
                                       child: (data.interactions == null)
                                           ? myElevatedButtonOutline(
                                               onPressed: () {
-                                                globalController
-                                                        .hasActiveSubscription
-                                                        .value
-                                                    ? GetEventServices()
-                                                        .eventIntrestedAndGoing(
-                                                        context,
-                                                        eventId:
-                                                            eventInnerPreview,
-                                                        intrestedAndGoing:
-                                                            'interested',
-                                                      )
-                                                    : snackBarError(context,
-                                                        message:
-                                                            'Please activate your account.');
+                                                GetEventServices()
+                                                    .eventIntrestedAndGoing(
+                                                  context,
+                                                  eventId: eventInnerPreview,
+                                                  intrestedAndGoing:
+                                                      'interested',
+                                                );
                                                 // setState(() {});
                                               },
                                               text: 'Interested')
@@ -662,39 +484,25 @@ class _EventPreviewState extends State<EventPreview> {
                                                       'interested')
                                               ? MyElevatedButton(
                                                   onPressed: () {
-                                                    globalController
-                                                            .hasActiveSubscription
-                                                            .value
-                                                        ? GetEventServices()
-                                                            .eventIntrestedAndGoing(
-                                                                context,
-                                                                eventId:
-                                                                    eventInnerPreview,
-                                                                intrestedAndGoing:
-                                                                    'interested')
-                                                        : snackBarError(
+                                                    GetEventServices()
+                                                        .eventIntrestedAndGoing(
                                                             context,
-                                                            message:
-                                                                'Please activate your account.');
+                                                            eventId:
+                                                                eventInnerPreview,
+                                                            intrestedAndGoing:
+                                                                'interested');
                                                     setState(() {});
                                                   },
                                                   text: 'Interested')
                                               : myElevatedButtonOutline(
                                                   onPressed: () {
-                                                    globalController
-                                                            .hasActiveSubscription
-                                                            .value
-                                                        ? GetEventServices()
-                                                            .eventIntrestedAndGoing(
-                                                                context,
-                                                                eventId:
-                                                                    eventInnerPreview,
-                                                                intrestedAndGoing:
-                                                                    'interested')
-                                                        : snackBarError(
+                                                    GetEventServices()
+                                                        .eventIntrestedAndGoing(
                                                             context,
-                                                            message:
-                                                                'Please activate your account.');
+                                                            eventId:
+                                                                eventInnerPreview,
+                                                            intrestedAndGoing:
+                                                                'interested');
                                                     setState(() {});
                                                   },
                                                   text: 'Interested'),
@@ -705,66 +513,50 @@ class _EventPreviewState extends State<EventPreview> {
                                       child: (data.interactions == null)
                                           ? myElevatedButtonOutline(
                                               onPressed: () {
-                                                globalController
-                                                        .hasActiveSubscription
-                                                        .value
-                                                    ? GetEventServices()
+                                                GetEventServices()
+                                                    .eventIntrestedAndGoing(
+                                                        context,
+                                                        eventId:
+                                                            eventInnerPreview,
+                                                        intrestedAndGoing:
+                                                            'going').then((value) {
+                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
+                                                            });
+                                                setState(() {});
+                                              },
+                                              text: 'Going')
+                                          : (data.interactions != null &&
+                                                  data.interactions == 'going')
+                                              ? MyElevatedButton(
+                                                  onPressed: () {
+                                                    GetEventServices()
                                                         .eventIntrestedAndGoing(
                                                             context,
                                                             eventId:
                                                                 eventInnerPreview,
                                                             intrestedAndGoing:
-                                                                'going')
-                                                    : snackBarError(context,
-                                                        message:
-                                                            'Please activate your account.');
-                                                setState(() {});
-                                              },
-                                              text: 'Going')
-                                          : (data.interactions != null &&
-                                                  data.interactions ==
-                                                      'going')
-                                              ? MyElevatedButton(
-                                                  onPressed: () {
-                                                    globalController
-                                                            .hasActiveSubscription
-                                                            .value
-                                                        ? GetEventServices()
-                                                            .eventIntrestedAndGoing(
-                                                                context,
-                                                                eventId:
-                                                                    eventInnerPreview,
-                                                                intrestedAndGoing:
-                                                                    'going')
-                                                        : snackBarError(
-                                                            context,
-                                                            message:
-                                                                'Please activate your account.');
+                                                                'going').then((value) {
+                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
+                                                            });;
                                                     setState(() {});
                                                   },
                                                   text: 'Going')
                                               : myElevatedButtonOutline(
                                                   onPressed: () {
-                                                    globalController
-                                                            .hasActiveSubscription
-                                                            .value
-                                                        ? GetEventServices()
-                                                            .eventIntrestedAndGoing(
-                                                                context,
-                                                                eventId:
-                                                                    eventInnerPreview,
-                                                                intrestedAndGoing:
-                                                                    'going')
-                                                        : snackBarError(
+                                                    GetEventServices()
+                                                        .eventIntrestedAndGoing(
                                                             context,
-                                                            message:
-                                                                'Please activate your account.');
+                                                            eventId:
+                                                                eventInnerPreview,
+                                                            intrestedAndGoing:
+                                                                'going').then((value) {
+                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
+                                                            });
                                                     setState(() {});
                                                   },
                                                   text: 'Going'),
                                     ),
-                                    const Expanded(
-                                        flex: 2, child: SizedBox())
+                                    const Expanded(flex: 2, child: SizedBox())
                                   ],
                                 ),
                               ],
@@ -785,17 +577,14 @@ class _EventPreviewState extends State<EventPreview> {
                                         children: [
                                           Text('Reviews & Ratings',
                                               style: labelStyle.copyWith(
-                                                  fontWeight:
-                                                      FontWeight.w500)),
+                                                  fontWeight: FontWeight.w500)),
                                           GestureDetector(
                                             onTap: () {
                                               reviewList(data);
                                             },
                                             child: Text('View All',
-                                                style:
-                                                    paragraphStyle.copyWith(
-                                                        color:
-                                                            kPrimaryColor)),
+                                                style: paragraphStyle.copyWith(
+                                                    color: kPrimaryColor)),
                                           ),
                                         ],
                                       )
@@ -812,8 +601,7 @@ class _EventPreviewState extends State<EventPreview> {
                                           Text('5.0',
                                               style: labelStyle.copyWith(
                                                   color: kPrimaryColor,
-                                                  fontWeight:
-                                                      FontWeight.w500)),
+                                                  fontWeight: FontWeight.w500)),
                                         ],
                                       )
                                     : const SizedBox(),
@@ -846,11 +634,9 @@ class _EventPreviewState extends State<EventPreview> {
                                                                       .w500,
                                                               fontSize: 12),
                                                     ),
-                                                    const SizedBox(
-                                                        width: 5),
+                                                    const SizedBox(width: 5),
                                                     Row(
-                                                      children:
-                                                          List.generate(
+                                                      children: List.generate(
                                                         5,
                                                         (index) => index <
                                                                 data
@@ -874,11 +660,11 @@ class _EventPreviewState extends State<EventPreview> {
                                                 Text(
                                                   data.eventReview[0]
                                                       .reviewText,
-                                                  style: paragraphStyle
-                                                      .copyWith(
+                                                  style:
+                                                      paragraphStyle.copyWith(
                                                     fontSize: 14,
-                                                    color: const Color(
-                                                        0xff8C8C8C),
+                                                    color:
+                                                        const Color(0xff8C8C8C),
                                                   ),
                                                 )
                                               ],
@@ -894,12 +680,7 @@ class _EventPreviewState extends State<EventPreview> {
                                 // ),
                                 myElevatedButtonOutline(
                                   onPressed: () {
-                                    globalController
-                                            .hasActiveSubscription.value
-                                        ? _rateThisEvent()
-                                        : snackBarError(context,
-                                            message:
-                                                'Please activate your account.');
+                                    _rateThisEvent();
                                   },
                                   text: 'Help Boost the Event Rating',
                                 ),
@@ -911,11 +692,7 @@ class _EventPreviewState extends State<EventPreview> {
                           const SizedBox(height: 40),
                           GestureDetector(
                             onTap: () {
-                              globalController.hasActiveSubscription.value
-                                  ? _viewManagerProfile(data: data)
-                                  : snackBarError(context,
-                                      message:
-                                          'Please activate your account.');
+                              _viewManagerProfile(data: data);
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -924,10 +701,8 @@ class _EventPreviewState extends State<EventPreview> {
                                 child: Column(
                                   children: [
                                     ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(100),
-                                      child: data.venu.createdBy
-                                                  .profilePhoto ==
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: data.venu.createdBy.profilePhoto ==
                                               ''
                                           ? Image.asset(
                                               'assets/images/avatar.jpg',
@@ -935,8 +710,7 @@ class _EventPreviewState extends State<EventPreview> {
                                               height: 67,
                                               fit: BoxFit.cover)
                                           : Image.network(
-                                              data.venu.createdBy
-                                                  .profilePhoto,
+                                              data.venu.createdBy.profilePhoto,
                                               width: 67,
                                               height: 67,
                                               fit: BoxFit.cover),
@@ -1425,6 +1199,189 @@ class _EventPreviewState extends State<EventPreview> {
         );
       },
     );
+  }
+  Future<void> mapbottomsheet(EventsModel data) async{
+     currentmarkerIcon =
+                                                await getCustomMarker(
+                                                    "assets/images/themelocation.png",
+                                                    60,
+                                                    80);
+                                            /* BitmapDescriptor
+                                                  .defaultMarker; */
+                                            LatLng destinationlatlng = LatLng(
+                                                double.parse(data.venu.latitude
+                                                    .toString()),
+                                                double.parse(data.venu.longitude
+                                                    .toString()));
+                                            globaldestinationmarkers = Marker(
+                                              markerId: const MarkerId(
+                                                  "_sourceLocation"), //google
+                                              icon: currentmarkerIcon,
+                                              position: destinationlatlng,
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  context: context,
+                                                  backgroundColor: Colors.white,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                      width: double.infinity,
+                                                      decoration: const BoxDecoration(
+                                                          color: Colors.black,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          15.0),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          15.0))),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(16),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              "${data.title!.capitalizeFirst}",
+                                                              style: headingStyle
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          24),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 13),
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                const Icon(
+                                                                  Icons
+                                                                      .location_on,
+                                                                  color:
+                                                                      kPrimaryColor,
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 10),
+                                                                Expanded(
+                                                                    child: Text(
+                                                                        "${data.venu.address}",
+                                                                        style:
+                                                                            paragraphStyle))
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 16),
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                const Icon(
+                                                                  Icons
+                                                                      .watch_later_outlined,
+                                                                  color:
+                                                                      kPrimaryColor,
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 10),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                      "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
+                                                                      style:
+                                                                          paragraphStyle),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 16),
+                                                            const Divider(),
+                                                            const SizedBox(
+                                                                height: 12),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                    'About this event',
+                                                                    style: labelStyle.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight.w500)),
+                                                                const SizedBox(
+                                                                    height: 5),
+                                                                Text(
+                                                                    "${data.description!.capitalizeFirst}",
+                                                                    style:
+                                                                        paragraphStyle),
+                                                                data.keyGuest ==
+                                                                            ' ' ||
+                                                                        data.keyGuest ==
+                                                                            null
+                                                                    ? const SizedBox(
+                                                                        height:
+                                                                            15)
+                                                                    : const SizedBox(),
+                                                                data.keyGuest!
+                                                                        .isNotEmpty
+                                                                    ? Text(
+                                                                        'Key Guest',
+                                                                        style: labelStyle.copyWith(
+                                                                            fontWeight:
+                                                                                FontWeight.w500))
+                                                                    : const SizedBox(),
+                                                                data.keyGuest!
+                                                                        .isNotEmpty
+                                                                    ? const SizedBox(
+                                                                        height:
+                                                                            5)
+                                                                    : const SizedBox(),
+                                                                data.keyGuest!
+                                                                        .isNotEmpty
+                                                                    ? Text(
+                                                                        "${data.keyGuest!.capitalizeFirst}",
+                                                                        style:
+                                                                            paragraphStyle)
+                                                                    : const SizedBox(),
+                                                                data.couponCode!
+                                                                        .isNotEmpty
+                                                                    ? const SizedBox(
+                                                                        height:
+                                                                            15)
+                                                                    : const SizedBox(),
+                                                                const SizedBox(
+                                                                    height: 5),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 16),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            );
+                                            Get.to(() => MapViews(
+                                                  eventLocation: LatLng(
+                                                      double.parse(data
+                                                          .venu.latitude
+                                                          .toString()),
+                                                      double.parse(data
+                                                          .venu.longitude
+                                                          .toString())),
+                                                ));
   }
 
   Future<void> _launchUrl(_url) async {

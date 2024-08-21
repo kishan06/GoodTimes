@@ -141,26 +141,7 @@ class _HomeMainState extends State<HomeMain> {
     // homePageController = Get.put(HomePageController());
     // listenDynamicLinks();
     getProfileDetails();
-    profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
-     /*  if (profileextendedcontroller.profileextenddata.value.data != null) {
-        if (profileextendedcontroller.profileextenddata.value.data!
-                .hasActiveSubscription!.hasActiveSubscription !=
-            null) {
-          globalController.hasActiveSubscription.value =
-              profileextendedcontroller.profileextenddata.value.data!
-                  .hasActiveSubscription!.hasActiveSubscription!;
-        }
-        if (globalController.hasActiveGracePeriod.value =
-            profileextendedcontroller.profileextenddata.value.data!
-                    .hasActiveSubscription!.inGracePeriod !=
-                null) {
-          globalController.hasActiveGracePeriod.value =
-              globalController.hasActiveGracePeriod.value =
-                  profileextendedcontroller.profileextenddata.value.data!
-                      .hasActiveSubscription!.inGracePeriod!;
-        }
-      } */
-    });
+    profileextendedcontroller.fetchProfileExtendeddata(context);
 
     senUserPlayer();
     super.initState();

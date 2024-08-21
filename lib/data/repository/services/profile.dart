@@ -81,13 +81,14 @@ class ProfileService {
     );
   }
 // edit profile
-  Future<ResponseModel> editProfile(context,{fName, lastName, profileImg,linkedin,youtube,facebook,instagram,website, phoneNumber}) async {
-        logger.e("all data $fName, $lastName, $profileImg, $linkedin, $youtube, $facebook, $instagram, $website $phoneNumber}");
+  Future<ResponseModel> editProfile(context,{fName, lastName,businessname, profileImg,linkedin,youtube,facebook,instagram,website, phoneNumber}) async {
+        logger.e("all data $fName, $lastName,$businessname, $profileImg, $linkedin, $youtube, $facebook, $instagram, $website $phoneNumber}");
     try {
       final formData = FormData.fromMap(
         {
           "first_name": fName,
           "last_name": lastName,
+          "business_name":businessname,
           "profile_photo": profileImg == ''? '': await MultipartFile.fromFile(profileImg,filename: 'profile_img.jpg'),
           "linkedin_profile":linkedin,
           "instagram_profile":instagram,
@@ -101,7 +102,7 @@ class ProfileService {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${GetStorage().read('accessToken')}"
       };
-      Response response = await dio.post(Endpoints.profile,
+      Response response = await dio.post(Endpoints.editProfile,
           options: Options(headers: header), data: formData);
       log('respose of edit profile status ${response.statusCode}');
 

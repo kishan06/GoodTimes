@@ -13,8 +13,9 @@ import '../screens/subscription/open_website.dart';
 import 'common/button.dart';
 import 'common/desclaimer.dart';
 import 'signout.dart';
-  ProfileExtendedDataController profileextendedcontroller =
-      Get.find<ProfileExtendedDataController>();
+
+ProfileExtendedDataController profileextendedcontroller =
+    Get.find<ProfileExtendedDataController>();
 Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
   if (usertype == "event_user") {
     return showDialog(
@@ -60,9 +61,11 @@ Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
                       padding: const EdgeInsets.only(right: 20),
                       child: MyElevatedButton(
                           onPressed: () {
-                            redirectsubscribe(context).then((value) async{ 
-                        await      profileextendedcontroller
-            .fetchProfileExtendeddata(context);});
+                            Get.back();
+                            redirectsubscribe(context).then((value) async {
+                              await profileextendedcontroller
+                                  .fetchProfileExtendeddata(context);
+                            });
                           },
                           text: 'Join Us'),
                     ),
@@ -105,9 +108,11 @@ Subscriptionmodule(BuildContext context, String usertype, {String email = ""}) {
           const SizedBox(height: 20),
           MyElevatedButton(
               onPressed: () {
-                redirectsubscribe(context).then((value) async{ 
-                        await      profileextendedcontroller
-            .fetchProfileExtendeddata(context);});;
+                redirectsubscribe(context).then((value) async {
+                  await profileextendedcontroller
+                      .fetchProfileExtendeddata(context);
+                });
+                ;
               },
               text: 'Join Us'),
           TextButton(
@@ -133,7 +138,7 @@ Future<void> redirectsubscribe(BuildContext context) async {
   }
 }
 
-PreferenceWarning(BuildContext context,Function()? onTap) {
+PreferenceWarning(BuildContext context, Function()? onTap) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {

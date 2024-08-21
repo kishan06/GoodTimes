@@ -113,7 +113,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     hintTxt: "Town/City",
                     inputFormate: [
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z0-9,\s]+$'))
+                          RegExp(r'^[a-zA-Z,\s]+$'))
                     ],
                     validationFunction: (values) {
                       var value = values.trim();
@@ -178,7 +178,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                               validationFunction: (values) {
                                 var value = values.trim();
                                 if (value == null || value.isEmpty) {
-                                  return "Enter postcode";
+                                  return "Please enter postcode";
                                 }
                                 if (value.length < 2) {
                                   return 'Name is too short';

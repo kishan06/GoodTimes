@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -73,6 +74,7 @@ class _EmialVerifyState extends State<EmialVerify> {
 
   @override
   Widget build(BuildContext context) {
+    print("//");
     return parentWidgetWithConnectivtyChecker(
       child: Scaffold(
         appBar: AppBar(
@@ -426,24 +428,20 @@ class _EmialVerifyState extends State<EmialVerify> {
           // mainAxisSize: MainAxisSize.min,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Privacy And Policy',
-                      style: headingStyle.copyWith(fontSize: 25),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Privacy And Policy',
+                    style: headingStyle.copyWith(fontSize: 25),
                   ),
-                  IconButton(
-                      icon: const Icon(Icons.close, color: kPrimaryColor),
-                      onPressed: () => Get.back()),
-                ],
-              ),
+                ),
+                IconButton(
+                    icon: const Icon(Icons.close, color: kPrimaryColor),
+                    onPressed: () => Get.back()),
+              ],
             ),
             const Divider(),
             const SizedBox(height: 10),
@@ -502,19 +500,18 @@ class _EmialVerifyState extends State<EmialVerify> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
+              padding:const  EdgeInsets.only(left: 14.0,),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Term And Conditions',
-                      style: headingStyle.copyWith(fontSize: 25),
-                    ),
+                  Text(
+                    'Term And Conditions',
+                    style: headingStyle.copyWith(fontSize: 25),
                   ),
                   IconButton(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(2.0),
                       icon: const Icon(Icons.close, color: kPrimaryColor),
                       onPressed: () => Get.back()),
                 ],
@@ -543,10 +540,7 @@ class _EmialVerifyState extends State<EmialVerify> {
                 return const Center(child: CircularProgressIndicator());
               },
             ),
-            // Padding(
-            //   padding: EdgeInsets.all(scaffoldPadding),
-            //   child: child,
-            // ),
+           
           ],
         ),
       ),

@@ -9,19 +9,20 @@ import '../../models/orgnisations_model.dart';
 
 class OrgnisataionsServices {
   Dio dio = Dio();
-  Future<ResponseModel> orgnisataionsServices(context) async {
+  Future<ResponseModel> orgnisataionsServices(context,
+      {bool passmodel = true}) async {
     try {
       Response response = await dio.get(Endpoints.orgnisataions);
-
       if (response.statusCode == 200) {
-       var data = response.data;
+        var data = response.data;
         log('cms data ${data["data"]}');
         return ResponseModel(
           responseStatus: ResponseStatus.success,
-          data: 
-          CMSModel.fromJson(
-           data["data"],
-          ),
+          data: passmodel
+              ? CMSModel.fromJson(
+                  data["data"],
+                )
+              : data,
         );
       }
     } on DioException catch (e) {
