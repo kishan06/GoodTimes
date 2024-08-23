@@ -33,7 +33,6 @@ class _BottomNavigationBarsState extends State<BottomNavigationBars> {
   'user',
     // 'chat',
   ];
-    // print('curentIndex ${curentIndex}');
     return Padding(
         padding: const EdgeInsets.only(bottom: 0.0),
         child: Container(

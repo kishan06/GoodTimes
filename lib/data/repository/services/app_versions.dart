@@ -17,7 +17,6 @@ class AppVersionsService {
         context, // Pass the BuildContext
         "${Endpoints.appVersion}?type=${Platform.isAndroid?"android":"ios"}", // Pass the API endpoint
       );
-      // logger.e("response of app versiona data ${response.data["data"]}");
       if (response.responseStatus == ResponseStatus.success) {
         var data = response.data;
               log("app device version check ${data}");

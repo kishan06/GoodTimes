@@ -32,11 +32,8 @@ class _WebViewExampleState extends State<WebViewExample> {
               ..setNavigationDelegate(
           NavigationDelegate(
             onProgress: (int progress) {
-              // Update loading bar.
-              log("loading $progress");
-            },
+           },
             onPageStarted: (String url) {
-              log("Print url on start $url");
               if(url =="${Endpoints.domain}/subscriptions/success/"){
                 Navigator.pushNamedAndRemoveUntil(context, HomeMain.routeName, (route) => false);
                 snackBarSuccess(context,message: 'Payment successful.');
@@ -53,10 +50,8 @@ class _WebViewExampleState extends State<WebViewExample> {
               }
             },
             onPageFinished: (String url) {
-              log("Print url on ended $url");
             },
             onWebResourceError: (WebResourceError error) {
-              log("Print url some error while occured doing payment");
             },
           ),
               )

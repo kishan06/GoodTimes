@@ -121,6 +121,8 @@ class OrganizedBy {
   final String firstName;
   final String lastName;
   final String email;
+    final String? businessname;
+
   final String? phone;
   final String? linkedin;
   final String? youtube;
@@ -133,6 +135,7 @@ class OrganizedBy {
     required this.firstName,
     required this.lastName,
     required this.email,
+    this.businessname,
     this.phone,
     this.facebook,
     this.instagram,
@@ -147,6 +150,7 @@ class OrganizedBy {
       firstName: json["first_name"],
       lastName: json["last_name"],
       email: json["email"],
+      businessname:json["business_name"],
       phone: json["phone_no"],
       facebook: json["facebook_profile"],
       instagram: json["instagram_profile"],

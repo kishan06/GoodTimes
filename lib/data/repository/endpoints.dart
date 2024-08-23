@@ -22,6 +22,12 @@ class Endpoints {
   static const _base = "https://staging.goodtimesltd.co.uk/api/";
   static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
 
+  //cutome url
+  /* static const domain = "https://deciding-firmly-fly.ngrok-free.app";
+  static const _base = "https://deciding-firmly-fly.ngrok-free.app/api/";
+  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/"; */
+//https://deciding-firmly-fly.ngrok-free.app/api
+
   //!production urls of client
  /*  static const domain = "https://admin.goodtimesltd.co.uk";
   static const _base = "https://admin.goodtimesltd.co.uk/api/";

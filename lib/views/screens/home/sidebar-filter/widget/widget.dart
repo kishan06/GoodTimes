@@ -103,9 +103,6 @@ Widget byCategory(context, categoryData) {
   categoryDetails =
       mapcategoryDetails.map((element) => element['title']).toList();
 
-  /*  for (var element in mapcategoryDetails) {
-    categoryDetails.add(element['title']);
-  } */
   List<bool> checkBoxValues = categoryDetails
       .map((category) =>
           advanceFilterController.evetCategoryList.contains(category))
@@ -113,87 +110,57 @@ Widget byCategory(context, categoryData) {
   final ExpansionTileController controller = ExpansionTileController();
   return StatefulBuilder(
     builder: (context, setState) {
-      print(preferenceController.storeselectedPreferenceId.value.contains(1));
-      return Obx(
-       () {
-       /*   if (preferenceController
-                                    .storeselectedPreferenceId.value.isEmpty) {
-                                  await PreferencesService()
-                                      .getPreferencesServices(context)
-                                      .then((value) {
-                                    if (value.responseStatus ==
-                                        ResponseStatus.success) {
-                                      PreferencesModel data = value.data;
-                                      preferenceController
-                                          .storeselectedPreferenceId.value
-                                          .addAll(data.preferenceList);
-                                    }
-                                  });
-                                } */
-          return Column(
-            children: [
-              Theme(
-                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                    iconColor: kTextWhite,
-                    collapsedIconColor: kTextWhite,
-                    controller: controller,
-                    title: Text(
-                      'By Category',
-                      style: paragraphStyle.copyWith(
-                          fontSize: 14, fontWeight: FontWeight.w500),
-                    ),
-                    children: [
-                      CheckboxList(
-                        options: categoryDetails,
-                        mapoption: mapcategoryDetails,
-                        checkBoxValues: checkBoxValues,
-                        storedpreferencelist: profileextendedcontroller
-                                    .profileextenddata
-                                    .value
-                                    .data!
-                                    .principalTypeName ==
-                                "event_user"
-                            ? preferenceController.storeselectedPreferenceId.value
-                            : [],
-                        preference: true,
-                        hasSubscription: profileextendedcontroller
-                            .profileextenddata
-                            .value
-                            .data!
-                            .hasActiveSubscription!
-                            .hasActiveSubscription!,
-                        onChangedCallback: (value, index) {
-                          if (!(profileextendedcontroller
+      return Obx(() {
+        return Column(
+          children: [
+            Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                  iconColor: kTextWhite,
+                  collapsedIconColor: kTextWhite,
+                  controller: controller,
+                  title: Text(
+                    'By Category',
+                    style: paragraphStyle.copyWith(
+                        fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  children: [
+                    CheckboxList(
+                      options: categoryDetails,
+                      mapoption: mapcategoryDetails,
+                      checkBoxValues: checkBoxValues,
+                      storedpreferencelist: profileextendedcontroller
                                   .profileextenddata
                                   .value
                                   .data!
-                                  .hasActiveSubscription!
-                                  .hasActiveSubscription! ||
-                              profileextendedcontroller.profileextenddata.value
-                                  .data!.hasActiveSubscription!.inGracePeriod!)) {
-                            if (preferenceController.storeselectedPreferenceId.value
-                                .contains(mapcategoryDetails[index]['id'])) {
-                              setState(() {
-                                checkBoxValues[index] = value!;
-                              });
-          
-                              if (advanceFilterController.evetCategoryList
-                                  .contains(categoryDetails[index])) {
-                                advanceFilterController.evetCategoryList
-                                    .remove(categoryDetails[index]);
-                              } else {
-                                advanceFilterController.evetCategoryList
-                                    .add(categoryDetails[index]);
-                              }
-                            } else {
-                              Subscriptionmodule(context, "event_user");
-                            }
-                          } else {
+                                  .principalTypeName ==
+                              "event_user"
+                          ? preferenceController.storeselectedPreferenceId.value
+                          : [],
+                      preference: true,
+                      hasSubscription: profileextendedcontroller
+                          .profileextenddata
+                          .value
+                          .data!
+                          .hasActiveSubscription!
+                          .hasActiveSubscription!,
+                      onChangedCallback: (value, index) {
+                        if (!(profileextendedcontroller
+                                .profileextenddata
+                                .value
+                                .data!
+                                .hasActiveSubscription!
+                                .hasActiveSubscription! ||
+                            profileextendedcontroller.profileextenddata.value
+                                .data!.hasActiveSubscription!.inGracePeriod!)) {
+                          if (preferenceController
+                              .storeselectedPreferenceId.value
+                              .contains(mapcategoryDetails[index]['id'])) {
                             setState(() {
                               checkBoxValues[index] = value!;
                             });
-          
+
                             if (advanceFilterController.evetCategoryList
                                 .contains(categoryDetails[index])) {
                               advanceFilterController.evetCategoryList
@@ -202,15 +169,30 @@ Widget byCategory(context, categoryData) {
                               advanceFilterController.evetCategoryList
                                   .add(categoryDetails[index]);
                             }
+                          } else {
+                            Subscriptionmodule(context, "event_user");
                           }
-                        },
-                      ),
-                    ]),
-              ),
-            ],
-          );
-        }
-      );
+                        } else {
+                          setState(() {
+                            checkBoxValues[index] = value!;
+                          });
+
+                          if (advanceFilterController.evetCategoryList
+                              .contains(categoryDetails[index])) {
+                            advanceFilterController.evetCategoryList
+                                .remove(categoryDetails[index]);
+                          } else {
+                            advanceFilterController.evetCategoryList
+                                .add(categoryDetails[index]);
+                          }
+                        }
+                      },
+                    ),
+                  ]),
+            ),
+          ],
+        );
+      });
     },
   );
 }
@@ -225,9 +207,6 @@ Widget sortBy(context) {
     {"label": "Price", "value": "price"},
   ];
   //  event sort todo
-  /* List<bool> checkBoxValues = sortFilter
-      .map((sort) => advanceFilterController.eventSort.contains(sort["value"]))
-      .toList(); */
 
   List<String> valueList =
       sortFilter.map((item) => item["label"] as String).toList();
@@ -279,7 +258,6 @@ Widget sortBy(context) {
                               _selectedValue = i;
                               advanceFilterController.eventSortbyfilter.value =
                                   sortFilter[i]["value"].toString();
-                              print("rrr//");
                             });
                           },
                           child: Text('${sortFilter[i]['label']}',

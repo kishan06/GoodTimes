@@ -7,9 +7,6 @@ import '../data/models/home_event_modal.dart';
 
 class AdvanceFilterController extends GetxController{
   final RxList _artsEvetCategory = [].obs;
- // final RxList<String> _eventSort = <String>[].obs;
-               //  event sort todo
-
    final RxString eventSortbyfilter = "".obs;
 
   final RxList<String> _ageSort = <String>[].obs;
@@ -22,8 +19,6 @@ class AdvanceFilterController extends GetxController{
 
 
   List get evetCategoryList => _artsEvetCategory;
- // List<String> get eventSort => _eventSort;
-               //  event sort todo
 
   String get eventSort => eventSortbyfilter.value;
 
@@ -38,9 +33,7 @@ class AdvanceFilterController extends GetxController{
   void updateEvetCategory(List<String> updatedList){
     _artsEvetCategory.assignAll(updatedList);
   }
-  /* void eventSorts(List<String> updatedList) {
-    _eventSort.assignAll(updatedList);
-  } */
+ 
   void ageGroup(List<String> updatedList) {
     _ageSort.assignAll(updatedList);
   }

@@ -105,69 +105,6 @@ MaterialColor primarySwatch = const MaterialColor(
   },
 );
 
-
-/* List<dynamic> preferencesList = [
-    {
-      "id": 1,
-      'img': 'assets/images/preferences_icons/entertainment.svg',
-      'headTxt': 'Arts &\nEntertainment',
-      'selected': false
-    },
-    {
-      "id": 2,
-      'img': 'assets/images/preferences_icons/economic.svg',
-      'headTxt': 'Business &\nEconomic',
-      'selected': false
-    },
-    {
-      "id": 3,
-      'img': 'assets/images/preferences_icons/health.svg',
-      'headTxt': 'Health &\nWellness',
-      'selected': false
-    },
-    {
-      "id": 4,
-      'img': 'assets/images/preferences_icons/hobbies.svg',
-      'headTxt': 'Leisure &\nHobbies',
-      'selected': false
-    },
-    {
-      "id": 5,
-      'img': 'assets/images/preferences_icons/cultural.svg',
-      'headTxt': 'Cultural &\nSocial',
-      'selected': false
-    },
-    {
-      "id": 6,
-      'img': 'assets/images/preferences_icons/education.svg',
-      'headTxt': 'Education &\nTechnology',
-      'selected': false
-    },
-    {
-      "id": 7,
-      'img': 'assets/images/preferences_icons/outdoor.svg',
-      'headTxt': 'Outdoor\nActivities',
-      'selected': false
-    },
-    {
-      "id": 8,
-      'img': 'assets/images/preferences_icons/recreation.svg',
-      'headTxt': 'Recreation &\nSports',
-      'selected': false
-    },
-    {
-      "id": 9,
-      'img': 'assets/images/preferences_icons/family.svg',
-      'headTxt': 'Family',
-      'selected': false
-    },
-    {
-      "id": 10,
-      'img': 'assets/images/preferences_icons/shopping.svg',
-      'headTxt': 'Shopping Sale',
-      'selected': false
-    },
-  ]; */
   List<String> sortingtext = [
     'Within 10km',
     'Arts & Entertainment',

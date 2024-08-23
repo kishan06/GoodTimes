@@ -143,7 +143,6 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: const AppBarTheme(color: kTextBlack),
         useMaterial3: true,
       ),
-      //no change commit
       initialRoute: (isLoggedIn == null || profileStatus == null || profileStatus == false)
           ? introSliderShow
               ? IntroSlider.routeName

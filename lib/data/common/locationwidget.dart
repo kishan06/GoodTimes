@@ -53,7 +53,6 @@ locationpermission(BuildContext context,
                 Get.back();
                 await LocationController()
                     .getUserCurrentLocation(redirect: true);
-                //await Geolocator.openAppSettings();
               },
               child: const Text(
                 "Yes",

@@ -25,7 +25,6 @@ class EventCountReportServices{
         snackBarError(context,message: 'Bad Request. Please check your input.');
       }else if (response.statusCode == 200) {
         globalController.serverError.value = false;
-        // snackBarSuccess(context, message: response.data["message"]);
         log('response.body ${response.data}');
         return ResponseModel(
           responseStatus: ResponseStatus.success,

@@ -36,7 +36,6 @@ class EventReviewsService{
         );
       }
     } on DioException catch (e) {
-      // log('respose of create event exceptions only e ${e}');
       log('respose of create event exceptions ${e.response?.data["message"]}');
       if (e.response?.statusCode == 400) {
         // Handle 400 Bad Request Error

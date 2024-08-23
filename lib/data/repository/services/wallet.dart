@@ -53,7 +53,7 @@ class WallerService {
       if (response.responseStatus == ResponseStatus.success) {
         return data
             .map((e) => WalletTransactionsModel.fromJson(e))
-            .toList(); //;
+            .toList(); 
         // Do something with the data
       } else {
         // API call failed

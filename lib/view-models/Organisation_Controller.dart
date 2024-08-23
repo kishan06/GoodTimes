@@ -12,7 +12,6 @@ class OrganisationController extends GetxController{
     ResponseModel response=await OrgnisataionsServices().orgnisataionsServices(context,passmodel: false);
     if(response.responseStatus==ResponseStatus.success){
       Organisationdatacontroller.value=OrganisationModel.fromJson(response.data);
-      print("r");
     }
   }
 }

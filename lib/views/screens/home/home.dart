@@ -160,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
           advanceFilterServicee.advanceFilterEventServices(context);
           if (preferenceController.prefrencecontrollerdata.isEmpty) {
             preferenceController.eventCategory(context);
-            print(preferenceController.prefrencecontrollerdata);
           }
           eventCategory();
           getAgeGroup();

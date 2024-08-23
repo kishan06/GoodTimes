@@ -44,7 +44,6 @@ class EditPrefrenceState extends State<EditPrefrence> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await callTheApi().then((value) {
-        print(preferenceController.prefrencecontrollerdata);
       });
     });
   }
@@ -136,7 +135,6 @@ class EditPrefrenceState extends State<EditPrefrence> {
                     preferenceController.prefrencecontrollerdata.value.length,
                     false);
                       callTheApi().then((value) {
-        print(preferenceController.prefrencecontrollerdata);
       });
               }
               return Expanded(
@@ -186,16 +184,14 @@ class EditPrefrenceState extends State<EditPrefrence> {
                           margin: const EdgeInsets.symmetric(horizontal: 10),
                           height: 110,
                           decoration: BoxDecoration(
-                            color: /*  !preferencesList[index]["selected"]
-                                      ? Colors.transparent
-                                      : */
+                            color:
                                 preferenceController.selectedpreference[index]
                                     ? Colors.transparent
                                     : const Color(0xffffffff).withOpacity(0.1),
                             border: Border.all(
                                 color: kPrimaryColor,
                                 width:
-                                    /*  !preferencesList[index]["selected"] ? 1 :  */
+                                  
                                     !preferenceController
                                             .selectedpreference[index]
                                         ? 1

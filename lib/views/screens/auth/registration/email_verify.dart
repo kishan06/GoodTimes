@@ -61,7 +61,6 @@ class _EmialVerifyState extends State<EmialVerify> {
     }
      if (preferenceController.prefrencecontrollerdata.isEmpty) {
       preferenceController.eventCategory(context);
-      print(preferenceController.prefrencecontrollerdata);
     }
     intTheFunc();
   }
@@ -74,7 +73,6 @@ class _EmialVerifyState extends State<EmialVerify> {
 
   @override
   Widget build(BuildContext context) {
-    print("//");
     return parentWidgetWithConnectivtyChecker(
       child: Scaffold(
         appBar: AppBar(

@@ -16,10 +16,8 @@ class EventCategoryDrawarService{
       );
       if (response.responseStatus == ResponseStatus.success) {
         var data = response.data["data"];
-        // logger.f("give answer $data");
         return ResponseModel(
           responseStatus: ResponseStatus.success,
-          // data: EventCategoryModal.fromjson(data["data"]),
           data: data.map((e)=>EventCategoryModal.fromjson(e)).toList(),
         );
       }else{

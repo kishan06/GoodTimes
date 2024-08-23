@@ -65,28 +65,12 @@ Future<void> timePick(
 
   if (picked != null) {
     if (endTime != null && picked == now) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Please select a time other than the current time.'),
-      //   ),
-      // );
-      snackBarBasic(context,message: "Please select a time other than the current time");
+      snackBarBasic(context,
+          message: "Please select a time other than the current time");
     } else if (startTime != null && endTime != null && picked == startTime) {
-      snackBarBasic(context,message: "Please select a time after the start time.");
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Please select a time after the start time.'),
-      //   ),
-      // );
-    }
-    // else if (startTime == endTime) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Please select a time after the start time.'),
-    //     ),
-    //   );
-    // }
-    else {
+      snackBarBasic(context,
+          message: "Please select a time after the start time.");
+    } else {
       onTimeSelected(picked);
     }
   }
@@ -107,13 +91,14 @@ TimeOfDay stringToTimeOfDay(String timeString) {
   return TimeOfDay(hour: hour, minute: minute);
 }
 
-
- bool isDateTimeLessThanOrEqualToSubtractedDate({String? endDate, String? startTime}) {
-    DateTime dateTime = DateTime.parse('$endDate $startTime');
-    // log("dateTimes time for edit events $dateTime");
-    DateTime subtractedDateTime = dateTime.subtract(const Duration(hours: 48));
-    // log("dateTimes substracted time and date $subtractedDateTime");
-    DateTime currentDateTime = DateTime.now();
-    // log("dateTimes current date time $currentDateTime");
-    return currentDateTime.isBefore(subtractedDateTime) || currentDateTime.isAtSameMomentAs(subtractedDateTime);
-  }
+bool isDateTimeLessThanOrEqualToSubtractedDate(
+    {String? endDate, String? startTime}) {
+  DateTime dateTime = DateTime.parse('$endDate $startTime');
+  // log("dateTimes time for edit events $dateTime");
+  DateTime subtractedDateTime = dateTime.subtract(const Duration(hours: 48));
+  // log("dateTimes substracted time and date $subtractedDateTime");
+  DateTime currentDateTime = DateTime.now();
+  // log("dateTimes current date time $currentDateTime");
+  return currentDateTime.isBefore(subtractedDateTime) ||
+      currentDateTime.isAtSameMomentAs(subtractedDateTime);
+}

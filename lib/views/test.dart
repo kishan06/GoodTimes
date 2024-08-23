@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
-/*
- * String Tags 
- */
 
-//String Tags with Multiline
 class StringMultilineTags extends StatefulWidget {
   const StringMultilineTags({Key? key}) : super(key: key);
 

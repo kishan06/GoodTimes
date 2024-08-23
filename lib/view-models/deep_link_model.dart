@@ -49,7 +49,6 @@ Future<String> generateLink(BuildContext context) async {
   if (response.success) {
     if (context.mounted) {
       log('show generated links ${response.result}');
-      // showGeneratedLink(context, response.result);
       genratedLink = response.result.toString().split('//');
       log('genratedLink ${genratedLink[1]}');
       log('show genrated links response ${response.result}');
@@ -92,7 +91,7 @@ void listenDynamicLinks() async {
 
       
     }
-    // }
+    
   }, onError: (error) {
     log('InitSesseion error: ${error.toString()}');
   });

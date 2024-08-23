@@ -8,21 +8,17 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart'
 
 modalBottomShetWidget(context,
     {title, child, isDismissible, enableDrag, defaultHeight, ontap}) {
-  // double defaultHeight ;
   return model_bottom_sheet.showBarModalBottomSheet(
-    // expand: false,
     context: context,
     isDismissible:false,
     enableDrag:false,
     barrierColor: const Color(0xff000000).withOpacity(0.8),
     backgroundColor: kTextBlack.withOpacity(0.55),
     builder: (context) => ConstrainedBox(
-      // height: Get.size.height * 0.6,
       constraints: BoxConstraints(
         minHeight: defaultHeight ?? Get.size.height * 0.3,
       ),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
