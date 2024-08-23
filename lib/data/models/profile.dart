@@ -11,6 +11,8 @@ class ProfileModel {
   final String? instagram;
   final String? website;
   final String? phone;
+  final String? businessname;
+  final String? twitter;
 
   ProfileModel({
     required this.profilePhoto,
@@ -25,6 +27,8 @@ class ProfileModel {
     this.website,
     this.youtube,
     this.phone,
+    this.businessname,
+    this.twitter
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +45,8 @@ class ProfileModel {
       youtube: json["youtube_profile"],
       website: json["website"],
       phone: json["phone_no"],
+      businessname: json["business_name"],
+      twitter: json["twitter_profile"]
     );
   }
 }

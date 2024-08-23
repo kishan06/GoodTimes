@@ -37,7 +37,8 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final TextEditingController _fNameController = TextEditingController();
   final TextEditingController _lNameController = TextEditingController();
-    final TextEditingController _businessnamecontroller = TextEditingController();
+  final TextEditingController _businessnamecontroller = TextEditingController();
+  final TextEditingController _twittercontroller = TextEditingController();
 
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _instaController = TextEditingController();
@@ -60,7 +61,10 @@ class _EditProfileState extends State<EditProfile> {
     _linkedinController.text = widget.profileData!.linkedin ?? '';
     _youtubeController.text = widget.profileData!.youtube ?? '';
     _websiteController.text = widget.profileData!.website ?? '';
-    _phoneController.text = widget.profileData!.phone ?? '';
+    _phoneController.text = widget.profileData!.phone!=null?widget.profileData!.phone!.replaceAll("None", "") :'';
+    _businessnamecontroller.text=widget.profileData!.businessname ?? '';
+      _twittercontroller.text=widget.profileData!.twitter ?? '';
+
   }
 
   @override
@@ -234,7 +238,6 @@ class _EditProfileState extends State<EditProfile> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 35),
                         if (widget.profileData != null)
                           Visibility(
                             visible: widget.profileData!.principalTypeName ==
@@ -242,12 +245,24 @@ class _EditProfileState extends State<EditProfile> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                const SizedBox(height: 35),
                                 const Text('Business Name', style: labelStyle),
                                 textFormField(
                                   controller: _businessnamecontroller,
                                 ),
                               ],
                             ),
+                          ),
+                           if (widget.profileData != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 35),
+                              const Text('Twitter', style: labelStyle),
+                              textFormField(
+                                controller: _twittercontroller,
+                              ),
+                            ],
                           ),
                         const SizedBox(height: 35),
 
@@ -346,6 +361,7 @@ class _EditProfileState extends State<EditProfile> {
                                 youtube: _youtubeController.text,
                                 website: _websiteController.text,
                                 phoneNumber: _phoneController.text,
+                                twitterprofile: _twittercontroller.text
                               )
                                   .then((value) {
                                 if (value.responseStatus ==

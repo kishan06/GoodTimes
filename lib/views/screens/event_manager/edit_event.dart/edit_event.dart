@@ -696,7 +696,6 @@ class _EditCreateEventState extends State<EditEvent> {
                                                                         .white),
                                                               ),
                                                               onTap: () {
-                                                                //print("$tag selected");
                                                               },
                                                             ),
                                                             const SizedBox(

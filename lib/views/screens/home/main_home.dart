@@ -115,7 +115,6 @@ class _HomeMainState extends State<HomeMain> {
       if (data.containsKey('+clicked_branch_link') &&
           data['+clicked_branch_link'] == true) {
         log('------------------------------------Link clicked----------------------------------------------');
-        //  debugPrint('Custom string: ${data['custom_string']}');
         log('Custom number: $data');
 
         if (data.containsKey('event_id')) {
@@ -158,15 +157,7 @@ class _HomeMainState extends State<HomeMain> {
         } else if (data.principalTypeName == "event_manager") {
           homePageController.isUser.value = eventManager;
         }
-        /*  if (data.hasActiveSubscription == true) {
-          globalController.hasActiveSubscription.value =
-              data.hasActiveSubscription;
-          globalController.hasActiveGracePeriod.value = false;
-        } else {
-          globalController.hasActiveSubscription.value = false;
-          globalController.hasActiveGracePeriod.value =
-              data.hasActiveGracePeriod;
-        } */
+      
         if (data.principalTypeName == "event_manager") {
           checkIsPasswordChage();
         } else {
@@ -244,9 +235,6 @@ class _HomeMainState extends State<HomeMain> {
       const Profile(),
       // const Chat(),
     ];
-    // log("get user in buidcontext ${TempData.isUser}");
-    // getProfileDetails();
-    //  print('one signal player id ${GetStorage().read('oneSignalPlayerId')}');
     bool val = false;
     return WillPopScope(
       child: Obx(() {

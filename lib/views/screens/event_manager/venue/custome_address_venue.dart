@@ -77,7 +77,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     hintTxt: 'Address Line 1',
                     inputFormate: [
                       FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z0-9,\s]+$')
-                          /* RegExp(r'^[a-zA-Z,\s]+$') */)
+                        )
                     ],
                     validationFunction: (values) {
                       var value = values.trim();

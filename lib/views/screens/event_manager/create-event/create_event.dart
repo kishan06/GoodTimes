@@ -654,7 +654,6 @@ class _CreateEventState extends State<CreateEvent> {
                                                                         .white),
                                                               ),
                                                               onTap: () {
-                                                                //print("$tag selected");
                                                               },
                                                             ),
                                                             const SizedBox(

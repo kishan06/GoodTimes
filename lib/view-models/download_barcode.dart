@@ -7,15 +7,12 @@ import '../utils/constant.dart';
 class DownloadBarcode {
   // save qr code in gallery functions
   Future<void> saveQRCode(context,String qrText) async {
-    // String imagePath = "assets/images/goodtimes_barcode.png";
     try {
       ByteData? qrImageData = await QrPainter(
         emptyColor:kPrimaryColor,
-        // dataModuleStyle:const QrDataModuleStyle(color: kPrimaryColor),
         data: qrText,
         version: QrVersions.auto,
         gapless: true,
-        // color: kTextWhite,
       ).toImageData(200.0);
 
       Uint8List bytes = Uint8List.view(qrImageData!.buffer);

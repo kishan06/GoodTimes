@@ -38,12 +38,22 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
       Get.put(PreferenceController(), permanent: true);
   ProfileExtendedDataController profileextendedcontroller =
       Get.put(ProfileExtendedDataController(), permanent: true);
+  int categorylimit = 3;
+
   @override
   void initState() {
+    /*   if (preferenceController.selectedpreference.isNotEmpty) {
+      for (int i = 0; i < preferenceController.selectedpreference.length; i++) {
+        if (preferenceController.selectedpreference[i] == true) {
+          prefrenceList.add(i + 1);
+        }
+      }
+    } */
+    preferenceController.selectedpreference.value = [];
     super.initState();
     TempData.forceedit = GetStorage().read(TempData.forceEditPref);
     if (TempData.forceedit!) {
-          int categorylimit = GetStorage().read(TempData.categorylimit);
+      categorylimit = GetStorage().read(TempData.categorylimit);
 
       Future.delayed(const Duration(seconds: 1), () {
         forceeditprefdialog(context, number: categorylimit.toString());
@@ -51,7 +61,6 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
     }
     if (preferenceController.prefrencecontrollerdata.isEmpty) {
       preferenceController.eventCategory(context);
-      print(preferenceController.prefrencecontrollerdata);
     }
     profileextendedcontroller.fetchProfileExtendeddata(context);
   }
@@ -110,7 +119,6 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                     "${preferenceController.prefrencecontrollerdata.value[index].title}";
                                 return GestureDetector(
                                   onTap: () {
-                                    print("///");
                                     setState(() {
                                       preferenceController
                                               .selectedpreference[index] =
@@ -161,23 +169,17 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                           horizontal: 10),
                                       height: 110,
                                       decoration: BoxDecoration(
-                                        color: /*  !preferencesList[index]["selected"]
-                                      ? Colors.transparent
-                                      : */
-                                            preferenceController
-                                                    .selectedpreference[index]
-                                                ? Colors.transparent
-                                                : const Color(0xffffffff)
-                                                    .withOpacity(0.1),
+                                        color: preferenceController
+                                                .selectedpreference[index]
+                                            ? Colors.transparent
+                                            : const Color(0xffffffff)
+                                                .withOpacity(0.1),
                                         border: Border.all(
                                             color: kPrimaryColor,
-                                            width:
-                                                /*  !preferencesList[index]["selected"] ? 1 :  */
-                                                !preferenceController
-                                                            .selectedpreference[
-                                                        index]
-                                                    ? 1
-                                                    : 3),
+                                            width: !preferenceController
+                                                    .selectedpreference[index]
+                                                ? 1
+                                                : 3),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Column(
@@ -209,11 +211,9 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                                         Icon(Icons.error),
                                                 fit: BoxFit.cover),
                                           ),
-                                          // SvgPicture.asset(preferencesList[index]["img"]),
                                           const SizedBox(height: 7),
                                           Text(
                                             title.replaceAll("&", "&\n"),
-                                            // preferencesList[index]["headTxt"],
                                             style: paragraphStyle,
                                             textAlign: TextAlign.center,
                                           )
@@ -231,27 +231,26 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                   // ignore: prefer_const_constructors
                   SizedBox(height: 30),
                   MyElevatedButton(
-                      //  loader: waiting
-                      //           ? const CircularProgressIndicator()
-                      //           : const SizedBox(),
                       onPressed: () {
                         if (prefrenceList.length >= 1) {
-                          PreferenceWarning(context, () {
+                          if (profileextendedcontroller.profileextenddata.value
+                                  .data!.principalTypeName ==
+                              "event_manager") {
                             Get.back();
                             showWaitingDialoge(
                                 context: context, loading: waiting);
-                            setState(() {
-                              waiting = true;
-                            });
+                            /*   setState(() {
+                                waiting = true;
+                              }); */
                             PreferencesService()
                                 .postPreferences(context,
                                     categoriesList: prefrenceList)
                                 .then((value) {
                               if (value.responseStatus ==
                                   ResponseStatus.success) {
-                                setState(() {
-                                  waiting = false;
-                                });
+                                /*   setState(() {
+                                    waiting = false;
+                                  }); */
                                 Navigator.pop(context);
                                 Navigator.pushNamed(
                                     context, HomeMain.routeName);
@@ -261,55 +260,52 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                 snackBarError(context,
                                     message:
                                         "Something went wrong, please try again.");
-                                setState(() {
-                                  waiting = false;
-                                });
+                                /*  setState(() {
+                                    waiting = false;
+                                  }); */
                                 Navigator.pop(context);
                               }
                             });
-                          });
-                          /* showWaitingDialoge(
-                              context: context, loading: waiting);
-                          setState(() {
-                            waiting = true;
-                          });
-                          PreferencesService()
-                              .postPreferences(context,
-                                  categoriesList: prefrenceList)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              setState(() {
-                                waiting = false;
+                          } else {
+                            PreferenceWarning(context, () {
+                              Get.back();
+                              showWaitingDialoge(
+                                  context: context, loading: waiting);
+                              /*   setState(() {
+                                waiting = true;
+                              }); */
+                              PreferencesService()
+                                  .postPreferences(context,
+                                      categoriesList: prefrenceList)
+                                  .then((value) {
+                                if (value.responseStatus ==
+                                    ResponseStatus.success) {
+                                  /*   setState(() {
+                                    waiting = false;
+                                  }); */
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(
+                                      context, HomeMain.routeName);
+                                }
+                                if (value.responseStatus ==
+                                    ResponseStatus.failed) {
+                                  snackBarError(context,
+                                      message:
+                                          "Something went wrong, please try again.");
+                                  /*  setState(() {
+                                    waiting = false;
+                                  }); */
+                                  Navigator.pop(context);
+                                }
                               });
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, HomeMain.routeName);
-                            }
-                            if (value.responseStatus == ResponseStatus.failed) {
-                              snackBarError(context,
-                                  message:
-                                      "Something went wrong, please try again.");
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          }); */
+                            });
+                          }
                         } else {
                           snackBarError(context,
                               message: 'Please select at least one services');
                         }
                       },
                       text: 'Continue'),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Navigator.pushNamed(context, SubScription.routeName);
-                  //   },
-                  //   child: Text(
-                  //     'skip',
-                  //     style: labelStyle.copyWith(color: kPrimaryColor),
-                  //   ),
-                  // )
                 ],
               ),
             ),

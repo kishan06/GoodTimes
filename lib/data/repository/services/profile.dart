@@ -81,8 +81,8 @@ class ProfileService {
     );
   }
 // edit profile
-  Future<ResponseModel> editProfile(context,{fName, lastName,businessname, profileImg,linkedin,youtube,facebook,instagram,website, phoneNumber}) async {
-        logger.e("all data $fName, $lastName,$businessname, $profileImg, $linkedin, $youtube, $facebook, $instagram, $website $phoneNumber}");
+  Future<ResponseModel> editProfile(context,{fName, lastName,businessname, profileImg,linkedin,youtube,facebook,instagram,website, phoneNumber, twitterprofile}) async {
+        logger.e("all data $fName, $lastName,$businessname, $profileImg, $linkedin, $youtube, $facebook, $instagram, $website $phoneNumber $twitterprofile}");
     try {
       final formData = FormData.fromMap(
         {
@@ -96,6 +96,7 @@ class ProfileService {
           "youtube_profile":youtube,
           "website":website,
           "phone_no":phoneNumber,
+          "twitter_profile":twitterprofile
         },
       );
       final header = {

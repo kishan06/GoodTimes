@@ -104,7 +104,7 @@ class _EventPreviewState extends State<EventPreview> {
                   appBar: AppBar(
                     iconTheme: const IconThemeData(color: kPrimaryColor),
                     actions: [
-                      if(profileextendedcontroller.profileextenddata.value.data!.principalTypeName=="event_manager")
+                    /*   if(profileextendedcontroller.profileextenddata.value.data!.principalTypeName=="event_manager")
                       IconButton(
                         onPressed: () {
                           if (canEdit) {
@@ -118,7 +118,25 @@ class _EventPreviewState extends State<EventPreview> {
                           }
                         },
                         icon: const Icon(Icons.edit),
-                      ),
+                      ), */
+                        eventsData != null
+                          ? !globalController.hasActiveSubscription.value
+                              ? const SizedBox()
+                              : IconButton(
+                                  onPressed: () {
+                                    if (canEdit) {
+                                      Get.to(
+                                        () => EditEventTitile(eventData: data),
+                                      );
+                                    } else {
+                                      snackBarError(context,
+                                          message:
+                                              'Event editing is permissible exclusively within a 48-hour window prior.');
+                                    }
+                                  },
+                                  icon: const Icon(Icons.edit),
+                                )
+                          : const SizedBox(),
                       IconButton(
                         onPressed: () {
                           // Navigator.pushNamed(context, Favorites.routeName);
@@ -196,14 +214,7 @@ class _EventPreviewState extends State<EventPreview> {
                                     Get.to(() => ChatScreens(
                                           eventIds: eventInnerPreview,
                                         ));
-                                    /* globalController
-                                            .hasActiveSubscription.value
-                                        ? Get.to(() => ChatScreens(
-                                              eventIds: eventInnerPreview,
-                                            ))
-                                        : snackBarError(context,
-                                            message:
-                                                'Please activate your account.'); */
+                                
                                   },
                                   child: Container(
                                     width: 166,
@@ -240,10 +251,7 @@ class _EventPreviewState extends State<EventPreview> {
                                       style: labelStyle.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    /*    if ((globalController
-                                            .hasActiveSubscription.value ||
-                                        globalController
-                                            .hasActiveGracePeriod.value)) */
+                               
                                     TextButton(
                                       onPressed: () async {
                                         if (!(globalController
@@ -899,6 +907,18 @@ class _EventPreviewState extends State<EventPreview> {
                               ),
                               textAlign: TextAlign.center,
                             ),
+                             if(data1.venu.createdBy.businessname == null ||
+                              data1.venu.createdBy.instagram == "")
+                        Text(
+                              data1.venu.createdBy.phone == null
+                                  ? ''
+                                  : data1.venu.createdBy.businessname.toString(),
+                              style: paragraphStyle.copyWith(
+                                fontSize: 14,
+                                color: const Color(0xff8C8C8C),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       ),
@@ -1206,8 +1226,7 @@ class _EventPreviewState extends State<EventPreview> {
                                                     "assets/images/themelocation.png",
                                                     60,
                                                     80);
-                                            /* BitmapDescriptor
-                                                  .defaultMarker; */
+                                       
                                             LatLng destinationlatlng = LatLng(
                                                 double.parse(data.venu.latitude
                                                     .toString()),

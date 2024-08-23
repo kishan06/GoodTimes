@@ -208,19 +208,7 @@ class _ProfileState extends State<Profile> {
                                                           context).then((value) {
                     profileextendedcontroller.fetchProfileExtendeddata(context);
                   });
-                                                 /*  if (globalContoller
-                                                      .hasActiveGracePeriod
-                                                      .value) {
-                                                    Get.to(() =>
-                                                        const WebViewExample());
-                                                  } else {
-                                                    if (userData
-                                                            .principalTypeName ==
-                                                        "event_user") {
-                                                      redirectsubscribe(
-                                                          context);
-                                                    }
-                                                  } */
+                                            
                                                 },
                                                 style: OutlinedButton.styleFrom(
                                                   side: const BorderSide(
@@ -305,8 +293,6 @@ class _ProfileState extends State<Profile> {
                                   .prefrencecontrollerdata.isEmpty) {
                                 await preferenceController
                                     .eventCategory(context);
-                                print(preferenceController
-                                    .prefrencecontrollerdata);
                               }
                               Navigator.pushNamed(
                                   context, EditPrefrence.routeName);

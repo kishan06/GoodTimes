@@ -16,8 +16,6 @@ class FaqService {
         context, // Pass the BuildContext
         Endpoints.faq, // Pass the API endpoint
       );
-      // log("venu get before sent to model ${response.data}");
-      // Handle the response
       if (response.responseStatus == ResponseStatus.success) {
         // API call was successful
         List data = response.data["data"];

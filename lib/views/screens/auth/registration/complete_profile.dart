@@ -47,7 +47,6 @@ class _CompleteDetailsState extends State<CompleteDetails> {
 
   @override
   Widget build(BuildContext context) {
-    print(TempData.userType);
     final emailArgument = ModalRoute.of(context)!.settings.arguments;
     return parentWidgetWithConnectivtyChecker(
       child: Scaffold(

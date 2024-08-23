@@ -10,7 +10,6 @@ class CopyClipboardAndSahreController{
   Future<void> copyToClipboard(context,inviteCode) async {
     await Clipboard.setData(ClipboardData(text: inviteCode));
 
-    // if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Copied to clipboard'),
     ));

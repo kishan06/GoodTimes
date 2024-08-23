@@ -23,8 +23,6 @@ class CheckboxList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(storedpreferencelist);
-    print(preference);
     return Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: Column(

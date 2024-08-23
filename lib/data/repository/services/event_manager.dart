@@ -10,7 +10,6 @@ class EventManagerServices {
   Dio dio = Dio();
   Future getEventManagerEventas(context, {filterParams}) async {
     log("filter tab in service file $filterParams");
-    // if (filterParams == "high_admission_cost")filterParams = "expensive"; //if event filter by high
     final ApiService apiService = ApiService(dio);
     try {
       ResponseModel<String?> response = await apiService.getData<String>(

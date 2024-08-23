@@ -21,7 +21,6 @@ class ForgotPasswordService{
       );
       if (response.statusCode == 200) {
         snackBarSuccess(context, message: response.data["message"]);
-        // log('response.body ${}');
         var data = response.data;
         log('response of forgot data $data');
         
@@ -33,8 +32,6 @@ class ForgotPasswordService{
       
     }on DioException catch(e){
        if (e.response?.statusCode == 400) {
-        // Handle 400 Bad Request Error
-        // log('Bad Request Error: ${e.message}');
         snackBarError(context, message: 'Bad Request. Please check your input.');
       } else if (e.response?.statusCode == 404) {
         // Handle 404 reffarl code error
@@ -80,7 +77,6 @@ class ForgotPasswordService{
       );
       if (response.statusCode == 200) {
         snackBarSuccess(context, message: response.data["message"]);
-        // log('response.body ${}');
         var data = response.data;
         log('response of forgot data $data');
         
@@ -92,8 +88,6 @@ class ForgotPasswordService{
       
     }on DioException catch(e){
        if (e.response?.statusCode == 400) {
-        // Handle 400 Bad Request Error
-        // log('Bad Request Error: ${e.message}');
         snackBarError(context, message: 'Bad Request. Please check your input.');
       } else if (e.response?.statusCode == 404) {
         // Handle 404 reffarl code error

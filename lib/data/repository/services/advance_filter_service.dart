@@ -40,8 +40,6 @@ class AdvanceFilterService {
 
       final List<String> encodedCategories =
           evetCat.map((category) => Uri.encodeComponent(category)).toList();
-      /*  final List<String> encodedSort =
-          sortCat.map((sort) => Uri.encodeComponent(sort)).toList(); */
       final List<String> ageSort =
           ageGroup.map((age) => Uri.encodeComponent(age)).toList();
 
@@ -56,7 +54,6 @@ class AdvanceFilterService {
       final url = '$baseUrl?'
           '${evetCat.isEmpty ? '' : 'category=${encodedCategories.join(",")}&'}'
           '${sortCat.isNotEmpty ? "sort=$sortCat&" : ""}'
-          //'${sortCat.isNotEmpty ? "sort=${encodedSort.join(",")}&" : ""}'
           '${ageGroup.isNotEmpty ? "age_group=${ageSort.join(",")}&" : ""}'
           '${startPrice.isNotEmpty ? "price_from=$startPrice&" : ""}'
           '${endPrice.isNotEmpty ? "price_to=$endPrice&" : ""}'

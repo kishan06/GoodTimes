@@ -30,7 +30,6 @@ class CreateVenu {
           options: Options(headers: header), data: formData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // snackBarSuccess(context, message: "you have created venue successfully.");
         log('response.body ${response.data}');
         return ResponseModel(
           responseStatus: ResponseStatus.success,

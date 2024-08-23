@@ -174,8 +174,6 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       int eventId = calendarTapDetails.appointments![0].id;
-      log("events details messages print here $eventId");
-      // log("events details id ${appointment.id}");
       Navigator.pushNamed(context, EventPreview.routeName, arguments: [eventId,null]);
     }
   }

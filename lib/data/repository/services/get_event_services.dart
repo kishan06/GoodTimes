@@ -46,12 +46,8 @@ class GetEventServices {
     if (filterParams == "Tomorrow")filterParams = "tomorrow"; //if event filter by Tomorrow
     if (filterParams == "Choose a date")filterParams = "choose_a_date"; //if event filter by Custome Date Range
     
-    // log("filter data params $filterParams");
     log("filter data url ${Endpoints.getEventFilter}?filter=$filterParams");
-    // log("filter data url ${Endpoints.getEventFilterWithin10km}");
-    
-
-    final ApiService apiService = ApiService(dio);
+  final ApiService apiService = ApiService(dio);
     try {
       ResponseModel<String?> response = await apiService.getData<String>(
         context,
@@ -96,7 +92,6 @@ class GetEventServices {
       log("event like ${response.data}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         snackBarSuccess(context, message: response.data["data"]);
-        // log('response.body ${response.data}');
         return ResponseModel(
           responseStatus: ResponseStatus.success,
           data: response.data,
