@@ -236,21 +236,21 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                           if (profileextendedcontroller.profileextenddata.value
                                   .data!.principalTypeName ==
                               "event_manager") {
-                            Get.back();
+                           // Get.back();
                             showWaitingDialoge(
                                 context: context, loading: waiting);
-                            /*   setState(() {
+                              setState(() {
                                 waiting = true;
-                              }); */
+                              });
                             PreferencesService()
                                 .postPreferences(context,
                                     categoriesList: prefrenceList)
                                 .then((value) {
                               if (value.responseStatus ==
                                   ResponseStatus.success) {
-                                /*   setState(() {
+                                  setState(() {
                                     waiting = false;
-                                  }); */
+                                  });
                                 Navigator.pop(context);
                                 Navigator.pushNamed(
                                     context, HomeMain.routeName);
@@ -260,9 +260,9 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                 snackBarError(context,
                                     message:
                                         "Something went wrong, please try again.");
-                                /*  setState(() {
+                                 setState(() {
                                     waiting = false;
-                                  }); */
+                                  });
                                 Navigator.pop(context);
                               }
                             });
@@ -271,18 +271,18 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                               Get.back();
                               showWaitingDialoge(
                                   context: context, loading: waiting);
-                              /*   setState(() {
+                                setState(() {
                                 waiting = true;
-                              }); */
+                              });
                               PreferencesService()
                                   .postPreferences(context,
                                       categoriesList: prefrenceList)
                                   .then((value) {
                                 if (value.responseStatus ==
                                     ResponseStatus.success) {
-                                  /*   setState(() {
+                                    setState(() {
                                     waiting = false;
-                                  }); */
+                                  });
                                   Navigator.pop(context);
                                   Navigator.pushNamed(
                                       context, HomeMain.routeName);
@@ -292,9 +292,9 @@ class _SelectPrefrenceState extends State<SelectPrefrence> {
                                   snackBarError(context,
                                       message:
                                           "Something went wrong, please try again.");
-                                  /*  setState(() {
+                                   setState(() {
                                     waiting = false;
-                                  }); */
+                                  });
                                   Navigator.pop(context);
                                 }
                               });
