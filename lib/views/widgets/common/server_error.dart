@@ -18,9 +18,9 @@ class ServerError extends StatelessWidget {
        appBar: AppBar(
         leading: GestureDetector(
             onTap: () async{
-                 advanceFilterController.clearAllFilter();
-                 await AdvanceFilterService().advanceFilterEventServices(context);
-                  globalController.serverError.value=false;
+                //  advanceFilterController.clearAllFilter();
+                //  await AdvanceFilterService().advanceFilterEventServices(context);
+                //   globalController.serverError.value=false;
             },
             child: const Icon(
               Icons.arrow_back,

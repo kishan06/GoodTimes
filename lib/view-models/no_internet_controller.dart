@@ -11,7 +11,9 @@ class ConnectivityController extends GetxController {
   void onInit() {
     super.onInit();
     // getConnctionStatus();
-    streamSubscription = connectivity.onConnectivityChanged.listen(getConnectionType);
+    streamSubscription =
+        connectivity.onConnectivityChanged.listen(getConnectionType);
+    getConnctionStatus();
   }
 
   void getConnctionStatus() async {
@@ -39,12 +41,12 @@ class ConnectivityController extends GetxController {
       connectionType.value = "Mobile Internet";
       isConnected.value = true;
       // if (!isConnected.value) {
-        // Get.snackbar(
-        //   'Internet Connection',
-        //   'Internet Connected',
-        //   backgroundColor: kTextBlack,
-        //   snackPosition: SnackPosition.BOTTOM,
-        // );
+      // Get.snackbar(
+      //   'Internet Connection',
+      //   'Internet Connected',
+      //   backgroundColor: kTextBlack,
+      //   snackPosition: SnackPosition.BOTTOM,
+      // );
       // }
     }
   }

@@ -2,7 +2,6 @@
 
 import 'package:get/get.dart';
 
-
 class HomePageController extends GetxController {
   RxBool loading = false.obs;
   RxString isUser = "".obs;
@@ -13,5 +12,4 @@ class HomePageController extends GetxController {
 
   //live session
   static int SessionsActiveTabIndex = 0;
-
 }

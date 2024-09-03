@@ -20,6 +20,8 @@ class Endpoints {
   //!stagging urls of client
   static const domain = "https://staging.goodtimesltd.co.uk";
   static const _base = "https://staging.goodtimesltd.co.uk/api/";
+  
+
   static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
 
   //cutome url
@@ -149,4 +151,8 @@ class Endpoints {
   static const accountTransferDone = _base + "account/transfer-check/";
   static const eventCategoryDrawar = _base + "events/preferences/";
   static const profileextendeddata=_base + "account/profile/extended-data/";
+
+//SocialShare
+ static const socialshare = _base + "events/post-to-social-media/";
+
 }
