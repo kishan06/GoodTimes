@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=D:\pooja\fluttersdk\flutter_3.19.6\flutter
-FLUTTER_APPLICATION_PATH=D:\pooja\flutter\official\GoodTimes
+FLUTTER_ROOT=C:\Flutter SDK\flutter
+FLUTTER_APPLICATION_PATH=D:\Flutter project\GoodTimes
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0

@@ -64,8 +64,10 @@ class _EventPreviewState extends State<EventPreview> {
         .eventCountReportServices(context, id: Get.arguments[0]);
     sliderImage = [];
   }
-  ProfileExtendedDataController profileextendedcontroller = Get.find<ProfileExtendedDataController>();
-     
+
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.find<ProfileExtendedDataController>();
+
   @override
   Widget build(BuildContext context) {
     final List<dynamic>? arg =
@@ -104,7 +106,7 @@ class _EventPreviewState extends State<EventPreview> {
                   appBar: AppBar(
                     iconTheme: const IconThemeData(color: kPrimaryColor),
                     actions: [
-                    /*   if(profileextendedcontroller.profileextenddata.value.data!.principalTypeName=="event_manager")
+                      /*   if(profileextendedcontroller.profileextenddata.value.data!.principalTypeName=="event_manager")
                       IconButton(
                         onPressed: () {
                           if (canEdit) {
@@ -119,7 +121,7 @@ class _EventPreviewState extends State<EventPreview> {
                         },
                         icon: const Icon(Icons.edit),
                       ), */
-                        eventsData != null
+                      eventsData != null
                           ? !globalController.hasActiveSubscription.value
                               ? const SizedBox()
                               : IconButton(
@@ -214,7 +216,6 @@ class _EventPreviewState extends State<EventPreview> {
                                     Get.to(() => ChatScreens(
                                           eventIds: eventInnerPreview,
                                         ));
-                                
                                   },
                                   child: Container(
                                     width: 166,
@@ -251,7 +252,6 @@ class _EventPreviewState extends State<EventPreview> {
                                       style: labelStyle.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
-                               
                                     TextButton(
                                       onPressed: () async {
                                         if (!(globalController
@@ -276,14 +276,14 @@ class _EventPreviewState extends State<EventPreview> {
                                               latlong = LatLng(
                                                   currentP.latitude,
                                                   currentP.longitude);
-                                                    await mapbottomsheet( data);
+                                              await mapbottomsheet(data);
                                             } else {
                                               await locationpermission(context,
                                                   text: "To show map",
                                                   filter: false);
                                             }
                                           } else {
-                                           await mapbottomsheet( data);
+                                            await mapbottomsheet(data);
                                           }
                                         }
                                       },
@@ -527,9 +527,12 @@ class _EventPreviewState extends State<EventPreview> {
                                                         eventId:
                                                             eventInnerPreview,
                                                         intrestedAndGoing:
-                                                            'going').then((value) {
-                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
-                                                            });
+                                                            'going')
+                                                    .then((value) {
+                                                  profileextendedcontroller
+                                                      .fetchProfileExtendeddata(
+                                                          context);
+                                                });
                                                 setState(() {});
                                               },
                                               text: 'Going')
@@ -543,9 +546,13 @@ class _EventPreviewState extends State<EventPreview> {
                                                             eventId:
                                                                 eventInnerPreview,
                                                             intrestedAndGoing:
-                                                                'going').then((value) {
-                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
-                                                            });;
+                                                                'going')
+                                                        .then((value) {
+                                                      profileextendedcontroller
+                                                          .fetchProfileExtendeddata(
+                                                              context);
+                                                    });
+                                                    ;
                                                     setState(() {});
                                                   },
                                                   text: 'Going')
@@ -557,9 +564,12 @@ class _EventPreviewState extends State<EventPreview> {
                                                             eventId:
                                                                 eventInnerPreview,
                                                             intrestedAndGoing:
-                                                                'going').then((value) {
-                                              profileextendedcontroller.fetchProfileExtendeddata(context);                 
-                                                            });
+                                                                'going')
+                                                        .then((value) {
+                                                      profileextendedcontroller
+                                                          .fetchProfileExtendeddata(
+                                                              context);
+                                                    });
                                                     setState(() {});
                                                   },
                                                   text: 'Going'),
@@ -907,18 +917,31 @@ class _EventPreviewState extends State<EventPreview> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                             if(data1.venu.createdBy.businessname == null ||
-                              data1.venu.createdBy.instagram == "")
-                        Text(
-                              data1.venu.createdBy.phone == null
+
+                            Text(
+                              data1.venu.createdBy.businessname == null
                                   ? ''
-                                  : data1.venu.createdBy.businessname.toString(),
+                                  : data1.venu.createdBy.businessname
+                                      .toString(),
                               style: paragraphStyle.copyWith(
                                 fontSize: 14,
                                 color: const Color(0xff8C8C8C),
                               ),
                               textAlign: TextAlign.center,
                             ),
+                            // if (data1.venu.createdBy.businessname == null ||
+                            //     data1.venu.createdBy.instagram == "")
+                            //   Text(
+                            //     data1.venu.createdBy.phone == null
+                            //         ? ''
+                            //         : data1.venu.createdBy.businessname
+                            //             .toString(),
+                            //     style: paragraphStyle.copyWith(
+                            //       fontSize: 14,
+                            //       color: const Color(0xff8C8C8C),
+                            //     ),
+                            //     textAlign: TextAlign.center,
+                            //   ),
                           ],
                         ),
                       ),
@@ -1220,187 +1243,118 @@ class _EventPreviewState extends State<EventPreview> {
       },
     );
   }
-  Future<void> mapbottomsheet(EventsModel data) async{
-     currentmarkerIcon =
-                                                await getCustomMarker(
-                                                    "assets/images/themelocation.png",
-                                                    60,
-                                                    80);
-                                       
-                                            LatLng destinationlatlng = LatLng(
-                                                double.parse(data.venu.latitude
-                                                    .toString()),
-                                                double.parse(data.venu.longitude
-                                                    .toString()));
-                                            globaldestinationmarkers = Marker(
-                                              markerId: const MarkerId(
-                                                  "_sourceLocation"), //google
-                                              icon: currentmarkerIcon,
-                                              position: destinationlatlng,
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  context: context,
-                                                  backgroundColor: Colors.white,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return Container(
-                                                      width: double.infinity,
-                                                      decoration: const BoxDecoration(
-                                                          color: Colors.black,
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          15.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          15.0))),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(16),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Text(
-                                                              "${data.title!.capitalizeFirst}",
-                                                              style: headingStyle
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          24),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 13),
-                                                            Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                const Icon(
-                                                                  Icons
-                                                                      .location_on,
-                                                                  color:
-                                                                      kPrimaryColor,
-                                                                ),
-                                                                const SizedBox(
-                                                                    width: 10),
-                                                                Expanded(
-                                                                    child: Text(
-                                                                        "${data.venu.address}",
-                                                                        style:
-                                                                            paragraphStyle))
-                                                              ],
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                            Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                const Icon(
-                                                                  Icons
-                                                                      .watch_later_outlined,
-                                                                  color:
-                                                                      kPrimaryColor,
-                                                                ),
-                                                                const SizedBox(
-                                                                    width: 10),
-                                                                Expanded(
-                                                                  child: Text(
-                                                                      "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
-                                                                      style:
-                                                                          paragraphStyle),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                            const Divider(),
-                                                            const SizedBox(
-                                                                height: 12),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                    'About this event',
-                                                                    style: labelStyle.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight.w500)),
-                                                                const SizedBox(
-                                                                    height: 5),
-                                                                Text(
-                                                                    "${data.description!.capitalizeFirst}",
-                                                                    style:
-                                                                        paragraphStyle),
-                                                                data.keyGuest ==
-                                                                            ' ' ||
-                                                                        data.keyGuest ==
-                                                                            null
-                                                                    ? const SizedBox(
-                                                                        height:
-                                                                            15)
-                                                                    : const SizedBox(),
-                                                                data.keyGuest!
-                                                                        .isNotEmpty
-                                                                    ? Text(
-                                                                        'Key Guest',
-                                                                        style: labelStyle.copyWith(
-                                                                            fontWeight:
-                                                                                FontWeight.w500))
-                                                                    : const SizedBox(),
-                                                                data.keyGuest!
-                                                                        .isNotEmpty
-                                                                    ? const SizedBox(
-                                                                        height:
-                                                                            5)
-                                                                    : const SizedBox(),
-                                                                data.keyGuest!
-                                                                        .isNotEmpty
-                                                                    ? Text(
-                                                                        "${data.keyGuest!.capitalizeFirst}",
-                                                                        style:
-                                                                            paragraphStyle)
-                                                                    : const SizedBox(),
-                                                                data.couponCode!
-                                                                        .isNotEmpty
-                                                                    ? const SizedBox(
-                                                                        height:
-                                                                            15)
-                                                                    : const SizedBox(),
-                                                                const SizedBox(
-                                                                    height: 5),
-                                                              ],
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            );
-                                            Get.to(() => MapViews(
-                                                  eventLocation: LatLng(
-                                                      double.parse(data
-                                                          .venu.latitude
-                                                          .toString()),
-                                                      double.parse(data
-                                                          .venu.longitude
-                                                          .toString())),
-                                                ));
+
+  Future<void> mapbottomsheet(EventsModel data) async {
+    currentmarkerIcon =
+        await getCustomMarker("assets/images/themelocation.png", 60, 80);
+
+    LatLng destinationlatlng = LatLng(
+        double.parse(data.venu.latitude.toString()),
+        double.parse(data.venu.longitude.toString()));
+    globaldestinationmarkers = Marker(
+      markerId: const MarkerId("_sourceLocation"), //google
+      icon: currentmarkerIcon,
+      position: destinationlatlng,
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          backgroundColor: Colors.white,
+          builder: (BuildContext context) {
+            return Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0))),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "${data.title!.capitalizeFirst}",
+                      style: headingStyle.copyWith(fontSize: 24),
+                    ),
+                    const SizedBox(height: 13),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          color: kPrimaryColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: Text("${data.venu.address}",
+                                style: paragraphStyle))
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.watch_later_outlined,
+                          color: kPrimaryColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                              "${getTimeDifference(stringToTimeOfDay("${data.startTime}"), stringToTimeOfDay("${data.endTime}")).toStringAsFixed(1)}",
+                              style: paragraphStyle),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('About this event',
+                            style: labelStyle.copyWith(
+                                fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 5),
+                        Text("${data.description!.capitalizeFirst}",
+                            style: paragraphStyle),
+                        data.keyGuest == ' ' || data.keyGuest == null
+                            ? const SizedBox(height: 15)
+                            : const SizedBox(),
+                        data.keyGuest!.isNotEmpty
+                            ? Text('Key Guest',
+                                style: labelStyle.copyWith(
+                                    fontWeight: FontWeight.w500))
+                            : const SizedBox(),
+                        data.keyGuest!.isNotEmpty
+                            ? const SizedBox(height: 5)
+                            : const SizedBox(),
+                        data.keyGuest!.isNotEmpty
+                            ? Text("${data.keyGuest!.capitalizeFirst}",
+                                style: paragraphStyle)
+                            : const SizedBox(),
+                        data.couponCode!.isNotEmpty
+                            ? const SizedBox(height: 15)
+                            : const SizedBox(),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+    Get.to(() => MapViews(
+          eventLocation: LatLng(double.parse(data.venu.latitude.toString()),
+              double.parse(data.venu.longitude.toString())),
+        ));
   }
 
   Future<void> _launchUrl(_url) async {

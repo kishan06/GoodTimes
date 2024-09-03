@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,9 @@ import 'package:good_times/view-models/global_controller.dart';
 import 'package:good_times/views/screens/event_manager/home.dart';
 import 'package:good_times/views/screens/profile/profile.dart';
 import 'package:good_times/views/screens/wallet/wallet.dart';
+import 'package:good_times/views/widgets/common/connection_timeout.dart';
+import 'package:good_times/views/widgets/common/no_internet.dart';
+import 'package:good_times/views/widgets/common/parent_widget.dart';
 import '../../../data/models/account_trasfer_modal.dart';
 import '../../../data/models/profile.dart';
 import '../../../data/repository/endpoints.dart';
@@ -39,7 +43,8 @@ class HomeMain extends StatefulWidget {
 
 class _HomeMainState extends State<HomeMain> {
   HomePageController homePageController = Get.put(HomePageController());
-  GlobalController globalController = Get.put(GlobalController(),permanent:true);
+  GlobalController globalController =
+      Get.put(GlobalController(), permanent: true);
   bool isLoading = true;
   bool isPasswordChange = GetStorage().read('isPasswordChanged') ?? false;
   bool isAccountTransferd = false;
@@ -135,15 +140,26 @@ class _HomeMainState extends State<HomeMain> {
 
   ProfileExtendedDataController profileextendedcontroller =
       Get.put(ProfileExtendedDataController(), permanent: true);
+  // @override
+  // void initState() {
+  //   // homePageController = Get.put(HomePageController());
+  //   // listenDynamicLinks();
+
+  //   getProfileDetails();
+  //   profileextendedcontroller.fetchProfileExtendeddata(context);
+  //   senUserPlayer();
+  //   super.initState();
+  // }
+
+  // ConnectivityResult connectivityResult = ConnectivityResult.none;
+
   @override
   void initState() {
-    // homePageController = Get.put(HomePageController());
-    // listenDynamicLinks();
+    super.initState();
+    listenDynamicLinks();
     getProfileDetails();
     profileextendedcontroller.fetchProfileExtendeddata(context);
-
     senUserPlayer();
-    super.initState();
   }
 
   // profile view api called
@@ -157,7 +173,7 @@ class _HomeMainState extends State<HomeMain> {
         } else if (data.principalTypeName == "event_manager") {
           homePageController.isUser.value = eventManager;
         }
-      
+
         if (data.principalTypeName == "event_manager") {
           checkIsPasswordChage();
         } else {
@@ -211,10 +227,13 @@ class _HomeMainState extends State<HomeMain> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Center(
-          child: CircularProgressIndicator()); // Or any other loading widget
-    }
+    // if (connectivityController.isConnected.value == false) {
+    //   const NoInternetConnection();
+    // }
+    // if (isLoading) {
+    //   return const Center(
+    //       child: CircularProgressIndicator()); // Or any other loading widget
+    // }
 
     // if (isAccountTransferd) {
     //   if(!isPasswordChange){
@@ -236,8 +255,19 @@ class _HomeMainState extends State<HomeMain> {
       // const Chat(),
     ];
     bool val = false;
+
     return WillPopScope(
       child: Obx(() {
+        if (connectivityController.isConnected.value == true) {
+          // advanceFilterController.clearAllFilter();
+          // AdvanceFilterService().advanceFilterEventServices(context);
+          globalController.serverError.value = false;
+          globalController.connectionTimeout.value = false;
+
+          if (profileextendedcontroller.profileextenddata.value.data == null) {
+            profileextendedcontroller.fetchProfileExtendeddata(context);
+          }
+        }
         return footerWidget[curentIndex.value];
       }),
       onWillPop: () async {

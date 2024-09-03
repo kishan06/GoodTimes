@@ -7,18 +7,34 @@ import 'connection_timeOut.dart';
 import 'no_internet.dart';
 import 'server_error.dart';
 
-ConnectivityController connectivityController = Get.put(ConnectivityController());
-  GlobalController globalController = Get.put(GlobalController());
+ConnectivityController connectivityController =
+    Get.put(ConnectivityController());
+GlobalController globalController = Get.put(GlobalController());
 Widget parentWidgetWithConnectivtyChecker({child}) {
   return Obx(() {
-    if(globalController.connectionTimeout.value==true){
-      return  const ConnectTimeOut();
-    }else if (connectivityController.isConnected.value == false){
+    if (globalController.connectionTimeout.value == true) {
+      return const ConnectTimeOut();
+    } else if (connectivityController.isConnected.value == false) {
       return const NoInternetConnection();
-    } if(globalController.serverError.value == true){
+    }
+    if (globalController.serverError.value == true) {
       return const ServerError();
     } else {
       return child;
     }
   });
 }
+
+// Widget parentWidgetWithConnectivtyChecker({required Widget child}) {
+//   return Obx(() {
+//     if (globalController.connectionTimeout.value) {
+//       return const ConnectTimeOut();
+//     } else if (!connectivityController.isConnected.value) {
+//       return const NoInternetConnection();
+//     } else if (globalController.serverError.value) {
+//       return const ServerError();
+//     } else {
+//       return child;
+//     }
+//   });
+// }

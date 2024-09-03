@@ -200,6 +200,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: GestureDetector(onTap: () {
           unfoucsKeyboard(context);
         }, child: Obx(() {
+          if (advanceFilterController.eventModalcontroller.isEmpty) {
+             advanceFilterController.clearAllFilter();
+            AdvanceFilterService().advanceFilterEventServices(context);
+            globalController.serverError.value = false;
+          }
+
           return Stack(
             children: [
               Scaffold(
@@ -547,10 +553,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     !allowfilter.value
-                        ? ReusableSkeletonAvatar(
-                            height: 40,
-                            width: 242,
-                            borderRadius: BorderRadius.circular(5),
+                        ? Expanded(
+                            child: ReusableSkeletonAvatar(
+                              height: 40,
+                              width: double.infinity,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                           )
                         : Expanded(
                             child: Container(

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/widgets/common/button.dart';
+import 'package:good_times/views/widgets/signout.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../../data/repository/services/advance_filter_service.dart';
+import '../../../view-models/SubscriptionPreference.dart';
 
 class NoInternetConnection extends StatefulWidget {
   static const String routeName = 'noInternet';
@@ -14,6 +18,7 @@ class NoInternetConnection extends StatefulWidget {
 class _NoInternetConnectionState extends State<NoInternetConnection> {
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Center(
           child: Padding(
@@ -21,7 +26,7 @@ class _NoInternetConnectionState extends State<NoInternetConnection> {
         child: Column(
           children: [
             const Spacer(),
-            Lottie.asset('assets/images/lottie/no-internet.json',height: 400),
+            Lottie.asset('assets/images/lottie/no-internet.json', height: 400),
             const SizedBox(height: 16),
             const Text(
               'No Internet Connection!',
@@ -42,9 +47,11 @@ class _NoInternetConnectionState extends State<NoInternetConnection> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
-            myElevatedButtonOutline(text: 'Try Again', onPressed: () {
-              setState(() {});
-            }),
+            // myElevatedButtonOutline(
+            //     text: 'Try Again',
+            //     onPressed: () {
+            //       setState(() {});
+            //     }),
             const Spacer(),
           ],
         ),

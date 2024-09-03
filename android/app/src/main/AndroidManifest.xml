@@ -9,11 +9,28 @@ xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 
+  <queries>
+        <!-- This queries Facebook's package to ensure it is installed -->
+        <package android:name="com.facebook.katana" />
+            <package android:name="com.twitter.android" />
+            <package android:name="com.instagram.android" />
+    </queries>
+
     <application
         android:label="Good Times"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
+
+         <provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.fileprovider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+    </provider>
         <activity
             android:name=".MainActivity"
             android:exported="true"
