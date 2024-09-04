@@ -40,7 +40,7 @@ class HomeMain extends StatefulWidget {
   @override
   State<HomeMain> createState() => _HomeMainState();
 }
-
+//trial commit
 class _HomeMainState extends State<HomeMain> {
   HomePageController homePageController = Get.put(HomePageController());
   GlobalController globalController =
@@ -265,7 +265,14 @@ class _HomeMainState extends State<HomeMain> {
           globalController.connectionTimeout.value = false;
 
           if (profileextendedcontroller.profileextenddata.value.data == null) {
-            profileextendedcontroller.fetchProfileExtendeddata(context);
+            profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
+            if (profileextendedcontroller.profileextenddata.value.data!.principalTypeName == "event_user") {
+          homePageController.isUser.value = eventUser;
+        } else if (profileextendedcontroller.profileextenddata.value.data!.principalTypeName == "event_manager") {
+          homePageController.isUser.value = eventManager;
+        }}
+            );
+            print("//");
           }
         }
         return footerWidget[curentIndex.value];

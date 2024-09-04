@@ -15,6 +15,7 @@ import '../../../../utils/helper.dart';
 import '../../../../utils/temp.dart';
 import '../../../widgets/common/parent_widget.dart';
 import '../../../widgets/common/textformfield.dart';
+import 'event_preivew.dart';
 
 class EventTitile extends StatefulWidget {
   static const String routeName = "eventTitile";
@@ -506,7 +507,11 @@ checkstartTimeIsBeforeFun(){
                         // const Spacer(),
                         const SizedBox(height: 50),
                         MyElevatedButton(
-                          onPressed: waiting
+                          onPressed:/* (){
+                             Navigator.pushNamed(
+                                        context, CreatedEventPreview.routeName);
+
+                          }, */ waiting
                               ? null
                               : () {
                                  unfoucsKeyboard(context);
@@ -556,7 +561,7 @@ checkstartTimeIsBeforeFun(){
                                     endDateTime.value = false;
                                     // setState(() {
                                     // });
-                                  }
+                                  } 
                                 },
                           text: 'Continue',
                         ),

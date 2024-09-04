@@ -390,7 +390,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                           });
                         }
                       },
-                      text: isSaved ? 'Saved' : 'Save',
+                      text: isSaved ? 'Share' : 'Save',
                     ),
                   ),
                   SizedBox(height: 30),
