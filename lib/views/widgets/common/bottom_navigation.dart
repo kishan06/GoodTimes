@@ -20,7 +20,7 @@ class _BottomNavigationBarsState extends State<BottomNavigationBars> {
   @override
   Widget build(BuildContext context) {
      List<String> footerString = [
-     (homePageController.isUser.value==eventManager)?"Explore":"Explore",
+     (homePageController.isUser.value==eventManager)?"Explore///":"Explore//1",
      (homePageController.isUser.value==eventManager)?'Events':"Wallet",
      if(homePageController.isUser.value==eventManager)'Wallet',
     'Profile',
