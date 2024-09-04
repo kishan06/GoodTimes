@@ -31,9 +31,9 @@ class Endpoints {
 //https://deciding-firmly-fly.ngrok-free.app/api
 
   //!production urls of client
- /*  static const domain = "https://admin.goodtimesltd.co.uk";
-  static const _base = "https://admin.goodtimesltd.co.uk/api/";
-  static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/";  */
+  // static const domain = "https://admin.goodtimesltd.co.uk";
+  // static const _base = "https://admin.goodtimesltd.co.uk/api/";
+  // static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/";
 
   // websocket url
   //Production on clinet server base websocketurl
