@@ -40,7 +40,7 @@ class HomeMain extends StatefulWidget {
   @override
   State<HomeMain> createState() => _HomeMainState();
 }
-
+//trial commit
 class _HomeMainState extends State<HomeMain> {
   HomePageController homePageController = Get.put(HomePageController());
   GlobalController globalController =
