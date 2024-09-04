@@ -18,9 +18,11 @@ class Endpoints {
   // static const chatDomain= "ws://chat.goodtimes.betadelivery.com/ws/chat/";
 
   //!stagging urls of client
-  // static const domain = "https://staging.goodtimesltd.co.uk";
-  // static const _base = "https://staging.goodtimesltd.co.uk/api/";
-  // static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
+  static const domain = "https://staging.goodtimesltd.co.uk";
+  static const _base = "https://staging.goodtimesltd.co.uk/api/";
+  
+
+  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
 
   //cutome url
   /* static const domain = "https://deciding-firmly-fly.ngrok-free.app";
@@ -29,9 +31,9 @@ class Endpoints {
 //https://deciding-firmly-fly.ngrok-free.app/api
 
   //!production urls of client
-  static const domain = "https://admin.goodtimesltd.co.uk";
-  static const _base = "https://admin.goodtimesltd.co.uk/api/";
-  static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/";
+  // static const domain = "https://admin.goodtimesltd.co.uk";
+  // static const _base = "https://admin.goodtimesltd.co.uk/api/";
+  // static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/";
 
   // websocket url
   //Production on clinet server base websocketurl
@@ -148,5 +150,9 @@ class Endpoints {
   static const accountTransfer = _base + "account/transfer-check/";
   static const accountTransferDone = _base + "account/transfer-check/";
   static const eventCategoryDrawar = _base + "events/preferences/";
-  static const profileextendeddata = _base + "account/profile/extended-data/";
+  static const profileextendeddata=_base + "account/profile/extended-data/";
+
+//SocialShare
+ static const socialshare = _base + "events/post-to-social-media/";
+
 }
