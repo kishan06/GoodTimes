@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:good_times/utils/constant.dart';
 
+import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/bootomnavigation_controller.dart';
 
 RxInt curentIndex = 0.obs;
@@ -17,19 +18,33 @@ class BottomNavigationBars extends StatefulWidget {
 class _BottomNavigationBarsState extends State<BottomNavigationBars> {
   HomePageController homePageController = Get.put(HomePageController());
  
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
   @override
   Widget build(BuildContext context) {
      List<String> footerString = [
-     (homePageController.isUser.value==eventManager)?"Explore///":"Explore//1",
-     (homePageController.isUser.value==eventManager)?'Events':"Wallet",
-     if(homePageController.isUser.value==eventManager)'Wallet',
+     (profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")?"Explore":"Explore",
+     (profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")?'Events':"Wallet",
+     if(profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")'Wallet',
     'Profile',
     // 'Chat',
   ];
   List<String> footerIcons = [
-  (homePageController.isUser.value==eventManager)?'explore':'explore',
-  (homePageController.isUser.value==eventManager)?"events":'wallet',
-  if(homePageController.isUser.value==eventManager)"wallet",
+  (profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")?'explore':'explore',
+  (profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")?"events":'wallet',
+  if(profileextendedcontroller
+              .profileextenddata.value.data!.principalTypeName ==
+          "event_manager")"wallet",
   'user',
     // 'chat',
   ];
