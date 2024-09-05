@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:good_times/utils/constant.dart';
+import 'package:good_times/utils/temp.dart';
 import 'package:good_times/views/screens/event_manager/create-event/event_title.dart';
 
 import '../../../data/models/events_model.dart';
@@ -22,9 +23,10 @@ class EventeManagerHome extends StatefulWidget {
   State<EventeManagerHome> createState() => _EventeManagerHomeState();
 }
 
-class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProviderStateMixin {
+class _EventeManagerHomeState extends State<EventeManagerHome>
+    with TickerProviderStateMixin {
   late TabController _tabController;
-    GlobalController globalcontroller = Get.find();
+  GlobalController globalcontroller = Get.find();
   String activeTab = 'active';
   @override
   void initState() {
@@ -48,7 +50,8 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
                 tabAlignment: TabAlignment.fill,
                 labelColor: kTextWhite,
                 unselectedLabelColor: kTextWhite.withOpacity(0.6),
-                labelStyle: paragraphStyle.copyWith(fontWeight: FontWeight.w500),
+                labelStyle:
+                    paragraphStyle.copyWith(fontWeight: FontWeight.w500),
                 controller: _tabController,
                 indicatorColor: kPrimaryColor,
                 onTap: (int index) {
@@ -119,14 +122,16 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
                                         children: [
                                           ReusableSkeletonAvatar(
                                             height: 10,
-                                            width:
-                                                MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                           ),
                                           const SizedBox(height: 10),
                                           ReusableSkeletonAvatar(
                                             height: 10,
-                                            width:
-                                                MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                           ),
                                         ],
                                       ),
@@ -135,7 +140,8 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
                                     Expanded(
                                       child: ReusableSkeletonAvatar(
                                         height: 10,
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                       ),
                                     ),
                                   ],
@@ -149,14 +155,16 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
               ),
             ],
           ),
-          floatingActionButton: (globalcontroller.hasActiveSubscription.value)?FloatingActionButton(
-            backgroundColor: kPrimaryColor,
-            shape: const CircleBorder(),
-            onPressed: () {
-              Navigator.pushNamed(context, EventTitile.routeName);
-            },
-            child: const Icon(Icons.add, size: 28),
-          ):const SizedBox(),
+          floatingActionButton: (globalcontroller.hasActiveSubscription.value)
+              ? FloatingActionButton(
+                  backgroundColor: kPrimaryColor,
+                  shape: const CircleBorder(),
+                  onPressed: () {
+                    Navigator.pushNamed(context, EventTitile.routeName);
+                  },
+                  child: const Icon(Icons.add, size: 28),
+                )
+              : const SizedBox(),
           bottomNavigationBar: const BottomNavigationBars(),
         ),
       ),
@@ -170,10 +178,11 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
             shrinkWrap: true,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: (){
+                onTap: () {
+                  TempData.eventIdIndex = data[index].id;
                   log("events id ${data[index].id}");
-                   Navigator.pushNamed(context, EventPreview.routeName,
-            arguments: [data[index].id,data[index]] );
+                  Navigator.pushNamed(context, EventPreview.routeName,
+                      arguments: [TempData.eventIdIndex, data[index]]);
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +195,8 @@ class _EventeManagerHomeState extends State<EventeManagerHome> with TickerProvid
                             fit: BoxFit.cover)),
                     const SizedBox(height: 18),
                     Text(data[index].title!.capitalizeFirst.toString(),
-                        style: labelStyle.copyWith(fontWeight: FontWeight.w600)),
+                        style:
+                            labelStyle.copyWith(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 18),
                   ],
                 ),

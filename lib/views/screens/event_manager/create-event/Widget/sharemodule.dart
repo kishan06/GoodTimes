@@ -6,27 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:good_times/data/repository/services/event_manager.dart';
+import 'package:good_times/data/repository/services/social_share.dart';
+import 'package:good_times/utils/temp.dart';
 
-import '../../../../data/repository/response_data.dart';
-import '../../../../data/repository/services/event_manager.dart';
-import '../../../../data/repository/services/social_share.dart';
-import '../../../../utils/loading.dart';
-import '../../../../utils/temp.dart';
-import '../../../../view-models/global_controller.dart';
+import '../../../../../data/repository/response_data.dart';
+import '../../../../../utils/loading.dart';
+import '../../../../../view-models/global_controller.dart';
 
-class BottomSheetContent extends StatefulWidget {
-  const BottomSheetContent({super.key});
-
-  @override
-  State<BottomSheetContent> createState() => _BottomSheetContentState();
-}
-
-class _BottomSheetContentState extends State<BottomSheetContent> {
+final appinioSocialShare = AppinioSocialShare();
+GlobalController globalController = Get.find();
+void onSaveBottomsheet(BuildContext context, {int? eventid}) {
   bool isExpanded = false;
   bool waiting = false;
   // late List<EventsModel> data;
   final appinioSocialShare = AppinioSocialShare();
-  GlobalController globalController = Get.find();
 
   void shareToFacebook(String caption, String imagePath) async {
     bool isInstalled = await DeviceApps.isAppInstalled('com.facebook.katana');
@@ -35,6 +29,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
         await appinioSocialShare.shareToFacebook(
           text: caption,
           filePath: imagePath,
+          
         );
       } catch (e) {
         print("Failed to share on Facebook: $e");
@@ -79,8 +74,8 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Get.bottomSheet(isScrollControlled: true,
+      StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -129,7 +124,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
             SizedBox(
               height: 30,
             ),
-        Padding(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +185,8 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                      eventid: eventmodelobj!.last.id + 1,
+                                  eventid: eventid,
+                                      // eventid: eventmodelobj!.last.id + 1,
                                       platforms: 'instagram')
                                   .then((value) {
                                 if (value.responseStatus ==
@@ -250,7 +246,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                      eventid: eventmodelobj!.last.id + 1,
+                                    eventid: eventid,
                                       platforms: 'facebook')
                                   .then((value) {
                                 if (value.responseStatus ==
@@ -311,7 +307,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                      eventid: eventmodelobj!.last.id + 1,
+                                      eventid: eventid,
                                       platforms: 'twitter')
                                   .then((value) {
                                 if (value.responseStatus ==
@@ -372,7 +368,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                      eventid: eventmodelobj!.last.id + 1,
+                                    eventid: eventid,
                                       platforms: 'all')
                                   .then((value) {
                                 if (value.responseStatus ==
@@ -753,5 +749,5 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
         ),
       ),
     );
-  }
+  }));
 }

@@ -46,7 +46,7 @@ class EditEventTitileState extends State<EditEventTitile> {
   List<VenuModel> venuList = [];
   List<EventCategoriesModdel> categoryList = [];
   List<ageData> ageList = [];
-
+ 
   @override
   void initState() {
     super.initState();
@@ -537,12 +537,13 @@ class EditEventTitileState extends State<EditEventTitile> {
                                       endTime: toTime);
                                   // Navigator.pushNamed(
                                   //     context, EditEvent);
-                                  Get.to(() => EditEvent(
-                                        eventData: widget.eventData,
-                                        venuList: venuList,
-                                        categoryList: categoryList,
-                                        ageGroupList: ageList,
-                                      ));
+                                  Get.to(
+                                      () => EditEvent(
+                                            eventData: widget.eventData,
+                                            venuList: venuList,
+                                            categoryList: categoryList,
+                                            ageGroupList: ageList,
+                                          ),);
                                   log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
                                 }
                                 // start date and time validation

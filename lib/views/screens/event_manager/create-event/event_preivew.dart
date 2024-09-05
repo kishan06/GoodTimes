@@ -18,7 +18,6 @@ import 'package:good_times/data/repository/response_data.dart';
 import 'package:good_times/data/repository/services/event_manager.dart';
 import 'package:good_times/data/repository/services/social_share.dart';
 import 'package:good_times/utils/constant.dart';
-import 'package:good_times/views/screens/event_manager/create-event/share_module.dart';
 import 'package:good_times/views/screens/home/main_home.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +30,7 @@ import '../../../../utils/temp.dart';
 import '../../../../view-models/evevnt_filter_controller.dart';
 import '../../../../view-models/global_controller.dart';
 import '../../../widgets/common/parent_widget.dart';
+import 'Widget/sharemodule.dart';
 
 class CreatedEventPreview extends StatefulWidget {
   static const String routeName = "createdEventPreview";
@@ -335,7 +335,8 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                         MyElevatedButton(
                       onPressed: () {
                         if (isSaved) {
-                          onSaveBottomsheet();
+                          onSaveBottomsheet(context,
+                              eventid: eventmodelobj!.last.id + 1);
                         } else {
                           log("check entry type ${TempData.eventEntryType}");
 
@@ -376,7 +377,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                               });
                               // clearAllTempData();
                               // Navigator.pop(context);
-                              onSaveBottomsheet();
+                              onSaveBottomsheet(context, eventid:  eventmodelobj!.last.id + 1);
                             } else if (value.responseStatus ==
                                 ResponseStatus.failed) {
                               setState(() {
@@ -471,9 +472,4 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
     globalController.eventPhotosmgPath.clear();
     globalController.eventThumbnailImgPath.value = '';
   }
-
-  void onSaveBottomsheet() {
-    Get.bottomSheet(isScrollControlled: true, BottomSheetContent());
-  }
 }
-

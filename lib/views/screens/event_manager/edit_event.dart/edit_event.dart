@@ -82,8 +82,10 @@ class _EditCreateEventState extends State<EditEvent> {
   ProfileModel? profileData;
   var isPaid = ''.obs;
 
+
   @override
   void initState() {
+    
     tempImgs.clear();
     if (widget.eventData.thumbnail != null) {
       globalController.thumbImgType.value = ImgTypes.network.index;
@@ -695,8 +697,7 @@ class _EditCreateEventState extends State<EditEvent> {
                                                                     color: Colors
                                                                         .white),
                                                               ),
-                                                              onTap: () {
-                                                              },
+                                                              onTap: () {},
                                                             ),
                                                             const SizedBox(
                                                                 width: 4.0),
@@ -811,7 +812,7 @@ class _EditCreateEventState extends State<EditEvent> {
     //     tagsError = 'Please enter tags';
     //   });
     // }
-    Get.to(() => EditedEventPreview(eventData: widget.eventData));
+    Get.to(() => EditedEventPreview(eventData: widget.eventData), );
     log('validation success');
     addDataToEvent(
       selectedVenue: selectedVenue,
