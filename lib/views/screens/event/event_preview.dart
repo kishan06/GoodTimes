@@ -7,10 +7,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/common/scaffold_snackbar.dart';
 import 'package:good_times/data/repository/response_data.dart';
+import 'package:good_times/data/repository/services/event_manager.dart';
 import 'package:good_times/utils/constant.dart';
 import 'package:good_times/view-models/global_controller.dart';
 import 'package:good_times/views/screens/chat/chat.dart';
 import 'package:good_times/views/screens/event/wiget/slier.dart';
+import 'package:good_times/views/screens/event_manager/create-event/Widget/sharemodule.dart';
 import 'package:good_times/views/widgets/common/bottom_sheet.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -59,7 +61,7 @@ class _EventPreviewState extends State<EventPreview> {
   @override
   void initState() {
     super.initState();
-    log('event id called');
+    // log('event id called  ---> ${Get.arguments[0]}');
     EventCountReportServices()
         .eventCountReportServices(context, id: Get.arguments[0]);
     sliderImage = [];
@@ -128,7 +130,7 @@ class _EventPreviewState extends State<EventPreview> {
                                   onPressed: () {
                                     if (canEdit) {
                                       Get.to(
-                                        () => EditEventTitile(eventData: data),
+                                        () => EditEventTitile(eventData: data), 
                                       );
                                     } else {
                                       snackBarError(context,
@@ -157,6 +159,7 @@ class _EventPreviewState extends State<EventPreview> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          // log("on tap event {}")
                           EasyDebounce.debounce(
                               'my-debouncer', const Duration(seconds: 1), () {
                             initDeepLinkData(eventInnerPreview, 'event_id');
@@ -171,6 +174,7 @@ class _EventPreviewState extends State<EventPreview> {
                                       id: Get.arguments[0]);
                             });
                           });
+                          // onSaveBottomsheet(context, eventid: Get.arguments[0]);
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
