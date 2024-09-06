@@ -60,6 +60,7 @@ class _ProfileState extends State<Profile> {
     }
     globalContoller.profileImgPath.value = userData.profilePhoto;
   }
+
   ProfileExtendedDataController profileextendedcontroller =
       Get.find<ProfileExtendedDataController>();
   @override
@@ -156,7 +157,12 @@ class _ProfileState extends State<Profile> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                     profileextendedcontroller.profileextenddata.value.data!.goingEventsCount!.toString(), //only going data will see here
+                                      profileextendedcontroller
+                                          .profileextenddata
+                                          .value
+                                          .data!
+                                          .goingEventsCount!
+                                          .toString(), //only going data will see here
                                       style: paragraphStyle.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -176,10 +182,11 @@ class _ProfileState extends State<Profile> {
                                                 height: 15,
                                                 decoration: BoxDecoration(
                                                     color: globalContoller
-                                                            .hasActiveSubscription
-                                                            .value || globalContoller
-                                                        .hasActiveGracePeriod
-                                                        .value
+                                                                .hasActiveSubscription
+                                                                .value ||
+                                                            globalContoller
+                                                                .hasActiveGracePeriod
+                                                                .value
                                                         ? kTextSuccess
                                                         : kTextError,
                                                     borderRadius:
@@ -190,10 +197,11 @@ class _ProfileState extends State<Profile> {
                                               const SizedBox(width: 10),
                                               Text(
                                                 globalContoller
-                                                        .hasActiveSubscription
-                                                        .value || globalContoller
-                                                        .hasActiveGracePeriod
-                                                        .value
+                                                            .hasActiveSubscription
+                                                            .value ||
+                                                        globalContoller
+                                                            .hasActiveGracePeriod
+                                                            .value
                                                     ? "Active"
                                                     : "Inactive",
                                                 style:
@@ -203,28 +211,31 @@ class _ProfileState extends State<Profile> {
                                           ),
                                         ),
                                         OutlinedButton(
-                                                onPressed: () {
-                                                   redirectsubscribe(
-                                                          context).then((value) {
-                    profileextendedcontroller.fetchProfileExtendeddata(context);
-                  });
-                                            
-                                                },
-                                                style: OutlinedButton.styleFrom(
-                                                  side: const BorderSide(
-                                                      width: 1.0,
-                                                      color: kPrimaryColor),
-                                                ),
-                                                child: Text(
-                                                  globalContoller.hasActiveSubscription.value
-                                                  ?"View"
-                                                  :globalContoller
+                                            onPressed: () {
+                                              redirectsubscribe(context)
+                                                  .then((value) {
+                                                profileextendedcontroller
+                                                    .fetchProfileExtendeddata(
+                                                        context);
+                                              });
+                                            },
+                                            style: OutlinedButton.styleFrom(
+                                              side: const BorderSide(
+                                                  width: 1.0,
+                                                  color: kPrimaryColor),
+                                            ),
+                                            child: Text(
+                                              globalContoller
+                                                      .hasActiveSubscription
+                                                      .value
+                                                  ? "View"
+                                                  : globalContoller
                                                           .hasActiveGracePeriod
                                                           .value
                                                       ? "Renew"
                                                       : "Join Us",
-                                                  style: paragraphStyle,
-                                                ))
+                                              style: paragraphStyle,
+                                            ))
                                       ],
                                     ),
                                   ],
@@ -412,9 +423,9 @@ class _ProfileState extends State<Profile> {
                     } else {
                       advanceFilterController.clearAllFilter();
                     }
-                   
-                      curentIndex.value = 0;
-                  
+
+                    curentIndex.value = 0;
+
                     SignOutAccountService().signOutAccountService(context);
                     GetStorage().write('accessToken', null);
                     GetStorage().write('profileStatus', null);
@@ -422,6 +433,9 @@ class _ProfileState extends State<Profile> {
                     globalContoller.profileImgPath.value = '';
                     globalReferralCode = '';
                     AdvanceFilterController().clearAllFilter();
+                    profileextendedcontroller
+                        .profileextenddata.value.data!.principalTypeName = '';
+                    homePageController.isUser.value = '';
 
                     handleSignOut();
                     Navigator.pushNamedAndRemoveUntil(

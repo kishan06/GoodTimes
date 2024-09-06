@@ -46,7 +46,7 @@ class EditEventTitileState extends State<EditEventTitile> {
   List<VenuModel> venuList = [];
   List<EventCategoriesModdel> categoryList = [];
   List<ageData> ageList = [];
- 
+
   @override
   void initState() {
     super.initState();
@@ -304,8 +304,8 @@ class EditEventTitileState extends State<EditEventTitile> {
                       textFormField(
                         controller: _eventTitle,
                         inputFormate: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^[a-zA-Z\s]+$')),
+                          FilteringTextInputFormatter.allow(RegExp(
+                              r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
                         ],
                         validationFunction: (values) {
                           var value = values.trim();
@@ -330,7 +330,7 @@ class EditEventTitileState extends State<EditEventTitile> {
                         controller: _eventDescriptions,
                         inputFormate: [
                           FilteringTextInputFormatter.allow(RegExp(
-                              r'^[a-zA-Z0-9!@#\$%^&*(),.?":{}|<>_-\s]+$')),
+                              r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
                         ],
                         validationFunction: (values) {
                           var value = values.trim();
@@ -538,12 +538,13 @@ class EditEventTitileState extends State<EditEventTitile> {
                                   // Navigator.pushNamed(
                                   //     context, EditEvent);
                                   Get.to(
-                                      () => EditEvent(
-                                            eventData: widget.eventData,
-                                            venuList: venuList,
-                                            categoryList: categoryList,
-                                            ageGroupList: ageList,
-                                          ),);
+                                    () => EditEvent(
+                                      eventData: widget.eventData,
+                                      venuList: venuList,
+                                      categoryList: categoryList,
+                                      ageGroupList: ageList,
+                                    ),
+                                  );
                                   log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
                                 }
                                 // start date and time validation

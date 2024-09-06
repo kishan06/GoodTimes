@@ -16,8 +16,11 @@ import 'package:good_times/data/models/Organisation_model.dart';
 import 'package:good_times/data/models/events_model.dart';
 import 'package:good_times/data/repository/response_data.dart';
 import 'package:good_times/data/repository/services/event_manager.dart';
+import 'package:good_times/data/repository/services/get_event_services.dart';
 import 'package:good_times/data/repository/services/social_share.dart';
 import 'package:good_times/utils/constant.dart';
+import 'package:good_times/views/screens/event_manager/edit_event.dart/edit_event.dart';
+import 'package:good_times/views/screens/event_manager/edit_event.dart/edit_event_title.dart';
 import 'package:good_times/views/screens/home/main_home.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +49,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
   bool isSaved = false;
 
   RxBool sharecheck = false.obs;
-
+  EventsModel? eventsmodeldata;
   @override
   Widget build(BuildContext context) {
     return parentWidgetWithConnectivtyChecker(
@@ -81,7 +84,21 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    if (isSaved) {
+                      if (eventsmodeldata != null) {
+                        Get.to(
+                          () => EditEventTitile(eventData: eventsmodeldata!),
+                        );
+                      }
+
+                      // Get.to(
+                      //                                     () => EditEventTitile(eventData: data),
+                      //                                   );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
                   icon: Icon(Icons.edit_outlined),
                 ),
               ],
@@ -270,70 +287,8 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: scaffoldPadding),
-                    child:
-
-                        // MyElevatedButton(
-                        //     //  loader: waiting
-                        //     //           ? const CircularProgressIndicator()
-                        //     //           : const SizedBox(),
-                        //     onPressed: () {
-                        //       log("check entry type ${TempData.eventEntryType}");
-                        //       //   onSaveBottomsheet();
-
-                        //       // showWaitingDialoge(context: context, loading: waiting);
-                        //       // setState(() {
-                        //       //   waiting = true;
-                        //       // });
-                        //       CreateEventService()
-                        //           .createEventServices(context,
-                        //               title: TempData.evetTitle,
-                        //               ageGroup: TempData.ageGroup,
-                        //               description: TempData.evetDescription,
-                        //               startDate: TempData.evetStartDate,
-                        //               category: TempData.category,
-                        //               enteryFee: TempData.eventEntryCost,
-                        //               guest: TempData.eventKeyGuest,
-                        //               fromTime: TempData.evetStartTime,
-                        //               endDate: TempData.evetEndDate,
-                        //               toTime: TempData.evetEndTime,
-                        //               entryType: TempData.eventEntryType,
-                        //               venue: TempData.selectVenu,
-                        //               venueCapacity: TempData.eventCapcity,
-                        //               tags: TempData.eventTags,
-                        //               couponCodeController: TempData.couponCode,
-                        //               couponDescriptionController:
-                        //                   TempData.couponCodeDescription,
-                        //               draft: false,
-                        //               thumbnailImg: globalController
-                        //                   .eventThumbnailImgPath.value,
-                        //               images: globalController.eventPhotosmgPath)
-                        //           .then((value) {
-                        //         if (value.responseStatus == ResponseStatus.success) {
-                        //           setState(() {
-                        //             waiting = false;
-                        //           });
-                        //           // clearAllTempData();
-                        //           // Navigator.pop(context);
-
-                        //           // Navigator.pushNamedAndRemoveUntil(
-                        //           //   context,
-                        //           //   HomeMain.routeName,
-                        //           //   (route) => true,
-                        //           // );
-                        //           onSaveBottomsheet();
-                        //         }
-                        //         if (value.responseStatus == ResponseStatus.failed) {
-                        //           setState(() {
-                        //             waiting = false;
-                        //           });
-                        //           Navigator.pop(context);
-                        //         }
-                        //       });
-                        //     },
-                        //     text: 'Save'),
-
-                        MyElevatedButton(
-                      onPressed: () {
+                    child: MyElevatedButton(
+                      onPressed: () async {
                         if (isSaved) {
                           onSaveBottomsheet(context,
                               eventid: eventmodelobj!.last.id + 1);
@@ -365,19 +320,28 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                                 globalController.eventThumbnailImgPath.value,
                             images: globalController.eventPhotosmgPath,
                           )
-                              .then((value) {
+                              .then((value) async {
                             setState(() {
                               waiting = false;
                             });
 
                             if (value.responseStatus ==
                                 ResponseStatus.success) {
+                              var response = await GetEventServices()
+                                  .getEventDetails(context,
+                                      getEventId: eventmodelobj!.last.id + 1);
+
+                              log("responses store in model --- >  $response");
+                              eventsmodeldata = response;
                               setState(() {
                                 isSaved = true; // Update the saved status
                               });
                               // clearAllTempData();
                               // Navigator.pop(context);
-                              onSaveBottomsheet(context, eventid:  eventmodelobj!.last.id + 1);
+                              onSaveBottomsheet(context,
+                                  eventid: eventmodelobj!.last.id + 1);
+                              Fluttertoast.showToast(
+                                  msg: "Your event has been saved");
                             } else if (value.responseStatus ==
                                 ResponseStatus.failed) {
                               setState(() {

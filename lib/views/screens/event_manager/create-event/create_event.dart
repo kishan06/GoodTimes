@@ -653,8 +653,7 @@ class _CreateEventState extends State<CreateEvent> {
                                                                     color: Colors
                                                                         .white),
                                                               ),
-                                                              onTap: () {
-                                                              },
+                                                              onTap: () {},
                                                             ),
                                                             const SizedBox(
                                                                 width: 4.0),

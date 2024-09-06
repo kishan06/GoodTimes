@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
           unfoucsKeyboard(context);
         }, child: Obx(() {
           if (advanceFilterController.eventModalcontroller.isEmpty) {
-             advanceFilterController.clearAllFilter();
+            advanceFilterController.clearAllFilter();
             AdvanceFilterService().advanceFilterEventServices(context);
             globalController.serverError.value = false;
           }
@@ -282,53 +282,53 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }),
                                             ),
                                           ),
-                                          ImageFiltered(
-                                            imageFilter: ImageFilter.blur(
-                                                sigmaX: !(globalController
-                                                            .hasActiveSubscription
-                                                            .value ||
-                                                        globalController
-                                                            .hasActiveGracePeriod
-                                                            .value)
-                                                    ? 5.0
-                                                    : 0.0,
-                                                sigmaY: !(globalController
-                                                            .hasActiveSubscription
-                                                            .value ||
-                                                        globalController
-                                                            .hasActiveGracePeriod
-                                                            .value)
-                                                    ? 5.0
-                                                    : 0.0),
-                                            child: IgnorePointer(
-                                              ignoring: !(globalController
-                                                          .hasActiveSubscription
-                                                          .value ||
-                                                      globalController
-                                                          .hasActiveGracePeriod
-                                                          .value)
-                                                  ? true
-                                                  : false,
-                                              child: ListView.builder(
-                                                itemCount: dataList.length,
-                                                shrinkWrap: true,
-                                                physics: const ScrollPhysics(),
-                                                itemBuilder: (context, index) {
-                                                  return eventWidget(
-                                                    eventId: dataList[index].id,
-                                                    img: dataList[index]
-                                                        .thumbnail,
-                                                    title:
-                                                        dataList[index].title,
-                                                    price: dataList[index]
-                                                        .entryFee,
-                                                    date: dataList[index]
-                                                        .startDate,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
+                                          // ImageFiltered(
+                                          //   imageFilter: ImageFilter.blur(
+                                          //       sigmaX: !(globalController
+                                          //                   .hasActiveSubscription
+                                          //                   .value ||
+                                          //               globalController
+                                          //                   .hasActiveGracePeriod
+                                          //                   .value)
+                                          //           ? 5.0
+                                          //           : 0.0,
+                                          //       sigmaY: !(globalController
+                                          //                   .hasActiveSubscription
+                                          //                   .value ||
+                                          //               globalController
+                                          //                   .hasActiveGracePeriod
+                                          //                   .value)
+                                          //           ? 5.0
+                                          //           : 0.0),
+                                          //   child: IgnorePointer(
+                                          //     ignoring: !(globalController
+                                          //                 .hasActiveSubscription
+                                          //                 .value ||
+                                          //             globalController
+                                          //                 .hasActiveGracePeriod
+                                          //                 .value)
+                                          //         ? true
+                                          //         : false,
+                                          //     child: ListView.builder(
+                                          //       itemCount: dataList.length,
+                                          //       shrinkWrap: true,
+                                          //       physics: const ScrollPhysics(),
+                                          //       itemBuilder: (context, index) {
+                                          //         return eventWidget(
+                                          //           eventId: dataList[index].id,
+                                          //           img: dataList[index]
+                                          //               .thumbnail,
+                                          //           title:
+                                          //               dataList[index].title,
+                                          //           price: dataList[index]
+                                          //               .entryFee,
+                                          //           date: dataList[index]
+                                          //               .startDate,
+                                          //         );
+                                          //       },
+                                          //     ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ))
                                   : const Text("No data found 😞",

@@ -128,9 +128,10 @@ class _EventPreviewState extends State<EventPreview> {
                               ? const SizedBox()
                               : IconButton(
                                   onPressed: () {
+                                    print("rr");
                                     if (canEdit) {
                                       Get.to(
-                                        () => EditEventTitile(eventData: data), 
+                                        () => EditEventTitile(eventData: data),
                                       );
                                     } else {
                                       snackBarError(context,
