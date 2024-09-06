@@ -77,23 +77,24 @@ class _EventTitileState extends State<EventTitile> {
       fromDateTime.value = false;
     }
   }
-checkstartTimeIsBeforeFun(){
-  if (fromDate == toDate) {
-        DateTime fromDateTime = DateTime(fromDate!.year, fromDate!.month,
-            fromDate!.day, fromTime.hour, fromTime.minute);
-        DateTime toDateTime = DateTime(toDate!.year, toDate!.month, toDate!.day,
-            toTime.hour, toTime.minute);
 
-        if (toDateTime.isBefore(fromDateTime)) {
-          setState(() {
-            toTime = null;
-          });
-          snackBarError(context, message:"Please check the time, end time must be after the start time.");
-        } else {
+  checkstartTimeIsBeforeFun() {
+    if (fromDate == toDate) {
+      DateTime fromDateTime = DateTime(fromDate!.year, fromDate!.month,
+          fromDate!.day, fromTime.hour, fromTime.minute);
+      DateTime toDateTime = DateTime(
+          toDate!.year, toDate!.month, toDate!.day, toTime.hour, toTime.minute);
 
-        }
-      }
-}
+      if (toDateTime.isBefore(fromDateTime)) {
+        setState(() {
+          toTime = null;
+        });
+        snackBarError(context,
+            message:
+                "Please check the time, end time must be after the start time.");
+      } else {}
+    }
+  }
 
 // start time function =======================
   Future<void> _startTime(BuildContext context) async {
@@ -205,7 +206,9 @@ checkstartTimeIsBeforeFun(){
             startTimeEndTime = true;
             toTime = null;
           });
-          snackBarError(context, message:"Please adjust the timing; ensure the start and end times on the same date are not identical.");
+          snackBarError(context,
+              message:
+                  "Please adjust the timing; ensure the start and end times on the same date are not identical.");
           return;
         }
       }
@@ -272,8 +275,8 @@ checkstartTimeIsBeforeFun(){
                         textFormField(
                           controller: _eventTitle,
                           inputFormate: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^[a-zA-Z\s]+$')),
+                            FilteringTextInputFormatter.allow(RegExp(
+                                r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
                           ],
                           validationFunction: (values) {
                             var value = values.trim();
@@ -299,7 +302,7 @@ checkstartTimeIsBeforeFun(){
                           controller: _eventDescriptions,
                           inputFormate: [
                             FilteringTextInputFormatter.allow(RegExp(
-                                r'^[a-zA-Z0-9!@#\$%^&*(),.?":{}|<>_-\s]+$')),
+                                r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
                             // RegExp(r'^[a-zA-Z\s]+$')),
                           ],
                           validationFunction: (values) {
@@ -507,62 +510,64 @@ checkstartTimeIsBeforeFun(){
                         // const Spacer(),
                         const SizedBox(height: 50),
                         MyElevatedButton(
-                          onPressed:/* (){
+                          onPressed: /* (){
                              Navigator.pushNamed(
                                         context, CreatedEventPreview.routeName);
 
-                          }, */ waiting
-                              ? null
-                              : () {
-                                 unfoucsKeyboard(context);
-                                  // _key.currentState!.validate();
-                                  bool dateTimetime = fromDate != null &&
-                                      toDate != null &&
-                                      fromTime != null &&
-                                      toTime != null &&
-                                      fromDate != '' &&
-                                      toDate != '' &&
-                                      fromTime != '' &&
-                                      toTime != '';
+                          }, */
+                              waiting
+                                  ? null
+                                  : () {
+                                      unfoucsKeyboard(context);
+                                      // _key.currentState!.validate();
+                                      bool dateTimetime = fromDate != null &&
+                                          toDate != null &&
+                                          fromTime != null &&
+                                          toTime != null &&
+                                          fromDate != '' &&
+                                          toDate != '' &&
+                                          fromTime != '' &&
+                                          toTime != '';
 
-                                  if (_key.currentState!.validate() &&
-                                      dateTimetime) {
-                                    addData(
-                                        eventTitle: _eventTitle.text,
-                                        eventDescription:
-                                            _eventDescriptions.text,
-                                        startDate: fromDate,
-                                        startTime: fromTime,
-                                        endDate: toDate,
-                                        endTime: toTime);
+                                      if (_key.currentState!.validate() &&
+                                          dateTimetime) {
+                                        addData(
+                                            eventTitle: _eventTitle.text,
+                                            eventDescription:
+                                                _eventDescriptions.text,
+                                            startDate: fromDate,
+                                            startTime: fromTime,
+                                            endDate: toDate,
+                                            endTime: toTime);
 
-                                    Navigator.pushNamed(
-                                        context, CreateEvent.routeName);
+                                        Navigator.pushNamed(
+                                            context, CreateEvent.routeName);
 
-                                    log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
-                                  }
-                                  // start date and time validation
-                                  if (fromDate == null && fromTime == null) {
-                                    fromDateTime.value = true;
-                                    // setState(() {
-                                    // });
-                                    // snackBarError(context,message: 'Please select date and time from start to end date.');
-                                  } else {
-                                    fromDateTime.value = false;
-                                    // setState(() {
-                                    // });
-                                  }
-                                  // end date and time validation
-                                  if (toDate == null && toTime == null) {
-                                    endDateTime.value = true;
-                                    // setState(() {
-                                    // });
-                                  } else {
-                                    endDateTime.value = false;
-                                    // setState(() {
-                                    // });
-                                  } 
-                                },
+                                        log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
+                                      }
+                                      // start date and time validation
+                                      if (fromDate == null &&
+                                          fromTime == null) {
+                                        fromDateTime.value = true;
+                                        // setState(() {
+                                        // });
+                                        // snackBarError(context,message: 'Please select date and time from start to end date.');
+                                      } else {
+                                        fromDateTime.value = false;
+                                        // setState(() {
+                                        // });
+                                      }
+                                      // end date and time validation
+                                      if (toDate == null && toTime == null) {
+                                        endDateTime.value = true;
+                                        // setState(() {
+                                        // });
+                                      } else {
+                                        endDateTime.value = false;
+                                        // setState(() {
+                                        // });
+                                      }
+                                    },
                           text: 'Continue',
                         ),
                         const SizedBox(height: 10)

@@ -29,7 +29,6 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
         await appinioSocialShare.shareToFacebook(
           text: caption,
           filePath: imagePath,
-          
         );
       } catch (e) {
         print("Failed to share on Facebook: $e");
@@ -77,15 +76,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
   Get.bottomSheet(isScrollControlled: true,
       StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
-        color: const Color(0xFF252527),
+        color: Color(0xFF252527),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 25),
+        padding: const EdgeInsets.symmetric(vertical: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -96,14 +95,14 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  Text("Share thumbnail",
+                  const Text("Share thumbnail",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Poppins',
                         color: Color(0xFFD0D0D0),
                       )),
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       Get.back();
@@ -117,11 +116,11 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(height: 1, width: double.infinity, color: Colors.white),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -130,7 +129,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: 'Upload thumbnail on ',
                       style: TextStyle(
                         fontSize: 12,
@@ -138,7 +137,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         fontFamily: 'Poppins',
                         color: Color(0xFFFFFFFF),
                       ),
-                      children: const <TextSpan>[
+                      children: <TextSpan>[
                         TextSpan(
                           text: 'Good Times',
                           style: TextStyle(
@@ -160,7 +159,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Row(
@@ -185,7 +184,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                  eventid: eventid,
+                                      eventid: eventid,
                                       // eventid: eventmodelobj!.last.id + 1,
                                       platforms: 'instagram')
                                   .then((value) {
@@ -218,10 +217,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "Instagram",
                             style: TextStyle(
                               fontSize: 12,
@@ -232,7 +231,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Column(
@@ -246,8 +245,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                    eventid: eventid,
-                                      platforms: 'facebook')
+                                      eventid: eventid, platforms: 'facebook')
                                   .then((value) {
                                 if (value.responseStatus ==
                                     ResponseStatus.success) {
@@ -278,10 +276,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "Facebook",
                             style: TextStyle(
                               fontSize: 12,
@@ -292,7 +290,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Column(
@@ -307,8 +305,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                      eventid: eventid,
-                                      platforms: 'twitter')
+                                      eventid: eventid, platforms: 'twitter')
                                   .then((value) {
                                 if (value.responseStatus ==
                                     ResponseStatus.success) {
@@ -339,10 +336,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "x",
                             style: TextStyle(
                               fontSize: 12,
@@ -353,7 +350,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Column(
@@ -368,8 +365,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               });
                               SocialShareService()
                                   .socialShare(context,
-                                    eventid: eventid,
-                                      platforms: 'all')
+                                      eventid: eventid, platforms: 'all')
                                   .then((value) {
                                 if (value.responseStatus ==
                                     ResponseStatus.success) {
@@ -377,16 +373,6 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
-                                  // if (value.data["success_messages"] != null &&
-                                  //     value.data["success_messages"] is List) {
-                                  //   String messages = value
-                                  //       .data["success_messages"]
-                                  //       .where((message) => message != null)
-                                  //       .map((message) => message.toString())
-                                  //       .join('\n');
-
-                                  //   Fluttertoast.showToast(msg: messages);
-                                  // }
 
                                   List messagesList = [];
 
@@ -400,8 +386,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   String messages = messagesList.join('\n');
 
                                   // Delay the toast to ensure context is available
-                                  Future.delayed(Duration(milliseconds: 300),
-                                      () {
+                                  Future.delayed(
+                                      const Duration(milliseconds: 300), () {
                                     Fluttertoast.showToast(msg: messages);
                                   });
 
@@ -425,7 +411,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 53,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  color: Color(0xFF434343)),
+                                  color: const Color(0xFF434343)),
                               child: Center(
                                 child: Image.asset(
                                   "assets/images/mdi_share.png",
@@ -435,10 +421,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "Share all",
                             style: TextStyle(
                               fontSize: 12,
@@ -451,10 +437,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
-                  Text(
+                  const Text(
                     'Upload thumbnail on your social media',
                     style: TextStyle(
                       fontSize: 12,
@@ -463,7 +449,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                       color: Color(0xFFFFFFFF),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Row(
@@ -481,10 +467,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "Instagram",
                             style: TextStyle(
                               fontSize: 12,
@@ -495,7 +481,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Column(
@@ -511,10 +497,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "Facebook",
                             style: TextStyle(
                               fontSize: 12,
@@ -525,7 +511,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       Column(
@@ -541,10 +527,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                               width: 51,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             "x",
                             style: TextStyle(
                               fontSize: 12,
@@ -555,12 +541,12 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                   Container(
@@ -568,11 +554,11 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                     width: double.infinity,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFF434343)),
+                        color: const Color(0xFF434343)),
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 20),
                           child: Row(
                             crossAxisAlignment: isExpanded == true
@@ -584,10 +570,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                 width: 14,
                                 height: 14,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 8,
                               ),
-                              Text(
+                              const Text(
                                 "Know more about the further steps...",
                                 style: TextStyle(
                                   fontSize: 14,
@@ -596,7 +582,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   color: Color(0xFFFFFFFF),
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               InkWell(
                                 onTap: () {
                                   setState(() {
@@ -630,19 +616,20 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   Container(
                                     height: 0.5,
                                     width: double.infinity,
-                                    color: Color(0xFFF1D69F).withOpacity(0.45),
+                                    color: const Color(0xFFF1D69F)
+                                        .withOpacity(0.45),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.circle,
                                         size: 6,
                                         color: Color(0xFFFFFFFF),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 8,
                                       ),
                                       Text(
@@ -651,23 +638,23 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                           fontSize: 12,
                                           fontWeight: FontWeight.w300,
                                           fontFamily: 'Poppins',
-                                          color: Color(0xFFFFFFFF)
+                                          color: const Color(0xFFFFFFFF)
                                               .withOpacity(0.79),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.circle,
                                         size: 6,
                                         color: Color(0xFFFFFFFF),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 8,
                                       ),
                                       Text(
@@ -676,23 +663,23 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                           fontSize: 12,
                                           fontWeight: FontWeight.w300,
                                           fontFamily: 'Poppins',
-                                          color: Color(0xFFFFFFFF)
+                                          color: const Color(0xFFFFFFFF)
                                               .withOpacity(0.79),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.circle,
                                         size: 6,
                                         color: Color(0xFFFFFFFF),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 8,
                                       ),
                                       Text(
@@ -701,23 +688,23 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                           fontSize: 12,
                                           fontWeight: FontWeight.w300,
                                           fontFamily: 'Poppins',
-                                          color: Color(0xFFFFFFFF)
+                                          color: const Color(0xFFFFFFFF)
                                               .withOpacity(0.79),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.circle,
                                         size: 6,
                                         color: Color(0xFFFFFFFF),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 8,
                                       ),
                                       Text(
@@ -726,13 +713,13 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                           fontSize: 12,
                                           fontWeight: FontWeight.w300,
                                           fontFamily: 'Poppins',
-                                          color: Color(0xFFFFFFFF)
+                                          color: const Color(0xFFFFFFFF)
                                               .withOpacity(0.79),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                 ],

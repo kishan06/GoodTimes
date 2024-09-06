@@ -4,10 +4,6 @@ import 'package:good_times/utils/constant.dart';
 import 'package:good_times/views/widgets/common/parent_widget.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../data/repository/services/advance_filter_service.dart';
-import '../../screens/home/main_home.dart';
-import '../../screens/home/sidebar-filter/widget/widget.dart';
-
 class ServerError extends StatelessWidget {
   static const String routeName = 'noInternet';
   const ServerError({Key? key}) : super(key: key);
@@ -15,12 +11,14 @@ class ServerError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         leading: GestureDetector(
-            onTap: () async{
-                //  advanceFilterController.clearAllFilter();
-                //  await AdvanceFilterService().advanceFilterEventServices(context);
-                //   globalController.serverError.value=false;
+            onTap: () {
+              //  advanceFilterController.clearAllFilter();
+              //  await AdvanceFilterService().advanceFilterEventServices(context);
+              globalController.serverError.value = false;
+              Get.back();
+              Get.back();
             },
             child: const Icon(
               Icons.arrow_back,
@@ -34,7 +32,7 @@ class ServerError extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(),
-            Lottie.asset('assets/images/lottie/no-internet.json',height: 400),
+            Lottie.asset('assets/images/lottie/no-internet.json', height: 400),
             const SizedBox(height: 16),
             const Text(
               'Server Error',

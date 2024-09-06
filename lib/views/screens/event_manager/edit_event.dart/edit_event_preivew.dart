@@ -4,6 +4,7 @@ import 'dart:io' as IO;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/repository/endpoints.dart';
 import 'package:good_times/data/repository/response_data.dart';
@@ -313,6 +314,8 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                               });
                               onSaveBottomsheet(context,
                                   eventid: TempData.eventIdIndex);
+                              Fluttertoast.showToast(
+                                  msg: "Your event has been saved");
 
                               // clearAllTempData();
                             }
