@@ -17,7 +17,7 @@ class ServerError extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () async {
-              // advanceFilterController.clearAllFilter();
+              advanceFilterController.clearAllFilter();
               // await AdvanceFilterService()
               //     .advanceFilterEventServices(context)
               //     .then(

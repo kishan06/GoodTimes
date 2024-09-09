@@ -78,8 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    allowfilter.value = false;
-    // advanceFilterController.eventModalcontroller.value = [];
     checkFunction();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _showInitialBottomSheet();
@@ -105,6 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
       if (organisationController.Organisationdatacontroller.value.data ==
           null) {
         organisationController.getOrganisationData(context);
+      }
+      if (!globalController.serverError.value) {
+        allowfilter.value = false;
+        advanceFilterController.eventModalcontroller.value = [];
+        advanceFilterServicee.advanceFilterEventServices(context);
       }
     });
   }
