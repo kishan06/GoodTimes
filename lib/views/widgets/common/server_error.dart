@@ -17,16 +17,16 @@ class ServerError extends StatelessWidget {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () async {
-              advanceFilterController.clearAllFilter();
-              await AdvanceFilterService()
-                  .advanceFilterEventServices(context)
-                  .then(
-                (value) {
-                  Future.delayed(Duration(milliseconds: 200), () {
-                    allowfilter.value = true;
-                  });
-                },
-              );
+              // advanceFilterController.clearAllFilter();
+              // await AdvanceFilterService()
+              //     .advanceFilterEventServices(context)
+              //     .then(
+              //   (value) {
+              //     Future.delayed(Duration(milliseconds: 200), () {
+              //       allowfilter.value = true;
+              //     });
+              //   },
+              // );
               globalController.serverError.value = false;
               // Future.delayed(Duration(milliseconds: 200), () {
               //   allowfilter.value = true;

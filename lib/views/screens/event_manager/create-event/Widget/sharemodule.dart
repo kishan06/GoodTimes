@@ -4,6 +4,7 @@ import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:good_times/data/repository/services/event_manager.dart';
@@ -550,7 +551,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                     height: 40,
                   ),
                   Container(
-                    height: isExpanded == true ? 220 : null,
+                    height: isExpanded == true ? 250 : null,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -623,23 +624,30 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     height: 20,
                                   ),
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        size: 6,
-                                        color: Color(0xFFFFFFFF),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: const Icon(
+                                          Icons.circle,
+                                          size: 6,
+                                          color: Color(0xFFFFFFFF),
+                                        ),
                                       ),
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet, consectetur ",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          fontFamily: 'Poppins',
-                                          color: const Color(0xFFFFFFFF)
-                                              .withOpacity(0.79),
+                                      Expanded(
+                                        child: Text(
+                                          "With this feature, you can seamlessly upload your event thumbnail to both the Good Times social media account and the event manager's registered social media accounts. This ensures consistent branding and maximum visibility for your event across multiple platforms. Easily manage and enhance your event's online presence by synchronizing your promotional materials with just a few clicks, making it simpler than ever to engage your audience and boost event attendance.",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            fontFamily: 'Poppins',
+                                            color: const Color(0xFFFFFFFF)
+                                                .withOpacity(0.79),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -647,81 +655,31 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        size: 6,
-                                        color: Color(0xFFFFFFFF),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet, consectetur ",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          fontFamily: 'Poppins',
-                                          color: const Color(0xFFFFFFFF)
-                                              .withOpacity(0.79),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        size: 6,
-                                        color: Color(0xFFFFFFFF),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet, consectetur ",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          fontFamily: 'Poppins',
-                                          color: const Color(0xFFFFFFFF)
-                                              .withOpacity(0.79),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        size: 6,
-                                        color: Color(0xFFFFFFFF),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet, consectetur ",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          fontFamily: 'Poppins',
-                                          color: const Color(0xFFFFFFFF)
-                                              .withOpacity(0.79),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
+                                  // Row(
+                                  //   children: [
+                                  //     const Icon(
+                                  //       Icons.circle,
+                                  //       size: 6,
+                                  //       color: Color(0xFFFFFFFF),
+                                  //     ),
+                                  //     const SizedBox(
+                                  //       width: 8,
+                                  //     ),
+                                  //     Text(
+                                  //       "Lorem ipsum dolor sit amet, consectetur ",
+                                  //       style: TextStyle(
+                                  //         fontSize: 12,
+                                  //         fontWeight: FontWeight.w300,
+                                  //         fontFamily: 'Poppins',
+                                  //         color: const Color(0xFFFFFFFF)
+                                  //             .withOpacity(0.79),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 8,
+                                  // ),
                                 ],
                               ),
                             ),

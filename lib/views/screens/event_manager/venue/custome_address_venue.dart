@@ -76,8 +76,8 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     controller: address1,
                     hintTxt: 'Address Line 1',
                     inputFormate: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z0-9,\s]+$')
-                        )
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^[a-zA-Z0-9,\s]+$'))
                     ],
                     validationFunction: (values) {
                       var value = values.trim();
@@ -100,7 +100,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                     hintTxt: "Address Line 2",
                     inputFormate: [
                       FilteringTextInputFormatter.allow(
-                         RegExp(r'^[a-zA-Z0-9,\s]+$'))
+                          RegExp(r'^[a-zA-Z0-9,\s]+$'))
                     ],
                   ),
                   const SizedBox(height: 35),
@@ -171,10 +171,10 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                             textFormField(
                               controller: postCode,
                               hintTxt: "Postcode",
-                              // inputFormate: [
-                              // FilteringTextInputFormatter(RegExp(r'^[a-zA-Z\s]+$'),
-                              //     allow: true)
-                              // ],
+                              inputFormate: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[a-zA-Z0-9\s]+$')),
+                              ],
                               validationFunction: (values) {
                                 var value = values.trim();
                                 if (value == null || value.isEmpty) {
@@ -215,7 +215,9 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                                 if (trimmedValue.length < 2) {
                                   return 'Enter value is too short';
                                 }
-                                if (!RegExp(r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$').hasMatch(trimmedValue)) {
+                                if (!RegExp(
+                                        r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$')
+                                    .hasMatch(trimmedValue)) {
                                   return 'Enter a valid latitude';
                                 }
 
@@ -225,7 +227,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                           ],
                         ),
                       ),
-                       const SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +248,9 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                                 if (trimmedValue.length < 2) {
                                   return 'Enter value is too short';
                                 }
-                                if (!RegExp(r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$').hasMatch(trimmedValue)) {
+                                if (!RegExp(
+                                        r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$')
+                                    .hasMatch(trimmedValue)) {
                                   return 'Enter a valid longitude';
                                 }
                                 return null;
@@ -255,7 +259,6 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                           ],
                         ),
                       ),
-                      
                     ],
                   ),
                   const SizedBox(height: 40),
@@ -268,7 +271,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                           globalcontroller.address.value =
                               '${country.text}, ${address1.text}, ${address2.text == '' ? '' : "${address2.text},"} ${townCity.text}, ${state.text}, ${postCode.text}';
                           Logger().i(globalcontroller.address.value);
-                          globalController.long.value= longitude.text;
+                          globalController.long.value = longitude.text;
                           globalcontroller.lat.value = latitude.text;
                           Navigator.pop(context);
                           Navigator.pop(context);
