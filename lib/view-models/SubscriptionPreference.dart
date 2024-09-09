@@ -22,6 +22,8 @@ class ProfileExtendedDataController extends GetxController{
       );
       // log("venu get before sent to model ${response.data}");
       // Handle the response
+
+      print("checkapi /////");
       if (response.responseStatus == ResponseStatus.success) {
         profileextenddata.value=ProfileExtenddataModel.fromJson(response.data);
          if (profileextenddata.value.data != null) {

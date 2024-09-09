@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:good_times/data/repository/services/advance_filter_service.dart';
 import 'package:good_times/utils/constant.dart';
+import 'package:good_times/views/screens/home/main_home.dart';
+import 'package:good_times/views/screens/home/sidebar-filter/widget/widget.dart';
 import 'package:good_times/views/widgets/common/parent_widget.dart';
 import 'package:lottie/lottie.dart';
 
@@ -13,12 +16,26 @@ class ServerError extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
-            onTap: () {
-              //  advanceFilterController.clearAllFilter();
-              //  await AdvanceFilterService().advanceFilterEventServices(context);
+            onTap: () async {
+              advanceFilterController.clearAllFilter();
+              await AdvanceFilterService()
+                  .advanceFilterEventServices(context)
+                  .then(
+                (value) {
+                  Future.delayed(Duration(milliseconds: 200), () {
+                    allowfilter.value = true;
+                  });
+                },
+              );
               globalController.serverError.value = false;
-              Get.back();
-              Get.back();
+              // Future.delayed(Duration(milliseconds: 200), () {
+              //   allowfilter.value = true;
+              // });
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                HomeMain.routeName,
+                (route) => true,
+              );
             },
             child: const Icon(
               Icons.arrow_back,

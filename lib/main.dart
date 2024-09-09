@@ -18,6 +18,7 @@ import 'config/routes/app_route.config.dart';
 import 'data/repository/response_data.dart';
 import 'data/repository/services/check_preference.dart';
 import 'firebase_options.dart';
+import 'utils/temp.dart';
 import 'view-models/deep_link_model.dart';
 import 'view-models/global_controller.dart';
 import 'view-models/location_controller.dart';
@@ -28,6 +29,7 @@ import 'views/screens/intro_slider/intro_slider.dart';
 import 'views/widgets/common/custom_error.dart';
 
 void main() async {
+  print("ghghgjgjh                     ////");
   //added widgest bindings
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -80,7 +82,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     listenDynamicLinks();
     _initializeServices();
-      checkFunction();
+    checkFunction();
   }
 
   Future<void> _initializeServices() async {
@@ -125,7 +127,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
@@ -143,7 +144,9 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: const AppBarTheme(color: kTextBlack),
         useMaterial3: true,
       ),
-      initialRoute: (isLoggedIn == null || profileStatus == null || profileStatus == false)
+      initialRoute: (isLoggedIn == null ||
+              profileStatus == null ||
+              profileStatus == false)
           ? introSliderShow
               ? IntroSlider.routeName
               : WelcomeScreen.routeName

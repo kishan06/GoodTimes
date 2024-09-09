@@ -9,6 +9,8 @@ class TempData {
   static String venueName = '';
   static String userType = '';
   static int? eventIdIndex;
+  static bool preventapicall = false;
+  static bool preventextendeddatacall = false;
 
   // Evenet create temp data
   static String evetTitle = ''; // Event Title

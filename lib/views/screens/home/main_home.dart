@@ -8,6 +8,7 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:good_times/data/repository/response_data.dart';
+import 'package:good_times/utils/temp.dart';
 import 'package:good_times/view-models/global_controller.dart';
 import 'package:good_times/views/screens/event_manager/home.dart';
 import 'package:good_times/views/screens/profile/profile.dart';
@@ -40,6 +41,7 @@ class HomeMain extends StatefulWidget {
   @override
   State<HomeMain> createState() => _HomeMainState();
 }
+
 //trial commit
 class _HomeMainState extends State<HomeMain> {
   HomePageController homePageController = Get.put(HomePageController());
@@ -158,7 +160,7 @@ class _HomeMainState extends State<HomeMain> {
     super.initState();
     listenDynamicLinks();
     getProfileDetails();
-    profileextendedcontroller.fetchProfileExtendeddata(context);
+    // profileextendedcontroller.fetchProfileExtendeddata(context);
     senUserPlayer();
   }
 
@@ -264,14 +266,23 @@ class _HomeMainState extends State<HomeMain> {
           globalController.serverError.value = false;
           globalController.connectionTimeout.value = false;
 
-          if (profileextendedcontroller.profileextenddata.value.data == null) {
-            profileextendedcontroller.fetchProfileExtendeddata(context).then((value) {
-            if (profileextendedcontroller.profileextenddata.value.data!.principalTypeName == "event_user") {
-          homePageController.isUser.value = eventUser;
-        } else if (profileextendedcontroller.profileextenddata.value.data!.principalTypeName == "event_manager") {
-          homePageController.isUser.value = eventManager;
-        }}
-            );
+          if (profileextendedcontroller.profileextenddata.value.data == null &&
+              !TempData.preventextendeddatacall) {
+            TempData.preventextendeddatacall = true;
+            profileextendedcontroller
+                .fetchProfileExtendeddata(context)
+                .then((value) {
+              TempData.preventextendeddatacall = false;
+              if (profileextendedcontroller
+                      .profileextenddata.value.data!.principalTypeName ==
+                  "event_user") {
+                homePageController.isUser.value = eventUser;
+              } else if (profileextendedcontroller
+                      .profileextenddata.value.data!.principalTypeName ==
+                  "event_manager") {
+                homePageController.isUser.value = eventManager;
+              }
+            });
             print("//");
           }
         }

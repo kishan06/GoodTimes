@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // If preference is true, navigate to HomeMain
           appVersionController.initPackageInfo(context);
           ProfileService().getProfileDetails(context);
-          advanceFilterServicee.advanceFilterEventServices(context);
+          // advanceFilterServicee.advanceFilterEventServices(context);
           if (preferenceController.prefrencecontrollerdata.isEmpty) {
             preferenceController.eventCategory(context);
           }
@@ -200,9 +200,25 @@ class _HomeScreenState extends State<HomeScreen> {
         child: GestureDetector(onTap: () {
           unfoucsKeyboard(context);
         }, child: Obx(() {
-          if (advanceFilterController.eventModalcontroller.isEmpty) {
+          if (!allowfilter.value &&
+              advanceFilterController.eventModalcontroller.isNotEmpty) {
+            Future.delayed(Duration(milliseconds: 200), () {
+              allowfilter.value = true;
+            });
+          }
+          if (advanceFilterController.eventModalcontroller.isEmpty &&
+              !TempData.preventapicall) {
+            TempData.preventapicall = true;
             advanceFilterController.clearAllFilter();
-            AdvanceFilterService().advanceFilterEventServices(context);
+            AdvanceFilterService()
+                .advanceFilterEventServices(context)
+                .then((value) {
+              print("rr");
+              Future.delayed(Duration(milliseconds: 200), () {
+                allowfilter.value = true;
+              });
+              TempData.preventapicall = false;
+            });
             globalController.serverError.value = false;
           }
 
@@ -650,7 +666,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 }
                               }
-                              _scaffoldKey.currentState?.openDrawer();
+                              await Future.delayed(Duration(milliseconds: 700),
+                                  () {
+                                _scaffoldKey.currentState?.openDrawer();
+                              });
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
