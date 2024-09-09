@@ -223,6 +223,9 @@ class _EventeManagerHomeState extends State<EventeManagerHome>
                   // Navigator.pushNamed(context, EditEventTitile.routeName,
                   // arguments: data[index]
                   // );
+
+                  log("EventDraftId---> ${data[index]}");
+
                   Get.to(() => EditEventTitile(
                         eventData: data[index],
                       ));
