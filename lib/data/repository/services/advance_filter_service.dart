@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
+import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:good_times/view-models/global_controller.dart';
 
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/location_controller.dart';
@@ -17,6 +20,8 @@ class AdvanceFilterService {
   Dio dio = Dio();
   AdvanceFilterController advanceFilterController =
       getx.Get.put(AdvanceFilterController());
+  GlobalController globalController =
+      Get.put(GlobalController(), permanent: true);
   final header = {
     "Content-Type": "application/json",
     "Authorization": "Bearer ${GetStorage().read('accessToken')}"
@@ -61,7 +66,8 @@ class AdvanceFilterService {
           '${sortCat.contains('nearest') ? "latitude=$latitude&longitude=$longitude&" : ""}'
           '${titleFilter.isNotEmpty ? "title=$titleFilter&" : ""}'
           '${locationFilter.isNotEmpty ? "location=$locationFilter&" : ""}';
-
+      logger.f("calling apiendpoint $url");
+      print("Api called");
       ResponseModel<String?> response =
           await apiService.getData<String>(context, url);
       if (response.responseStatus == ResponseStatus.success) {
@@ -69,12 +75,16 @@ class AdvanceFilterService {
         List data = response.data["data"];
         advanceFilterController.eventModalcontroller.value =
             data.map((e) => HomeEventsModel.fromJson(e)).toList();
-        logger.f('data api services of filtred events $data');
+        // logger.f('data api services of filtred events $data');
         Future.delayed(Duration(milliseconds: 200), () {
           allowfilter.value = true;
         });
+
         return data.map((e) => HomeEventsModel.fromJson(e)).toList();
-      } else {
+      }
+      // val=false
+
+      else {
         filterLoder.value = false;
         allowfilter.value = true;
       }

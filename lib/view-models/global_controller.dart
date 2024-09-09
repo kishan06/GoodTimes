@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:good_times/views/screens/event_manager/edit_event.dart/edit_event.dart';
 import 'package:logger/logger.dart';
@@ -13,6 +15,8 @@ import '../views/screens/auth/login/login.dart';
 import 'auth/google_auth.dart';
 
 class GlobalController extends GetxController {
+
+  RxBool apiCall =  false.obs;
   Logger logger = Logger();
 
   RxString locationName = "".obs;
