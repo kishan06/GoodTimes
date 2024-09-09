@@ -77,7 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     allowfilter.value = false;
+    // advanceFilterController.eventModalcontroller.value = [];
     checkFunction();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _showInitialBottomSheet();
@@ -200,9 +202,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: GestureDetector(onTap: () {
           unfoucsKeyboard(context);
         }, child: Obx(() {
+          print("r");
+
           if (!allowfilter.value &&
               advanceFilterController.eventModalcontroller.isNotEmpty) {
-            Future.delayed(Duration(milliseconds: 200), () {
+            Future.delayed(const Duration(milliseconds: 200), () {
               allowfilter.value = true;
             });
           }
@@ -214,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .advanceFilterEventServices(context)
                 .then((value) {
               print("rr");
-              Future.delayed(Duration(milliseconds: 200), () {
+              Future.delayed(const Duration(milliseconds: 200), () {
                 allowfilter.value = true;
               });
               TempData.preventapicall = false;
@@ -225,6 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return Stack(
             children: [
               Scaffold(
+                  drawerEnableOpenDragGesture: false,
                   key: _scaffoldKey,
                   drawer: Builder(
                     builder: (scaffoldContext) =>
@@ -666,10 +671,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 }
                               }
-                              await Future.delayed(Duration(milliseconds: 700),
-                                  () {
-                                _scaffoldKey.currentState?.openDrawer();
-                              });
+                              _scaffoldKey.currentState?.openDrawer();
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
