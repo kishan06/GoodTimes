@@ -99,12 +99,18 @@ class _CreateEventState extends State<CreateEvent> {
   }
 
   getAgeGroup() {
-    PreferencesService().getAgeGroup(context).then((value) {
-      log("log data of category list in event screen $value");
-      setState(() {
-        ageList = value;
+    if (TempData.agedatagroup.isEmpty) {
+      PreferencesService().getAgeGroup(context).then((value) {
+        log("log data of category list in event screen $value");
+        setState(() {
+          ageList = value;
+        });
       });
-    });
+    } else {
+      setState(() {
+        ageList = TempData.agedatagroup;
+      });
+    }
   }
 
   Future profileApi() async {
@@ -202,14 +208,18 @@ class _CreateEventState extends State<CreateEvent> {
                                 ],
                                 errorValue: 'venue',
                                 onChanged: (String newValue) {
-                                  // selectedVenue = newValue;
-                                  VenuModel selectedVenueObject =
-                                      venuList.firstWhere(
-                                          (venue) => venue.title == newValue);
-                                  selectedVenue =
-                                      selectedVenueObject.id.toString();
-                                  TempData.evetAddress =
-                                      selectedVenueObject.address.toString();
+                                  if (newValue == "Add Venue") {
+                                    checkReferesh();
+                                  } else {
+                                    VenuModel selectedVenueObject =
+                                        venuList.firstWhere(
+                                            (venue) => venue.title == newValue);
+                                    selectedVenue =
+                                        selectedVenueObject.id.toString();
+                                    TempData.evetAddress =
+                                        selectedVenueObject.address.toString();
+                                    print("rr");
+                                  } // selectedVenue = newValue;
                                 },
                                 onAddVenueClicked: () {
                                   // Navigate to another screen when "Add Venue" is clicked

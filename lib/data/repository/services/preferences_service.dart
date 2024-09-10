@@ -124,6 +124,7 @@ class PreferencesService {
       log("get age group ${response.data}");
       if (response.responseStatus == ResponseStatus.success) {
         var ageObj = AgeGroupModel.fromJson(response.data);
+        
         List ageGroupList = ageObj.data ?? [];
         return ageGroupList;
       } else {

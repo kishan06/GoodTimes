@@ -109,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
         advanceFilterController.eventModalcontroller.value = [];
         advanceFilterServicee.advanceFilterEventServices(context);
       }
+     
     });
   }
 
@@ -188,12 +189,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getAgeGroup() {
-    PreferencesService().getAgeGroup(context).then((value) {
+     if(TempData.agedatagroup.isEmpty){
+      PreferencesService().getAgeGroup(context).then((value) {
       log("log data of category list in event screen $value");
       setState(() {
+         TempData.agedatagroup = value;
         ageList = value;
       });
     });
+    }else{
+  setState(() {
+        ageList = TempData.agedatagroup;
+      });
+    }
   }
 
   @override
