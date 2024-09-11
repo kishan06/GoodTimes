@@ -29,8 +29,8 @@ import 'views/screens/intro_slider/intro_slider.dart';
 import 'views/widgets/common/custom_error.dart';
 
 void main() async {
-  print("ghghgjgjh                     ////");
   //added widgest bindings
+  //trial comment
   WidgetsFlutterBinding.ensureInitialized();
 
   // if Error occured then it this will show
