@@ -1,3 +1,4 @@
+import '../data/models/event_age_group_model.dart';
 import 'constant.dart';
 
 class TempData {
@@ -58,4 +59,5 @@ class TempData {
   static String forceEditPref = "forceedit";
   static String categorylimit = "categorylimit";
   static bool? forceedit;
+  static List<ageData> agedatagroup=[];
 }

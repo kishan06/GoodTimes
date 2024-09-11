@@ -83,12 +83,19 @@ class EditEventTitileState extends State<EditEventTitile> {
   }
 
   getAgeGroup() {
-    PreferencesService().getAgeGroup(context).then((value) {
+    if(TempData.agedatagroup.isEmpty){
+      PreferencesService().getAgeGroup(context).then((value) {
       log("log data of category list in event screen $value");
       setState(() {
         ageList = value;
       });
     });
+    }else{
+  setState(() {
+        ageList = TempData.agedatagroup;
+      });
+    }
+    
   }
 
   checkstartTimeIsBeforeFun() {

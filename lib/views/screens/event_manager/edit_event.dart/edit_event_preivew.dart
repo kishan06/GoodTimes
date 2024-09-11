@@ -51,11 +51,16 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
         onWillPop: () async {
           // Navigate to the HomeMain screen and remove all previous routes
           // clearAllTempData();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            HomeMain.routeName,
-            (route) => true,
-          );
+         if (isSaved) {
+            clearAllTempData();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomeMain.routeName,
+              (route) => true,
+            );
+          } else {
+            Get.back();
+          }
           return true; // Prevent the default pop behavior
         },
         child: Scaffold(
@@ -66,11 +71,16 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
             leading: IconButton(
               onPressed: () {
                 // clearAllTempData();
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  HomeMain.routeName,
-                  (route) => true,
-                );
+                if (isSaved) {
+            clearAllTempData();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomeMain.routeName,
+              (route) => true,
+            );
+          } else {
+            Get.back();
+          }
               },
               icon: Icon(Icons.arrow_back),
             ),
@@ -275,12 +285,13 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                       onPressed: () {
                         if (isSaved) {
                           onSaveBottomsheet(context,
-                              eventid: TempData.eventIdIndex);
+                              eventid: widget.eventData.id);
                         } else {
                           // showWaitingDialoge(context: context, loading: waiting);
                           // setState(() {
                           //   waiting = true;
                           // });
+                          print("////");
                           CreateEventService()
                               .editEventServices(context,
                                   eventId: widget.eventData.id,
@@ -313,7 +324,7 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                                 isSaved = true; // Update the saved status
                               });
                               onSaveBottomsheet(context,
-                                  eventid: TempData.eventIdIndex);
+                                  eventid: widget.eventData.id);
                               Fluttertoast.showToast(
                                   msg: "Your event has been saved");
 

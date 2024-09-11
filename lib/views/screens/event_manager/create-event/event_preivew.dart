@@ -56,12 +56,16 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
       child: WillPopScope(
         onWillPop: () async {
           // Navigate to the HomeMain screen and remove all previous routes
-          clearAllTempData();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            HomeMain.routeName,
-            (route) => true,
-          );
+          if (isSaved) {
+            clearAllTempData();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              HomeMain.routeName,
+              (route) => true,
+            );
+          } else {
+            Get.back();
+          }
           return true; // Prevent the default pop behavior
         },
         child: SafeArea(
@@ -73,12 +77,16 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                   false, // Disable the default back button
               leading: IconButton(
                 onPressed: () {
-                  clearAllTempData();
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    HomeMain.routeName,
-                    (route) => true,
-                  );
+                  if (isSaved) {
+                    clearAllTempData();
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      HomeMain.routeName,
+                      (route) => true,
+                    );
+                  } else {
+                    Get.back();
+                  }
                 },
                 icon: Icon(Icons.arrow_back),
               ),
