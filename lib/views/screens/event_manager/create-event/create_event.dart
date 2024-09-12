@@ -121,8 +121,10 @@ class _CreateEventState extends State<CreateEvent> {
     });
   }
 
-  checkReferesh() async {
-    Get.back();
+  checkReferesh({bool fromtap = false}) async {
+    if (!fromtap) {
+      Get.back();
+    }
     refresh = await Get.to(() => const CreateVenue(), arguments: "fromEvent");
     bool booleanValue = refresh == 'true';
     setState(() {
@@ -209,7 +211,7 @@ class _CreateEventState extends State<CreateEvent> {
                                 errorValue: 'venue',
                                 onChanged: (String newValue) {
                                   if (newValue == "Add Venue") {
-                                    checkReferesh();
+                                    checkReferesh(fromtap: true);
                                   } else {
                                     VenuModel selectedVenueObject =
                                         venuList.firstWhere(
