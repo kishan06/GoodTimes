@@ -19,6 +19,7 @@ import '../../../../data/models/events_model.dart';
 import '../../../../data/models/profile.dart';
 import '../../../../data/models/venu_model.dart';
 // import '../../../../data/resources/services/preferences_service.dart';
+import '../../../../data/repository/services/fileshare.dart';
 import '../../../../data/repository/services/preferences_service.dart';
 import '../../../../data/repository/services/profile.dart';
 import '../../../../data/repository/services/venue_services.dart';
@@ -28,6 +29,10 @@ import '../../../widgets/common/dropdown.dart';
 import '../../../widgets/common/parent_widget.dart';
 import '../../profile/edit_profile.dart';
 import 'edit_event_preivew.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 List<List<dynamic>> tempImgs = [];
 
@@ -94,8 +99,73 @@ class _EditCreateEventState extends State<EditEvent> {
     futureFun();
     profileApi();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (globalController.eventThumbnailImgPath.value.isEmpty) {
+        if (widget.eventData.thumbnail != null) {
+          globalController.eventThumbnailImgPath.value =
+              await downloadImageToCache(widget.eventData.thumbnail!);
+            print(globalController.eventThumbnailImgPath.value);
+        }
+        print("//");
+      }
+    });
   }
 
+  /* Future<String> downloadImage(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    final documentDirectory = await getApplicationDocumentsDirectory();
+    final filePath = path.join(documentDirectory.path, 'temp_image.jpg');
+
+    final file = File(filePath);
+    file.writeAsBytesSync(response.bodyBytes);
+
+    return filePath;
+  } */
+
+Future<String> downloadImageToCache(String imageUrl) async {
+  try {
+    // Download the image from the URL
+    final response = await http.get(Uri.parse(imageUrl));
+
+    // Get the temporary cache directory
+    final directory = await getTemporaryDirectory();
+
+    // Define the file path in the cache directory
+    final filePath = path.join(directory.path, 'shared_image.jpg');
+    final file = File(filePath);
+
+    // Write the image data to the local file
+    await file.writeAsBytes(response.bodyBytes);
+
+    // Return the local file path
+    return file.path;
+  } catch (e) {
+    print("Error downloading image: $e");
+    return '';
+  }
+}
+Future<String> downloadImage(String imageUrl) async {
+  try {
+    // Fetch the image from the provided URL
+    final response = await http.get(Uri.parse(imageUrl));
+
+    // Get the app's directory to save the image locally
+    final directory = await getApplicationDocumentsDirectory();
+
+    // Define the local file path for the image
+    final filePath = path.join(directory.path, 'temp_image.jpg');
+
+    // Save the image to the local file
+    final file = File(filePath);
+    await file.writeAsBytes(response.bodyBytes);
+
+    // Return the local file path to be used for sharing
+    return filePath;
+  } catch (e) {
+    print("Error downloading image: $e");
+    return '';
+  }
+}
   multipleImageData() {
     log("category title tempImgs in multiple image");
     logger.f("");

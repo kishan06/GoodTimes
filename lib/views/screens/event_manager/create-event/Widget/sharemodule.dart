@@ -24,6 +24,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
   final appinioSocialShare = AppinioSocialShare();
 
   void shareToFacebook(String caption, String imagePath) async {
+    print("$imagePath");
     bool isInstalled = await DeviceApps.isAppInstalled('com.facebook.katana');
     if (isInstalled) {
       try {
