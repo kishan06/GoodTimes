@@ -51,7 +51,7 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
         onWillPop: () async {
           // Navigate to the HomeMain screen and remove all previous routes
           // clearAllTempData();
-         if (isSaved) {
+          if (isSaved) {
             clearAllTempData();
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -72,15 +72,15 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
               onPressed: () {
                 // clearAllTempData();
                 if (isSaved) {
-            clearAllTempData();
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              HomeMain.routeName,
-              (route) => true,
-            );
-          } else {
-            Get.back();
-          }
+                  clearAllTempData();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    HomeMain.routeName,
+                    (route) => true,
+                  );
+                } else {
+                  Get.back();
+                }
               },
               icon: Icon(Icons.arrow_back),
             ),
@@ -287,56 +287,61 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                           onSaveBottomsheet(context,
                               eventid: widget.eventData.id);
                         } else {
-                          // showWaitingDialoge(context: context, loading: waiting);
-                          // setState(() {
-                          //   waiting = true;
-                          // });
-                          print("////");
-                          CreateEventService()
-                              .editEventServices(context,
-                                  eventId: widget.eventData.id,
-                                  title: TempData.editEvetTitle,
-                                  ageGroup: TempData.editageGroup,
-                                  description: TempData.editEvetDescription,
-                                  startDate: TempData.editEvetStartDate,
-                                  category: TempData.editcategoryID,
-                                  enteryFee: TempData.editeventEntryCost,
-                                  guest: TempData.editeventKeyGuest,
-                                  fromTime: TempData.editEvetStartTime,
-                                  endDate: TempData.editEvetEndDate,
-                                  toTime: TempData.editEvetEndTime,
-                                  entryType: TempData.editeventEntryType,
-                                  venue: TempData.editselectVenuId,
-                                  venueCapacity: TempData.editeventCapcity,
-                                  draft: false,
-                                  thumbnailImg: globalController
-                                              .eventThumbnailImgPath.value ==
-                                          ''
-                                      ? widget.eventData.thumbnail
-                                      : globalController
-                                          .eventThumbnailImgPath.value,
-                                  images: tempImgs,
-                                  tags: TempData.editEventTags)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              setState(() {
-                                isSaved = true; // Update the saved status
-                              });
-                              onSaveBottomsheet(context,
-                                  eventid: widget.eventData.id);
-                              Fluttertoast.showToast(
-                                  msg: "Your event has been saved");
+                          if (!waiting) {
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
+                            setState(() {
+                              waiting = true;
+                            });
+                            CreateEventService()
+                                .editEventServices(context,
+                                    eventId: widget.eventData.id,
+                                    title: TempData.editEvetTitle,
+                                    ageGroup: TempData.editageGroup,
+                                    description: TempData.editEvetDescription,
+                                    startDate: TempData.editEvetStartDate,
+                                    category: TempData.editcategoryID,
+                                    enteryFee: TempData.editeventEntryCost,
+                                    guest: TempData.editeventKeyGuest,
+                                    fromTime: TempData.editEvetStartTime,
+                                    endDate: TempData.editEvetEndDate,
+                                    toTime: TempData.editEvetEndTime,
+                                    entryType: TempData.editeventEntryType,
+                                    venue: TempData.editselectVenuId,
+                                    venueCapacity: TempData.editeventCapcity,
+                                    draft: false,
+                                    thumbnailImg: globalController
+                                                .eventThumbnailImgPath.value ==
+                                            ''
+                                        ? widget.eventData.thumbnail
+                                        : globalController
+                                            .eventThumbnailImgPath.value,
+                                    images: tempImgs,
+                                    tags: TempData.editEventTags)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                setState(() {
+                                   waiting = false;
+                                   Get.back();
+                                  isSaved = true; // Update the saved status
+                                });
+                                onSaveBottomsheet(context,
+                                    eventid: widget.eventData.id);
+                                Fluttertoast.showToast(
+                                    msg: "Your event has been saved");
 
-                              // clearAllTempData();
-                            }
-                            if (value.responseStatus == ResponseStatus.failed) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          });
+                                // clearAllTempData();
+                              }
+                              if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
                         }
                       },
                       text: isSaved ? 'Share' : 'Save'),

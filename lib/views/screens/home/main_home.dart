@@ -246,13 +246,11 @@ class _HomeMainState extends State<HomeMain> {
     // }
 
     List<Widget> footerWidget = [
-      (homePageController.isUser.value == eventManager)
-          ? const HomeScreen()
-          : const HomeScreen(),
-      (homePageController.isUser.value == eventManager)
-          ? const EventeManagerHome()
-          : const Wallet(),
-      if (homePageController.isUser.value == eventManager) const Wallet(),
+      const HomeScreen(),
+      if (homePageController.isUser.value == eventManager)
+        const EventeManagerHome(),
+
+      const Wallet(),
       const Profile(),
       // const Chat(),
     ];
@@ -282,6 +280,15 @@ class _HomeMainState extends State<HomeMain> {
                   "event_manager") {
                 homePageController.isUser.value = eventManager;
               }
+              footerWidget = [
+                const HomeScreen(),
+                if (homePageController.isUser.value == eventManager)
+                  const EventeManagerHome(),
+
+                const Wallet(),
+                const Profile(),
+                // const Chat(),
+              ];
             });
             print("//");
           }

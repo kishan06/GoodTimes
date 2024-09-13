@@ -36,6 +36,7 @@ import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/app_version.dart';
 import '../../../view-models/auth/google_auth.dart';
+import '../../../view-models/bootomnavigation_controller.dart';
 import '../../../view-models/location_controller.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
@@ -203,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+ // HomePageController homePageController = Get.put(HomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +236,21 @@ class _HomeScreenState extends State<HomeScreen> {
               });
               TempData.preventapicall = false;
             });
-            globalController.serverError.value = false;
+           /*   profileextendedcontroller
+                .fetchProfileExtendeddata(context)
+                .then((value) {
+              TempData.preventextendeddatacall = false;
+              if (profileextendedcontroller
+                      .profileextenddata.value.data!.principalTypeName ==
+                  "event_user") {
+                homePageController.isUser.value = eventUser;
+              } else if (profileextendedcontroller
+                      .profileextenddata.value.data!.principalTypeName ==
+                  "event_manager") {
+                homePageController.isUser.value = eventManager;
+              }
+            });
+         */    globalController.serverError.value = false;
           }
 
           return Stack(
