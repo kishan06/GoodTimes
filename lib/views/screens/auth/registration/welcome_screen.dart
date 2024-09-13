@@ -8,6 +8,7 @@ import 'package:good_times/views/widgets/common/button.dart';
 // import '../../../../data/resources/services/faq.dart';
 import '../../../../utils/temp.dart';
 import '../../../../view-models/Preferences/Preferences_Controller.dart';
+import '../../../../view-models/SubscriptionPreference.dart';
 import '../../../widgets/common/parent_widget.dart';
 import '../login/login.dart';
 import 'select_user_type.dart';
@@ -17,6 +18,8 @@ class WelcomeScreen extends StatelessWidget {
   WelcomeScreen({super.key});
   PreferenceController preferenceController =
       Get.put(PreferenceController(), permanent: true);
+        ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
   @override
   Widget build(BuildContext context) {
     return parentWidgetWithConnectivtyChecker(
@@ -70,6 +73,7 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () {
                     preferenceController.selectedpreference.value = [];
                     preferenceController.storeselectedPreferenceId.value = [];
+                    profileextendedcontroller.profileextenddata.value.data=null;
                     GetStorage().write(TempData.forceEditPref, false);
 
                     Navigator.pushNamed(context, SelectUserType.routeName);
@@ -81,7 +85,7 @@ class WelcomeScreen extends StatelessWidget {
                   preferenceController.selectedpreference.value = [];
                   preferenceController.storeselectedPreferenceId.value = [];
                   GetStorage().write(TempData.forceEditPref, false);
-
+                  profileextendedcontroller.profileextenddata.value.data=null;
                   Navigator.pushNamed(context, LoginScreen.routeName);
                 },
                 text: 'Login',

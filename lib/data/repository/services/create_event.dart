@@ -79,7 +79,7 @@ class CreateEventService {
       };
       Response response = await dio.post(Endpoints.createEvent,
           options: Options(headers: header), data: formData);
-
+    print("/////API called");
       if (response.statusCode == 200 || response.statusCode == 201) {
         logger.e('response.body ${response.data}');
         return ResponseModel(

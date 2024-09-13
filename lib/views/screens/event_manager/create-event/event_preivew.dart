@@ -301,63 +301,69 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                           onSaveBottomsheet(context,
                               eventid: eventmodelobj!.last.id + 1);
                         } else {
-                          log("check entry type ${TempData.eventEntryType}");
-
-                          CreateEventService()
-                              .createEventServices(
-                            context,
-                            title: TempData.evetTitle,
-                            ageGroup: TempData.ageGroup,
-                            description: TempData.evetDescription,
-                            startDate: TempData.evetStartDate,
-                            category: TempData.category,
-                            enteryFee: TempData.eventEntryCost,
-                            guest: TempData.eventKeyGuest,
-                            fromTime: TempData.evetStartTime,
-                            endDate: TempData.evetEndDate,
-                            toTime: TempData.evetEndTime,
-                            entryType: TempData.eventEntryType,
-                            venue: TempData.selectVenu,
-                            venueCapacity: TempData.eventCapcity,
-                            tags: TempData.eventTags,
-                            couponCodeController: TempData.couponCode,
-                            couponDescriptionController:
-                                TempData.couponCodeDescription,
-                            draft: false,
-                            thumbnailImg:
-                                globalController.eventThumbnailImgPath.value,
-                            images: globalController.eventPhotosmgPath,
-                          )
-                              .then((value) async {
+                          if (!waiting) {
+                            log("check entry type ${TempData.eventEntryType}");
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
                             setState(() {
-                              waiting = false;
+                              waiting = true;
                             });
+                            CreateEventService()
+                                .createEventServices(
+                              context,
+                              title: TempData.evetTitle,
+                              ageGroup: TempData.ageGroup,
+                              description: TempData.evetDescription,
+                              startDate: TempData.evetStartDate,
+                              category: TempData.category,
+                              enteryFee: TempData.eventEntryCost,
+                              guest: TempData.eventKeyGuest,
+                              fromTime: TempData.evetStartTime,
+                              endDate: TempData.evetEndDate,
+                              toTime: TempData.evetEndTime,
+                              entryType: TempData.eventEntryType,
+                              venue: TempData.selectVenu,
+                              venueCapacity: TempData.eventCapcity,
+                              tags: TempData.eventTags,
+                              couponCodeController: TempData.couponCode,
+                              couponDescriptionController:
+                                  TempData.couponCodeDescription,
+                              draft: false,
+                              thumbnailImg:
+                                  globalController.eventThumbnailImgPath.value,
+                              images: globalController.eventPhotosmgPath,
+                            )
+                                .then((value) async {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                var response = await GetEventServices()
+                                    .getEventDetails(context,
+                                        getEventId: eventmodelobj!.last.id + 1);
 
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              var response = await GetEventServices()
-                                  .getEventDetails(context,
-                                      getEventId: eventmodelobj!.last.id + 1);
-
-                              log("responses store in model --- >  $response");
-                              eventsmodeldata = response;
-                              setState(() {
-                                isSaved = true; // Update the saved status
-                              });
-                              // clearAllTempData();
-                              // Navigator.pop(context);
-                              onSaveBottomsheet(context,
-                                  eventid: eventmodelobj!.last.id + 1);
-                              Fluttertoast.showToast(
-                                  msg: "Your event has been saved");
-                            } else if (value.responseStatus ==
-                                ResponseStatus.failed) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          });
+                                log("responses store in model --- >  $response");
+                                eventsmodeldata = response;
+                                setState(() {
+                                  waiting = false;
+                                  Get.back();
+                                  isSaved = true; // Update the saved status
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "Your event has been saved");
+                                // clearAllTempData();
+                                // Navigator.pop(context);
+                                Future.delayed(Duration(milliseconds: 400), () {
+                                  onSaveBottomsheet(context,
+                                      eventid: eventmodelobj!.last.id + 1);
+                                });
+                              } else if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
                         }
                       },
                       text: isSaved ? 'Share' : 'Save',
