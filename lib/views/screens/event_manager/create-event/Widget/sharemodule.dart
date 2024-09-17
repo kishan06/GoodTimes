@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:appinio_social_share/appinio_social_share.dart';
+import 'package:appinio_social_share/appinio_social_share_method_channel.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +15,7 @@ import 'package:good_times/utils/temp.dart';
 
 import '../../../../../data/repository/response_data.dart';
 import '../../../../../utils/loading.dart';
+import '../../../../../view-models/copy_clipboard.dart';
 import '../../../../../view-models/global_controller.dart';
 
 final appinioSocialShare = AppinioSocialShare();
@@ -22,56 +25,105 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
   bool waiting = false;
   // late List<EventsModel> data;
   final appinioSocialShare = AppinioSocialShare();
+  final secondObj = MethodChannelAppinioSocialShare();
 
   void shareToFacebook(String caption, String imagePath) async {
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+        Get.snackbar("Copied to clipboard","");
+    Map<String, bool> resp = await secondObj.getInstalledApps();
+    print(resp['facebook_stories']);
     print("$imagePath");
-    bool isInstalled = await DeviceApps.isAppInstalled('com.facebook.katana');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToFacebook(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Facebook: $e");
+    if (Platform.isAndroid) {
+      bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToFacebook(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Facebook: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Facebook app is not installed.");
+    }
+    if (Platform.isIOS) {
+      if (resp['facebook_stories']!) {
+        try {
+          secondObj.shareToFacebook(caption, [imagePath]);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+      }
     }
   }
 
   void shareToTwitter(String caption, String imagePath) async {
-    bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToTwitter(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Twitter: $e");
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+        Get.snackbar("Copied to clipboard","");
+    Map<String, bool> resp = await secondObj.getInstalledApps();
+    if (Platform.isAndroid) {
+      bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToTwitter(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Twitter: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Twitter app is not installed.");
+    }
+    if (Platform.isIOS) {
+      if (resp['twitter']!) {
+        try {
+          secondObj.shareToTwitter(caption, imagePath);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+      }
     }
   }
 
   void shareToInstagram(String caption, String imagePath) async {
-    Clipboard.setData(
-        ClipboardData(text: "$caption Caption copied to clipboard."));
-
-    bool isInstalled = await DeviceApps.isAppInstalled('com.instagram.android');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToInstagram(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Instagram: $e");
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+        Get.snackbar("Copied to clipboard","");
+    Map<String, bool> resp = await secondObj.getInstalledApps();
+    print(resp['instagram']);
+    if (Platform.isAndroid) {
+      bool isInstalled =
+          await DeviceApps.isAppInstalled('com.instagram.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToInstagram(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Instagram app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Instagram app is not installed.");
+    }
+    if (Platform.isIOS) {
+      if (resp['instagram']!) {
+        try {
+          secondObj.shareToInstagramFeed(caption, imagePath);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+      }
     }
   }
 
