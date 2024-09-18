@@ -29,9 +29,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
 
   void shareToFacebook(String caption, String imagePath) async {
     CopyClipboardAndSahreController().copyToClipboard(context, caption);
-        Get.snackbar("Copied to clipboard","");
-    Map<String, bool> resp = await secondObj.getInstalledApps();
-    print(resp['facebook_stories']);
+    Get.snackbar("Copied to clipboard", "");
+
     print("$imagePath");
     if (Platform.isAndroid) {
       bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
@@ -49,6 +48,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
       }
     }
     if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+      print(resp['facebook_stories']);
       if (resp['facebook_stories']!) {
         try {
           secondObj.shareToFacebook(caption, [imagePath]);
@@ -63,8 +64,7 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
 
   void shareToTwitter(String caption, String imagePath) async {
     CopyClipboardAndSahreController().copyToClipboard(context, caption);
-        Get.snackbar("Copied to clipboard","");
-    Map<String, bool> resp = await secondObj.getInstalledApps();
+    Get.snackbar("Copied to clipboard", "");
     if (Platform.isAndroid) {
       bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
       if (isInstalled) {
@@ -81,6 +81,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
       }
     }
     if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+
       if (resp['twitter']!) {
         try {
           secondObj.shareToTwitter(caption, imagePath);
@@ -95,9 +97,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
 
   void shareToInstagram(String caption, String imagePath) async {
     CopyClipboardAndSahreController().copyToClipboard(context, caption);
-        Get.snackbar("Copied to clipboard","");
-    Map<String, bool> resp = await secondObj.getInstalledApps();
-    print(resp['instagram']);
+    Get.snackbar("Copied to clipboard", "");
+
     if (Platform.isAndroid) {
       bool isInstalled =
           await DeviceApps.isAppInstalled('com.instagram.android');
@@ -115,6 +116,8 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
       }
     }
     if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+      print(resp['instagram']);
       if (resp['instagram']!) {
         try {
           secondObj.shareToInstagramFeed(caption, imagePath);
@@ -512,7 +515,9 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToInstagram(TempData.evetTitle,
+                              String caption =
+                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              shareToInstagram(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(
@@ -542,7 +547,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToFacebook(TempData.evetTitle,
+                              String caption =
+                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+
+                              shareToFacebook(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(
@@ -572,7 +580,10 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToTwitter(TempData.evetTitle,
+                              String caption =
+                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+
+                              shareToTwitter(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(
