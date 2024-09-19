@@ -100,29 +100,39 @@ class _EditCreateEventState extends State<EditEvent> {
     profileApi();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (globalController.eventThumbnailImgPath.value.isEmpty) {
-        if (widget.eventData.thumbnail != null) {
-          globalController.eventThumbnailImgPath.value =
-              await downloadImageToCache(widget.eventData.thumbnail!);
-            print(globalController.eventThumbnailImgPath.value);
-        }
-        print("//");
+      if (widget.eventData.thumbnail != null) {
+        globalController.eventThumbnailImgPath.value =
+            await downloadImageToCache(widget.eventData.thumbnail!);
+        print(globalController.eventThumbnailImgPath.value);
       }
+      print("//");
     });
   }
 
-  /* Future<String> downloadImage(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    final documentDirectory = await getApplicationDocumentsDirectory();
-    final filePath = path.join(documentDirectory.path, 'temp_image.jpg');
+ 
+  /* Future<String> downloadImageToCache(String imageUrl) async {
+    try {
+      // Download the image from the URL
+      final response = await http.get(Uri.parse(imageUrl));
 
-    final file = File(filePath);
-    file.writeAsBytesSync(response.bodyBytes);
+      // Get the temporary cache directory
+      final directory = await getTemporaryDirectory();
 
-    return filePath;
+      // Define the file path in the cache directory
+      final filePath = path.join(directory.path, 'shared_image.jpg');
+      final file = File(filePath);
+
+      // Write the image data to the local file
+      await file.writeAsBytes(response.bodyBytes);
+
+      // Return the local file path
+      return file.path;
+    } catch (e) {
+      print("Error downloading image: $e");
+      return '';
+    }
   } */
-
-Future<String> downloadImageToCache(String imageUrl) async {
+ Future<String> downloadImageToCache(String imageUrl) async {
   try {
     // Download the image from the URL
     final response = await http.get(Uri.parse(imageUrl));
@@ -130,8 +140,11 @@ Future<String> downloadImageToCache(String imageUrl) async {
     // Get the temporary cache directory
     final directory = await getTemporaryDirectory();
 
+    // Create a unique file name using a timestamp or a hash of the image URL
+    final fileName = 'shared_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
     // Define the file path in the cache directory
-    final filePath = path.join(directory.path, 'shared_image.jpg');
+    final filePath = path.join(directory.path, fileName);
     final file = File(filePath);
 
     // Write the image data to the local file
@@ -144,28 +157,7 @@ Future<String> downloadImageToCache(String imageUrl) async {
     return '';
   }
 }
-Future<String> downloadImage(String imageUrl) async {
-  try {
-    // Fetch the image from the provided URL
-    final response = await http.get(Uri.parse(imageUrl));
 
-    // Get the app's directory to save the image locally
-    final directory = await getApplicationDocumentsDirectory();
-
-    // Define the local file path for the image
-    final filePath = path.join(directory.path, 'temp_image.jpg');
-
-    // Save the image to the local file
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    // Return the local file path to be used for sharing
-    return filePath;
-  } catch (e) {
-    print("Error downloading image: $e");
-    return '';
-  }
-}
   multipleImageData() {
     log("category title tempImgs in multiple image");
     logger.f("");
