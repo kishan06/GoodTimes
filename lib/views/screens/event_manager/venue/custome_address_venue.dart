@@ -172,6 +172,7 @@ class _VenueCustomAddressState extends State<VenueCustomAddress> {
                               controller: postCode,
                               hintTxt: "Postcode",
                               inputFormate: [
+                                LengthLimitingTextInputFormatter(10),
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r'^[a-zA-Z0-9\s]+$')),
                               ],

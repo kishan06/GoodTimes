@@ -30,7 +30,9 @@ import '../../../widgets/common/parent_widget.dart';
 class EditedEventPreview extends StatefulWidget {
   static const String routeName = "editedEventPreview";
   final EventsModel eventData;
-  const EditedEventPreview({super.key, required this.eventData});
+  bool draftpage = false;
+  EditedEventPreview(
+      {super.key, required this.eventData, this.draftpage = false});
 
   @override
   State<EditedEventPreview> createState() => _CreatedEventPreviewState();
@@ -196,6 +198,26 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                               labelStyle.copyWith(fontWeight: FontWeight.w500)),
                       SizedBox(height: 5),
                       Text(TempData.editeventKeyGuest, style: paragraphStyle),
+                      if (widget.draftpage)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 15),
+                            Text('Coupon Code',
+                                style: labelStyle.copyWith(
+                                    fontWeight: FontWeight.w500)),
+                            SizedBox(height: 5),
+                            Text(TempData.couponCode, style: paragraphStyle),
+                            SizedBox(height: 15),
+                            Text('Coupon Code Descriptions',
+                                style: labelStyle.copyWith(
+                                    fontWeight: FontWeight.w500)),
+                            SizedBox(height: 5),
+                            Text(TempData.couponCodeDescription,
+                                style: paragraphStyle),
+                            SizedBox(height: 15),
+                          ],
+                        ),
                       Text('Tags',
                           style:
                               labelStyle.copyWith(fontWeight: FontWeight.w500)),
@@ -284,8 +306,11 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                       //             : const SizedBox(),
                       onPressed: () {
                         if (isSaved) {
+                          print("//");
                           onSaveBottomsheet(context,
-                              eventid: widget.eventData.id);
+                              eventid: widget.eventData.id,
+                              eventData: widget.eventData,
+                              editpath: true);
                         } else {
                           if (!waiting) {
                             showWaitingDialoge(
@@ -294,40 +319,44 @@ class _CreatedEventPreviewState extends State<EditedEventPreview> {
                               waiting = true;
                             });
                             CreateEventService()
-                                .editEventServices(context,
-                                    eventId: widget.eventData.id,
-                                    title: TempData.editEvetTitle,
-                                    ageGroup: TempData.editageGroup,
-                                    description: TempData.editEvetDescription,
-                                    startDate: TempData.editEvetStartDate,
-                                    category: TempData.editcategoryID,
-                                    enteryFee: TempData.editeventEntryCost,
-                                    guest: TempData.editeventKeyGuest,
-                                    fromTime: TempData.editEvetStartTime,
-                                    endDate: TempData.editEvetEndDate,
-                                    toTime: TempData.editEvetEndTime,
-                                    entryType: TempData.editeventEntryType,
-                                    venue: TempData.editselectVenuId,
-                                    venueCapacity: TempData.editeventCapcity,
-                                    draft: false,
-                                    thumbnailImg: globalController
-                                                .eventThumbnailImgPath.value ==
-                                            ''
-                                        ? widget.eventData.thumbnail
-                                        : globalController
-                                            .eventThumbnailImgPath.value,
-                                    images: tempImgs,
-                                    tags: TempData.editEventTags)
+                                .editEventServices(
+                              context,
+                              eventId: widget.eventData.id,
+                              title: TempData.editEvetTitle,
+                              ageGroup: TempData.editageGroup,
+                              description: TempData.editEvetDescription,
+                              startDate: TempData.editEvetStartDate,
+                              category: TempData.editcategoryID,
+                              enteryFee: TempData.editeventEntryCost,
+                              guest: TempData.editeventKeyGuest,
+                              fromTime: TempData.editEvetStartTime,
+                              endDate: TempData.editEvetEndDate,
+                              toTime: TempData.editEvetEndTime,
+                              entryType: TempData.editeventEntryType,
+                              venue: TempData.editselectVenuId,
+                              venueCapacity: TempData.editeventCapcity,
+                              draft: false,
+                              thumbnailImg: globalController
+                                          .eventThumbnailImgPath.value ==
+                                      ''
+                                  ? widget.eventData.thumbnail
+                                  : globalController
+                                      .eventThumbnailImgPath.value,
+                              images: tempImgs,
+                              tags: TempData.editEventTags,
+                            )
                                 .then((value) {
                               if (value.responseStatus ==
                                   ResponseStatus.success) {
                                 setState(() {
-                                   waiting = false;
-                                   Get.back();
+                                  waiting = false;
+                                  Get.back();
                                   isSaved = true; // Update the saved status
                                 });
                                 onSaveBottomsheet(context,
-                                    eventid: widget.eventData.id);
+                                    eventid: widget.eventData.id,
+                                    eventData: widget.eventData,
+                                    editpath: true);
                                 Fluttertoast.showToast(
                                     msg: "Your event has been saved");
 

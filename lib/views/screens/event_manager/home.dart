@@ -227,7 +227,7 @@ class _EventeManagerHomeState extends State<EventeManagerHome>
                   log("EventDraftId---> ${data[index]}");
 
                   Get.to(() => EditEventTitile(
-                        eventData: data[index],
+                        eventData: data[index],draftpage:true,
                       ));
                 },
                 child: Column(
