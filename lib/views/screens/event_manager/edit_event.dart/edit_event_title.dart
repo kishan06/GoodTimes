@@ -25,7 +25,8 @@ import 'edit_event.dart';
 class EditEventTitile extends StatefulWidget {
   static const String routeName = "editEventTitile";
   final EventsModel eventData;
-  const EditEventTitile({super.key, required this.eventData});
+  bool draftpage = false;
+  EditEventTitile({super.key, required this.eventData, this.draftpage = false});
   @override
   State<EditEventTitile> createState() => EditEventTitileState();
 }
@@ -49,6 +50,7 @@ class EditEventTitileState extends State<EditEventTitile> {
 
   @override
   void initState() {
+    print(widget.draftpage);
     super.initState();
     _eventTitle.text = widget.eventData.title!;
     _eventDescriptions.text = widget.eventData.description!;
@@ -83,19 +85,18 @@ class EditEventTitileState extends State<EditEventTitile> {
   }
 
   getAgeGroup() {
-    if(TempData.agedatagroup.isEmpty){
+    if (TempData.agedatagroup.isEmpty) {
       PreferencesService().getAgeGroup(context).then((value) {
-      log("log data of category list in event screen $value");
-      setState(() {
-        ageList = value;
+        log("log data of category list in event screen $value");
+        setState(() {
+          ageList = value;
+        });
       });
-    });
-    }else{
-  setState(() {
+    } else {
+      setState(() {
         ageList = TempData.agedatagroup;
       });
     }
-    
   }
 
   checkstartTimeIsBeforeFun() {
@@ -550,6 +551,7 @@ class EditEventTitileState extends State<EditEventTitile> {
                                       venuList: venuList,
                                       categoryList: categoryList,
                                       ageGroupList: ageList,
+                                      draftpage: widget.draftpage,
                                     ),
                                   );
                                   log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");

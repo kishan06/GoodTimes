@@ -13,6 +13,7 @@ import 'package:good_times/data/repository/services/event_manager.dart';
 import 'package:good_times/data/repository/services/social_share.dart';
 import 'package:good_times/utils/temp.dart';
 
+import '../../../../../data/models/events_model.dart';
 import '../../../../../data/repository/response_data.dart';
 import '../../../../../utils/loading.dart';
 import '../../../../../view-models/copy_clipboard.dart';
@@ -20,7 +21,8 @@ import '../../../../../view-models/global_controller.dart';
 
 final appinioSocialShare = AppinioSocialShare();
 GlobalController globalController = Get.find();
-void onSaveBottomsheet(BuildContext context, {int? eventid}) {
+void onSaveBottomsheet(BuildContext context,
+    {int? eventid, EventsModel? eventData, bool editpath = false}) {
   bool isExpanded = false;
   bool waiting = false;
   // late List<EventsModel> data;
@@ -260,11 +262,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -319,11 +325,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -379,11 +389,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -445,7 +459,9 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   // Delay the toast to ensure context is available
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
-                                    Fluttertoast.showToast(msg: messages);
+                                    Get.snackbar("Success", messages,
+                                        duration:const Duration(seconds: 8),
+                                        snackPosition: SnackPosition.BOTTOM);
                                   });
 
                                   print("message$messages");
@@ -455,11 +471,19 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Get.snackbar(
+                                      "Retry", "Please try again later",
+                                      duration:const Duration(seconds: 8),
+                                      snackPosition: SnackPosition.BOTTOM);
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Get.snackbar(
+                                      "Retry", "Please try again later",
+                                      duration:const Duration(seconds: 8),
+                                      snackPosition: SnackPosition.BOTTOM);
                                 }
                               });
                             },
@@ -515,8 +539,14 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              String caption =
-                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
                               shareToInstagram(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
@@ -547,8 +577,14 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              String caption =
-                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
 
                               shareToFacebook(caption,
                                   globalController.eventThumbnailImgPath.value);
@@ -580,9 +616,14 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              String caption =
-                                  "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
-
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
                               shareToTwitter(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
