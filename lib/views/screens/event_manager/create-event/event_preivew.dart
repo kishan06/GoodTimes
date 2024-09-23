@@ -56,6 +56,9 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
       child: WillPopScope(
         onWillPop: () async {
           // Navigate to the HomeMain screen and remove all previous routes
+          if (waiting) {
+            return false;
+          }
           if (isSaved) {
             clearAllTempData();
             Navigator.pushNamedAndRemoveUntil(
@@ -77,15 +80,17 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                   false, // Disable the default back button
               leading: IconButton(
                 onPressed: () {
-                  if (isSaved) {
-                    clearAllTempData();
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      HomeMain.routeName,
-                      (route) => true,
-                    );
-                  } else {
-                    Get.back();
+                  if (!waiting) {
+                    if (isSaved && !waiting) {
+                      clearAllTempData();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        HomeMain.routeName,
+                        (route) => true,
+                      );
+                    } else {
+                      Get.back();
+                    }
                   }
                 },
                 icon: Icon(Icons.arrow_back),
@@ -380,56 +385,59 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                         //           ? const CircularProgressIndicator()
                         //           : const SizedBox(),
                         onPressed: () {
-                          showWaitingDialoge(
-                              context: context, loading: waiting);
-                          setState(() {
-                            waiting = true;
-                          });
-                          CreateEventService()
-                              .createEventServices(context,
-                                  title: TempData.evetTitle,
-                                  ageGroup: TempData.ageGroup,
-                                  description: TempData.evetDescription,
-                                  startDate: TempData.evetStartDate,
-                                  category: TempData.category,
-                                  enteryFee: TempData.eventEntryCost,
-                                  guest: TempData.eventKeyGuest,
-                                  fromTime: TempData.evetStartTime,
-                                  endDate: TempData.evetEndDate,
-                                  toTime: TempData.evetEndTime,
-                                  entryType: TempData.eventEntryType,
-                                  venue: TempData.selectVenu,
-                                  venueCapacity: TempData.eventCapcity,
-                                  couponCodeController: TempData.couponCode,
-                                  couponDescriptionController:
-                                      TempData.couponCodeDescription,
-                                  draft: true,
-                                  tags: TempData.eventTags,
-                                  thumbnailImg: globalController
-                                      .eventThumbnailImgPath.value,
-                                  images: globalController.eventPhotosmgPath)
-                              .then((value) {
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              clearAllTempData();
-                              Navigator.pop(context);
+                          if (!waiting) {
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
+                            setState(() {
+                              waiting = true;
+                            });
+                            CreateEventService()
+                                .createEventServices(context,
+                                    title: TempData.evetTitle,
+                                    ageGroup: TempData.ageGroup,
+                                    description: TempData.evetDescription,
+                                    startDate: TempData.evetStartDate,
+                                    category: TempData.category,
+                                    enteryFee: TempData.eventEntryCost,
+                                    guest: TempData.eventKeyGuest,
+                                    fromTime: TempData.evetStartTime,
+                                    endDate: TempData.evetEndDate,
+                                    toTime: TempData.evetEndTime,
+                                    entryType: TempData.eventEntryType,
+                                    venue: TempData.selectVenu,
+                                    venueCapacity: TempData.eventCapcity,
+                                    couponCodeController: TempData.couponCode,
+                                    couponDescriptionController:
+                                        TempData.couponCodeDescription,
+                                    draft: true,
+                                    tags: TempData.eventTags,
+                                    thumbnailImg: globalController
+                                        .eventThumbnailImgPath.value,
+                                    images: globalController.eventPhotosmgPath)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                clearAllTempData();
+                                Navigator.pop(context);
 
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                HomeMain.routeName,
-                                (route) => true,
-                              );
-                            }
-                            if (value.responseStatus == ResponseStatus.failed) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          });
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeMain.routeName,
+                                  (route) => true,
+                                );
+                              }
+                              if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
                         },
                         text: 'Save as draft',
                       ),
