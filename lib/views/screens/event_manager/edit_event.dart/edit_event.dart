@@ -42,13 +42,14 @@ class EditEvent extends StatefulWidget {
   final List<EventCategoriesModdel> categoryList;
   final List<ageData> ageGroupList;
   static const String routeName = "editEvent";
-  bool draftpage=false;
-   EditEvent(
+  bool draftpage = false;
+  EditEvent(
       {super.key,
       required this.eventData,
       required this.venuList,
       required this.categoryList,
-      required this.ageGroupList, this.draftpage=false});
+      required this.ageGroupList,
+      this.draftpage = false});
 
   @override
   State<EditEvent> createState() => _EditCreateEventState();
@@ -66,7 +67,7 @@ class _EditCreateEventState extends State<EditEvent> {
   TextEditingController venuCapacityController = TextEditingController();
   TextEditingController admissionCostController = TextEditingController();
   TextEditingController keyGuestController = TextEditingController();
-  
+
   TextEditingController couponCodeController = TextEditingController();
   TextEditingController couponDescriptionController = TextEditingController();
   String thumbnailImg = '';
@@ -114,32 +115,32 @@ class _EditCreateEventState extends State<EditEvent> {
     });
   }
 
- 
- Future<String> downloadImageToCache(String imageUrl) async {
-  try {
-    // Download the image from the URL
-    final response = await http.get(Uri.parse(imageUrl));
+  Future<String> downloadImageToCache(String imageUrl) async {
+    try {
+      // Download the image from the URL
+      final response = await http.get(Uri.parse(imageUrl));
 
-    // Get the temporary cache directory
-    final directory = await getTemporaryDirectory();
+      // Get the temporary cache directory
+      final directory = await getTemporaryDirectory();
 
-    // Create a unique file name using a timestamp or a hash of the image URL
-    final fileName = 'shared_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      // Create a unique file name using a timestamp or a hash of the image URL
+      final fileName =
+          'shared_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    // Define the file path in the cache directory
-    final filePath = path.join(directory.path, fileName);
-    final file = File(filePath);
+      // Define the file path in the cache directory
+      final filePath = path.join(directory.path, fileName);
+      final file = File(filePath);
 
-    // Write the image data to the local file
-    await file.writeAsBytes(response.bodyBytes);
+      // Write the image data to the local file
+      await file.writeAsBytes(response.bodyBytes);
 
-    // Return the local file path
-    return file.path;
-  } catch (e) {
-    print("Error downloading image: $e");
-    return '';
+      // Return the local file path
+      return file.path;
+    } catch (e) {
+      print("Error downloading image: $e");
+      return '';
+    }
   }
-}
 
   multipleImageData() {
     log("category title tempImgs in multiple image");
@@ -199,8 +200,9 @@ class _EditCreateEventState extends State<EditEvent> {
     selectedCategory = widget.eventData.category!;
     selectedFeeType = widget.eventData.entryType!;
     venuCapacityController.text = widget.eventData.venuCapacity.toString();
-    couponCodeController.text=widget.eventData.couponCode??"";
-    couponDescriptionController.text=widget.eventData.couponCodeDescription??"";
+    couponCodeController.text = widget.eventData.couponCode ?? "";
+    couponDescriptionController.text =
+        widget.eventData.couponCodeDescription ?? "";
     admissionCostController.text = widget.eventData.entryFee!;
     keyGuestController.text = widget.eventData.keyGuest!;
     for (var tagsItem in widget.eventData.tags!) {
@@ -787,33 +789,35 @@ class _EditCreateEventState extends State<EditEvent> {
                                       ),
                                     )
                                   : const SizedBox(),
-                                  if(widget.draftpage)
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                        const SizedBox(height: 40),
-                              Text(
-                                'Coupon Code',
-                                style: labelStyle.copyWith(
-                                    fontWeight: FontWeight.w400, fontSize: 20),
-                              ),
-                              textFormField(
-                                controller: couponCodeController,
-                              ),
-                              const SizedBox(height: 40),
-                              Text(
-                                'Coupon Description',
-                                style: labelStyle.copyWith(
-                                    fontWeight: FontWeight.w400, fontSize: 20),
-                              ),
-                              textFormField(
-                                controller: couponDescriptionController,
-                              ),
-                                    ],
-                                  ),
-                           
+                              if (widget.draftpage)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 40),
+                                    Text(
+                                      'Coupon Code',
+                                      style: labelStyle.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20),
+                                    ),
+                                    textFormField(
+                                      controller: couponCodeController,
+                                    ),
+                                    const SizedBox(height: 40),
+                                    Text(
+                                      'Coupon Description',
+                                      style: labelStyle.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20),
+                                    ),
+                                    textFormField(
+                                      controller: couponDescriptionController,
+                                    ),
+                                  ],
+                                ),
+
                               const SizedBox(height: 50),
-                             
+
                               // MyElevatedButton(
                               //   onPressed: ()=> submitFunc(context),
                               //   text: 'Create Event',
@@ -884,20 +888,22 @@ class _EditCreateEventState extends State<EditEvent> {
     //   });
     // }
     Get.to(
-      () => EditedEventPreview(eventData: widget.eventData,draftpage: widget.draftpage,),
+      () => EditedEventPreview(
+        eventData: widget.eventData,
+        draftpage: widget.draftpage,
+      ),
     );
     log('validation success');
     addDataToEvent(
-      selectedVenue: selectedVenue,
-      selectedAge: selectedAge,
-      selectedFeeType: selectedFeeType,
-      selectedCategory: selectedCategory,
-      admissionCostController: admissionCostController.text,
-      keyGuestController: keyGuestController.text,
-      venuCapacityController: venuCapacityController.text,
-      couponcode: couponCodeController.text,
-      coupondescription: couponDescriptionController.text
-    );
+        selectedVenue: selectedVenue,
+        selectedAge: selectedAge,
+        selectedFeeType: selectedFeeType,
+        selectedCategory: selectedCategory,
+        admissionCostController: admissionCostController.text,
+        keyGuestController: keyGuestController.text,
+        venuCapacityController: venuCapacityController.text,
+        couponcode: couponCodeController.text,
+        coupondescription: couponDescriptionController.text);
   }
 
   showModalAlert() {
@@ -953,7 +959,9 @@ class _EditCreateEventState extends State<EditEvent> {
       selectedFeeType,
       venuCapacityController,
       admissionCostController,
-      keyGuestController,couponcode,coupondescription}) {
+      keyGuestController,
+      couponcode,
+      coupondescription}) {
     TempData.editselectVenu = selectedVenue;
     TempData.editageGroup = selectedAge;
     TempData.editcategory = selectedCategory;
@@ -964,8 +972,8 @@ class _EditCreateEventState extends State<EditEvent> {
     TempData.editEventPhotos = globalController.eventPhotosmgPath;
     TempData.editeventThumbnail = globalController.eventThumbnailImgPath.value;
     TempData.editEventTags = _stringTagController.getTags!;
-    TempData.couponCode=couponcode;
-    TempData.couponCodeDescription=coupondescription;
+    TempData.couponCode = couponcode;
+    TempData.couponCodeDescription = coupondescription;
   }
 
   clearAllTempData() {
@@ -995,7 +1003,7 @@ class _EditCreateEventState extends State<EditEvent> {
         compressQuality: 100,
         // cropStyle: CropStyle.square,
         aspectRatioPresets: [
-          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.square, // Only allow square aspect ratio
         ],
         uiSettings: [
           AndroidUiSettings(
@@ -1006,10 +1014,11 @@ class _EditCreateEventState extends State<EditEvent> {
             activeControlsWidgetColor: kPrimaryColor,
             // initAspectRatio: CropAspectRatioPreset.original,
             cropFrameColor: kTextBlack,
-            lockAspectRatio: false,
+            lockAspectRatio: true,
           ),
           IOSUiSettings(
             title: 'Crop Image',
+            aspectRatioLockEnabled: true, // Lock aspect ratio to 1:1 on iOS
           ),
         ],
       );

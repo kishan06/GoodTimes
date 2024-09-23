@@ -108,9 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!globalController.serverError.value) {
         allowfilter.value = false;
         advanceFilterController.eventModalcontroller.value = [];
-        advanceFilterServicee.advanceFilterEventServices(context);
+        /*   advanceFilterController.clearAllFilter();
+        advanceFilterServicee.advanceFilterEventServices(context); */
       }
-     
     });
   }
 
@@ -190,21 +190,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getAgeGroup() {
-     if(TempData.agedatagroup.isEmpty){
+    if (TempData.agedatagroup.isEmpty) {
       PreferencesService().getAgeGroup(context).then((value) {
-      log("log data of category list in event screen $value");
-      setState(() {
-         TempData.agedatagroup = value;
-        ageList = value;
+        log("log data of category list in event screen $value");
+        setState(() {
+          TempData.agedatagroup = value;
+          ageList = value;
+        });
       });
-    });
-    }else{
-  setState(() {
+    } else {
+      setState(() {
         ageList = TempData.agedatagroup;
       });
     }
   }
- // HomePageController homePageController = Get.put(HomePageController());
+  // HomePageController homePageController = Get.put(HomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +226,12 @@ class _HomeScreenState extends State<HomeScreen> {
           if (advanceFilterController.eventModalcontroller.isEmpty &&
               !TempData.preventapicall) {
             TempData.preventapicall = true;
+            ///bug solution is here
             advanceFilterController.clearAllFilter();
+            if (advanceFilterController.titleController.value.text.isNotEmpty) {
+              advanceFilterController.homeFilterLocation(
+                  advanceFilterController.titleController.value.text);
+            }
             AdvanceFilterService()
                 .advanceFilterEventServices(context)
                 .then((value) {
@@ -236,21 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
               });
               TempData.preventapicall = false;
             });
-           /*   profileextendedcontroller
-                .fetchProfileExtendeddata(context)
-                .then((value) {
-              TempData.preventextendeddatacall = false;
-              if (profileextendedcontroller
-                      .profileextenddata.value.data!.principalTypeName ==
-                  "event_user") {
-                homePageController.isUser.value = eventUser;
-              } else if (profileextendedcontroller
-                      .profileextenddata.value.data!.principalTypeName ==
-                  "event_manager") {
-                homePageController.isUser.value = eventManager;
-              }
-            });
-         */    globalController.serverError.value = false;
+            globalController.serverError.value = false;
           }
 
           return Stack(
@@ -337,14 +328,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemBuilder: (context, index) {
                                               return eventWidget(
                                                 eventId: dataList[index].id,
-                                                img: dataList[index]
-                                                    .thumbnail,
-                                                title:
-                                                    dataList[index].title,
-                                                price: dataList[index]
-                                                    .entryFee,
-                                                date: dataList[index]
-                                                    .startDate,
+                                                img: dataList[index].thumbnail,
+                                                title: dataList[index].title,
+                                                price: dataList[index].entryFee,
+                                                date: dataList[index].startDate,
                                               );
                                             },
                                           ),
@@ -610,10 +597,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                   onChanged: (e) {
                                     if (e.length > 2) {
-                                      advanceFilterController
-                                          .homeFilterLocation(e);
-                                      advanceFilterServicee
-                                          .advanceFilterEventServices(context);
+                                      Future.delayed(
+                                          Duration(milliseconds: 300), () {
+                                        advanceFilterController
+                                            .homeFilterLocation(e);
+                                        advanceFilterServicee
+                                            .advanceFilterEventServices(
+                                                context);
+                                      });
                                     }
                                   },
                                 )),
