@@ -187,7 +187,7 @@ class _CompleteDetailsState extends State<CompleteDetails> {
                       if (values.contains(' ')) return 'Spaces are not allowed';
                       var value = values.trim();
                       if (value == null || value.isEmpty) {
-                        return 'Enter confirm your password';
+                        return 'Enter confirm password';
                       }
                       if (value != passwordController.text) {
                         return kMatchPassError;

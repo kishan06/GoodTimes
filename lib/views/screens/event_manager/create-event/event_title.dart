@@ -262,316 +262,335 @@ class _EventTitileState extends State<EventTitile> {
                   child: Form(
                     key: _key,
                     autovalidateMode: autovalidateMode,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Enter event details', style: headingStyle),
-                        const SizedBox(height: 35),
-                        Text(
-                          'Event Title',
-                          style:
-                              labelStyle.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        textFormField(
-                          controller: _eventTitle,
-                          inputFormate: [
-                            FilteringTextInputFormatter.allow(RegExp(
-                                r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
-                          ],
-                          validationFunction: (values) {
-                            var value = values.trim();
-                            if (value == null || value.isEmpty) {
-                              return 'Enter a event name.';
-                            }
-                            if (value.length < 2) {
-                              return 'Name is too short';
-                            }
-                            if (value.length > 150) {
-                              return 'Name is to large';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 35),
-                        Text(
-                          'Event Description',
-                          style:
-                              labelStyle.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        textFormField(
-                          controller: _eventDescriptions,
-                          inputFormate: [
-                            FilteringTextInputFormatter.allow(RegExp(
-                                r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
-                            // RegExp(r'^[a-zA-Z\s]+$')),
-                          ],
-                          validationFunction: (values) {
-                            var value = values.trim();
-                            if (value == null || value.isEmpty) {
-                              return 'Enter a event description.';
-                            }
-                            if (value.length < 2) {
-                              return 'Name is too short';
-                            }
-                            // if (value.length > 30) {
-                            //   return 'Name is to large';
-                            // }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 35),
-                        Row(
+                    child: Obx(
+                     () {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                'From :',
-                                style: headingStyle.copyWith(fontSize: 22),
-                              ),
+                            const Text('Enter event details', style: headingStyle),
+                            const SizedBox(height: 35),
+                            Text(
+                              'Event Title',
+                              style:
+                                  labelStyle.copyWith(fontWeight: FontWeight.w600),
                             ),
-                            Expanded(
-                              child: Text(
-                                'To :',
-                                style: headingStyle.copyWith(fontSize: 22),
-                              ),
+                            textFormField(
+                              controller: _eventTitle,
+                              inputFormate: [
+                                FilteringTextInputFormatter.allow(RegExp(
+                                    r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
+                              ],
+                              validationFunction: (values) {
+                                var value = values.trim();
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter a event name.';
+                                }
+                                if (value.length < 2) {
+                                  return 'Name is too short';
+                                }
+                                if (value.length > 150) {
+                                  return 'Name is to large';
+                                }
+                                return null;
+                              },
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _selectStartDate(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.date_range,
-                                      color: Color(0xff626262),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    fromDate == null
-                                        ? Text(
-                                            'Date',
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: const Color(0xff626262)),
-                                          )
-                                        : Text(
-                                            DateFormat('MMM d yyyy')
-                                                .format(fromDate!),
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: kTextWhite),
-                                          )
-                                  ],
+                            const SizedBox(height: 35),
+                            Text(
+                              'Event Description',
+                              style:
+                                  labelStyle.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                            textFormField(
+                              controller: _eventDescriptions,
+                              inputFormate: [
+                                FilteringTextInputFormatter.allow(RegExp(
+                                    r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
+                                // RegExp(r'^[a-zA-Z\s]+$')),
+                              ],
+                              validationFunction: (values) {
+                                var value = values.trim();
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter a event description.';
+                                }
+                                if (value.length < 2) {
+                                  return 'Name is too short';
+                                }
+                                // if (value.length > 30) {
+                                //   return 'Name is to large';
+                                // }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 35),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'From :',
+                                    style: headingStyle.copyWith(fontSize: 22),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _selectEndDate(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.date_range,
-                                      color: Color(0xff626262),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    toDate == null
-                                        ? Text(
-                                            'Date',
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: const Color(0xff626262)),
-                                          )
-                                        : Text(
-                                            DateFormat('MMM d yyyy')
-                                                .format(toDate!),
-                                            style: paragraphStyle.copyWith(
-                                                color: kTextWhite),
-                                          )
-                                  ],
+                                Expanded(
+                                  child: Text(
+                                    'To :',
+                                    style: headingStyle.copyWith(fontSize: 22),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-
-                        Obx(
-                          () => fromDateTime.value
-                              ? Text(
-                                  'Please select event start date and end date.',
-                                  style: paragraphStyle.copyWith(
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _selectStartDate(context).then((value){
+                                        if(fromDate!=null && toDate!=null){
+                                          fromDateTime.value=false;
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.date_range,
+                                          color: Color(0xff626262),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        fromDate == null
+                                            ? Text(
+                                                'Date',
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: const Color(0xff626262)),
+                                              )
+                                            : Text(
+                                                DateFormat('MMM d yyyy')
+                                                    .format(fromDate!),
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: kTextWhite),
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _selectEndDate(context).then((value){
+                                        if(fromDate!=null && toDate!=null){
+                                          fromDateTime.value=false;
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.date_range,
+                                          color: Color(0xff626262),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        toDate == null
+                                            ? Text(
+                                                'Date',
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: const Color(0xff626262)),
+                                              )
+                                            : Text(
+                                                DateFormat('MMM d yyyy')
+                                                    .format(toDate!),
+                                                style: paragraphStyle.copyWith(
+                                                    color: kTextWhite),
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                        
+                           fromDateTime.value
+                                  ? Text(
+                                      'Please select event start date and end date.',
+                                      style: paragraphStyle.copyWith(
+                                          color: kTextError.withOpacity(0.75),
+                                          fontSize: 14,
+                                          fontFamily: '',
+                                          letterSpacing: 0.6),
+                                    )
+                                  : const SizedBox(),
+                            
+                            const SizedBox(height: 35),
+                        
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'From :',
+                                    style: headingStyle.copyWith(fontSize: 22),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'To :',
+                                    style: headingStyle.copyWith(fontSize: 22),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _startTime(context).then((value){
+                                        if(fromTime!=null && toTime!=null){
+                                          endDateTime.value=false;
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.watch_later_outlined,
+                                          color: Color(0xff626262),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        fromTime == null
+                                            ? Text(
+                                                'Time',
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: const Color(0xff626262)),
+                                              )
+                                            : Text(
+                                                '${fromTime.format(context)}',
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: kTextWhite),
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _endTime(context).then((value){
+                                        if(fromTime!=null && toTime!=null){
+                                          endDateTime.value=false;
+                                        }
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.watch_later_outlined,
+                                          color: Color(0xff626262),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        toTime == null
+                                            ? Text(
+                                                'Time',
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: const Color(0xff626262)),
+                                              )
+                                            : Text(
+                                                toTime.format(context),
+                                                style: paragraphStyle.copyWith(
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: kTextWhite),
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                          endDateTime.value
+                                ? Text(
+                                    'Please select event start time and end time.',
+                                    style: paragraphStyle.copyWith(
                                       color: kTextError.withOpacity(0.75),
                                       fontSize: 14,
                                       fontFamily: '',
-                                      letterSpacing: 0.6),
-                                )
-                              : const SizedBox(),
-                        ),
-                        const SizedBox(height: 35),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'From :',
-                                style: headingStyle.copyWith(fontSize: 22),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'To :',
-                                style: headingStyle.copyWith(fontSize: 22),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _startTime(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_outlined,
-                                      color: Color(0xff626262),
+                                      letterSpacing: 0.6,
                                     ),
-                                    const SizedBox(width: 10),
-                                    fromTime == null
-                                        ? Text(
-                                            'Time',
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: const Color(0xff626262)),
-                                          )
-                                        : Text(
-                                            '${fromTime.format(context)}',
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: kTextWhite),
-                                          )
-                                  ],
-                                ),
-                              ),
+                                  )
+                                : const SizedBox(),
+                            // const Spacer(),
+                            const SizedBox(height: 50),
+                            MyElevatedButton(
+                              onPressed: /* (){
+                                 Navigator.pushNamed(
+                                            context, CreatedEventPreview.routeName);
+                        
+                              }, */
+                                  waiting
+                                      ? null
+                                      : () {
+                                          unfoucsKeyboard(context);
+                                          // _key.currentState!.validate();
+                                          bool dateTimetime = fromDate != null &&
+                                              toDate != null &&
+                                              fromTime != null &&
+                                              toTime != null &&
+                                              fromDate != '' &&
+                                              toDate != '' &&
+                                              fromTime != '' &&
+                                              toTime != '';
+                        
+                                          if (_key.currentState!.validate() &&
+                                              dateTimetime) {
+                                            addData(
+                                                eventTitle: _eventTitle.text,
+                                                eventDescription:
+                                                    _eventDescriptions.text,
+                                                startDate: fromDate,
+                                                startTime: fromTime,
+                                                endDate: toDate,
+                                                endTime: toTime);
+                        
+                                            Navigator.pushNamed(
+                                                context, CreateEvent.routeName);
+                        
+                                            log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
+                                          }
+                                          // start date and time validation
+                                          if (fromDate == null &&
+                                              fromTime == null) {
+                                            fromDateTime.value = true;
+                                            // setState(() {
+                                            // });
+                                            // snackBarError(context,message: 'Please select date and time from start to end date.');
+                                          } else {
+                                            fromDateTime.value = false;
+                                            // setState(() {
+                                            // });
+                                          }
+                                          // end date and time validation
+                                          if (toDate == null && toTime == null) {
+                                            endDateTime.value = true;
+                                            // setState(() {
+                                            // });
+                                          } else {
+                                            endDateTime.value = false;
+                                            // setState(() {
+                                            // });
+                                          }
+                                        },
+                              text: 'Continue',
                             ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _endTime(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_outlined,
-                                      color: Color(0xff626262),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    toTime == null
-                                        ? Text(
-                                            'Time',
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: const Color(0xff626262)),
-                                          )
-                                        : Text(
-                                            toTime.format(context),
-                                            style: paragraphStyle.copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                color: kTextWhite),
-                                          )
-                                  ],
-                                ),
-                              ),
-                            ),
+                            const SizedBox(height: 10)
                           ],
-                        ),
-                        const SizedBox(height: 5),
-                        Obx(() => endDateTime.value
-                            ? Text(
-                                'Please select event start time and end time.',
-                                style: paragraphStyle.copyWith(
-                                  color: kTextError.withOpacity(0.75),
-                                  fontSize: 14,
-                                  fontFamily: '',
-                                  letterSpacing: 0.6,
-                                ),
-                              )
-                            : const SizedBox()),
-                        // const Spacer(),
-                        const SizedBox(height: 50),
-                        MyElevatedButton(
-                          onPressed: /* (){
-                             Navigator.pushNamed(
-                                        context, CreatedEventPreview.routeName);
-
-                          }, */
-                              waiting
-                                  ? null
-                                  : () {
-                                      unfoucsKeyboard(context);
-                                      // _key.currentState!.validate();
-                                      bool dateTimetime = fromDate != null &&
-                                          toDate != null &&
-                                          fromTime != null &&
-                                          toTime != null &&
-                                          fromDate != '' &&
-                                          toDate != '' &&
-                                          fromTime != '' &&
-                                          toTime != '';
-
-                                      if (_key.currentState!.validate() &&
-                                          dateTimetime) {
-                                        addData(
-                                            eventTitle: _eventTitle.text,
-                                            eventDescription:
-                                                _eventDescriptions.text,
-                                            startDate: fromDate,
-                                            startTime: fromTime,
-                                            endDate: toDate,
-                                            endTime: toTime);
-
-                                        Navigator.pushNamed(
-                                            context, CreateEvent.routeName);
-
-                                        log("Data of all the fields are added ${TempData.evetTitle} ${TempData.evetDescription} ${TempData.evetStartDate} ${TempData.evetStartTime} ${TempData.evetEndDate} ${TempData.evetEndTime}");
-                                      }
-                                      // start date and time validation
-                                      if (fromDate == null &&
-                                          fromTime == null) {
-                                        fromDateTime.value = true;
-                                        // setState(() {
-                                        // });
-                                        // snackBarError(context,message: 'Please select date and time from start to end date.');
-                                      } else {
-                                        fromDateTime.value = false;
-                                        // setState(() {
-                                        // });
-                                      }
-                                      // end date and time validation
-                                      if (toDate == null && toTime == null) {
-                                        endDateTime.value = true;
-                                        // setState(() {
-                                        // });
-                                      } else {
-                                        endDateTime.value = false;
-                                        // setState(() {
-                                        // });
-                                      }
-                                    },
-                          text: 'Continue',
-                        ),
-                        const SizedBox(height: 10)
-                      ],
+                        );
+                      }
                     ),
                   ),
                 ),

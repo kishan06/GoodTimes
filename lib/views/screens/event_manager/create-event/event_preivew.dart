@@ -47,7 +47,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
   GlobalController globalController = Get.find();
   bool waiting = false;
   bool isSaved = false;
-
+  String eventid="";
   RxBool sharecheck = false.obs;
   EventsModel? eventsmodeldata;
   @override
@@ -305,7 +305,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                         if (isSaved) {
                           print("///");
                           onSaveBottomsheet(context,
-                              eventid: eventmodelobj!.last.id + 1);
+                              eventid:int.parse(eventid));
                         } else {
                           if (!waiting) {
                             log("check entry type ${TempData.eventEntryType}");
@@ -340,11 +340,15 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                               images: globalController.eventPhotosmgPath,
                             )
                                 .then((value) async {
+                                  print("////");
+                                  
                               if (value.responseStatus ==
                                   ResponseStatus.success) {
+                                   eventid=value.data['data']["id"].toString();
+
                                 var response = await GetEventServices()
                                     .getEventDetails(context,
-                                        getEventId: eventmodelobj!.last.id + 1);
+                                        getEventId: eventid);
 
                                 log("responses store in model --- >  $response");
                                 eventsmodeldata = response;
@@ -359,7 +363,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                                 // Navigator.pop(context);
                                 Future.delayed(Duration(milliseconds: 400), () {
                                   onSaveBottomsheet(context,
-                                      eventid: eventmodelobj!.last.id + 1);
+                                      eventid: int.parse(eventid));
                                 });
                               } else if (value.responseStatus ==
                                   ResponseStatus.failed) {
