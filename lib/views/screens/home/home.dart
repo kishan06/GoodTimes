@@ -108,8 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!globalController.serverError.value) {
         allowfilter.value = false;
         advanceFilterController.eventModalcontroller.value = [];
-        /*   advanceFilterController.clearAllFilter();
-        advanceFilterServicee.advanceFilterEventServices(context); */
+        advanceFilterController.clearAllFilter();
+        advanceFilterServicee.advanceFilterEventServices(context);
       }
     });
   }
@@ -216,7 +216,6 @@ class _HomeScreenState extends State<HomeScreen> {
           unfoucsKeyboard(context);
         }, child: Obx(() {
           print("r");
-
           if (!allowfilter.value &&
               advanceFilterController.eventModalcontroller.isNotEmpty) {
             Future.delayed(const Duration(milliseconds: 200), () {
@@ -226,22 +225,22 @@ class _HomeScreenState extends State<HomeScreen> {
           if (advanceFilterController.eventModalcontroller.isEmpty &&
               !TempData.preventapicall) {
             TempData.preventapicall = true;
+
             ///bug solution is here
-            advanceFilterController.clearAllFilter();
-            if (advanceFilterController.titleController.value.text.isNotEmpty) {
-              advanceFilterController.homeFilterLocation(
-                  advanceFilterController.titleController.value.text);
-            }
-            AdvanceFilterService()
-                .advanceFilterEventServices(context)
-                .then((value) {
-              print("rr");
-              Future.delayed(const Duration(milliseconds: 200), () {
-                allowfilter.value = true;
+            if (advanceFilterController.titleController.value.text.isEmpty) {
+              advanceFilterController.clearAllFilter();
+
+              AdvanceFilterService()
+                  .advanceFilterEventServices(context)
+                  .then((value) {
+                print("rr");
+                Future.delayed(const Duration(milliseconds: 400), () {
+                  allowfilter.value = true;
+                });
+                TempData.preventapicall = false;
               });
-              TempData.preventapicall = false;
-            });
-            globalController.serverError.value = false;
+              globalController.serverError.value = false;
+            }
           }
 
           return Stack(
@@ -596,27 +595,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                     unfoucsKeyboard(context);
                                   },
                                   onChanged: (e) {
-                                    if (e.length > 2) {
-                                      Future.delayed(
-                                          Duration(milliseconds: 300), () {
-                                        advanceFilterController
-                                            .homeFilterLocation(e);
-                                        advanceFilterServicee
-                                            .advanceFilterEventServices(
-                                                context);
-                                      });
-                                    }
+                                    Future.delayed(Duration(seconds: 1), () {
+                                      /*  advanceFilterController
+                                          .homeFilterLocation(e); */
+                                      advanceFilterServicee
+                                          .advanceFilterEventServices(context);
+                                    });
                                   },
                                 )),
                           ),
                     const SizedBox(width: 10),
-                    !allowfilter.value
-                        ? ReusableSkeletonAvatar(
-                            height: 40,
-                            width: 87,
-                            borderRadius: BorderRadius.circular(5),
-                          )
-                        : InkWell(
+                    allowfilter.value
+                        ? InkWell(
                             onTap: () async {
                               if (latlong == null) {
                                 LocationPermission permission =
@@ -660,7 +650,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 }
                               }
-                              _scaffoldKey.currentState?.openDrawer();
+                              if (eventData.isEmpty || ageList == null) {
+                                await eventCategory();
+                                await getAgeGroup();
+                                Future.delayed(Duration(seconds: 1), () {
+                                  _scaffoldKey.currentState?.openDrawer();
+                                });
+                              } else {
+                                if (ageList != null) {
+                                  if (ageList!.isEmpty) {
+                                    await getAgeGroup();
+                                    Future.delayed(Duration(seconds: 1),
+                                        () {
+                                      _scaffoldKey.currentState?.openDrawer();
+                                    });
+                                  } else {
+                                    _scaffoldKey.currentState?.openDrawer();
+                                  }
+                                }
+                              }
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -683,6 +691,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                             ),
+                          )
+                        : ReusableSkeletonAvatar(
+                            height: 40,
+                            width: 87,
+                            borderRadius: BorderRadius.circular(5),
                           )
                   ],
                 ),

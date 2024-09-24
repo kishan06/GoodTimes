@@ -46,7 +46,7 @@ void onSaveBottomsheet(BuildContext context,
           print("Failed to share on Facebook: $e");
         }
       } else {
-        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+        Fluttertoast.showToast(msg: "Facebook app is not installed.");
       }
     }
     if (Platform.isIOS) {
@@ -59,7 +59,7 @@ void onSaveBottomsheet(BuildContext context,
           print("Failed to share on Instagram: $e");
         }
       } else {
-        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+        Fluttertoast.showToast(msg: "Facebook app is not installed.");
       }
     }
   }
@@ -127,7 +127,7 @@ void onSaveBottomsheet(BuildContext context,
           print("Failed to share on Instagram: $e");
         }
       } else {
-        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+        Fluttertoast.showToast(msg: "Instagram app is not installed.");
       }
     }
   }

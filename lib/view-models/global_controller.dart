@@ -33,6 +33,7 @@ class GlobalController extends GetxController {
   RxBool forceUpdate = false.obs;
   RxBool recommendUpdate = false.obs;
   RxBool connectionTimeout = false.obs;
+  RxBool checkiffilterload =true.obs;
   RxBool serverError = false.obs;
   RxBool accoutTransferSuccess = false.obs;
 

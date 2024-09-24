@@ -76,7 +76,7 @@ class AdvanceFilterService {
         advanceFilterController.eventModalcontroller.value =
             data.map((e) => HomeEventsModel.fromJson(e)).toList();
         // logger.f('data api services of filtred events $data');
-        Future.delayed(Duration(milliseconds: 200), () {
+        Future.delayed(Duration(milliseconds: 400), () {
           allowfilter.value = true;
         });
 
@@ -86,12 +86,15 @@ class AdvanceFilterService {
 
       else {
         filterLoder.value = false;
-        allowfilter.value = true;
+        Future.delayed(Duration(milliseconds: 400), () {
+          allowfilter.value = true;
+        });
       }
     } catch (e) {
       filterLoder.value = false;
-      allowfilter.value = true;
-
+      Future.delayed(Duration(milliseconds: 400), () {
+        allowfilter.value = true;
+      });
       // Handle any exceptions
     }
   }
