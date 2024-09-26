@@ -78,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     checkFunction();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _showInitialBottomSheet();
@@ -105,12 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
           null) {
         organisationController.getOrganisationData(context);
       }
-      if (!globalController.serverError.value) {
-        allowfilter.value = false;
-        advanceFilterController.eventModalcontroller.value = [];
-        advanceFilterController.clearAllFilter();
-        advanceFilterServicee.advanceFilterEventServices(context);
-      }
+
+      allowfilter.value = false;
+      advanceFilterController.eventModalcontroller.value = [];
+      advanceFilterController.clearAllFilter();
+      advanceFilterServicee.advanceFilterEventServices(context).then((value) {
+        Future.delayed(const Duration(milliseconds: 600), () {
+          allowfilter.value = true;
+        });
+        print("called1");
+      });
     });
   }
 
@@ -164,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // If preference is true, navigate to HomeMain
           appVersionController.initPackageInfo(context);
           ProfileService().getProfileDetails(context);
+
           // advanceFilterServicee.advanceFilterEventServices(context);
           if (preferenceController.prefrencecontrollerdata.isEmpty) {
             preferenceController.eventCategory(context);
@@ -215,33 +219,52 @@ class _HomeScreenState extends State<HomeScreen> {
         child: GestureDetector(onTap: () {
           unfoucsKeyboard(context);
         }, child: Obx(() {
-          print("r");
+          print("r#11111");
           if (!allowfilter.value &&
               advanceFilterController.eventModalcontroller.isNotEmpty) {
             Future.delayed(const Duration(milliseconds: 200), () {
               allowfilter.value = true;
             });
           }
-          if (advanceFilterController.eventModalcontroller.isEmpty &&
-              !TempData.preventapicall) {
+          if (requireddataload.value) {
+            Future.delayed(Duration(seconds: 1), () {
+              allowfilter.value = false;
+              advanceFilterController.eventModalcontroller.value = [];
+              advanceFilterController.clearAllFilter();
+              advanceFilterServicee
+                  .advanceFilterEventServices(context)
+                  .then((value) {
+                requireddataload.value = false;
+                Future.delayed(const Duration(milliseconds: 600), () {
+                  allowfilter.value = true;
+                });
+                print("called2");
+              });
+            });
+          }
+
+          /*  if (advanceFilterController.eventModalcontroller.isEmpty &&
+              (!TempData.preventapicall && !TempData.dataloaded)) {
             TempData.preventapicall = true;
 
             ///bug solution is here
             if (advanceFilterController.titleController.value.text.isEmpty) {
               advanceFilterController.clearAllFilter();
-
+               print("called2");
               AdvanceFilterService()
                   .advanceFilterEventServices(context)
                   .then((value) {
-                print("rr");
+                print("rr#1111");
+                TempData.preventapicall = false;
+                TempData.dataloaded = true;
+
                 Future.delayed(const Duration(milliseconds: 400), () {
                   allowfilter.value = true;
                 });
-                TempData.preventapicall = false;
               });
               globalController.serverError.value = false;
             }
-          }
+          } */
 
           return Stack(
             children: [
@@ -660,8 +683,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 if (ageList != null) {
                                   if (ageList!.isEmpty) {
                                     await getAgeGroup();
-                                    Future.delayed(Duration(seconds: 1),
-                                        () {
+                                    Future.delayed(Duration(seconds: 1), () {
                                       _scaffoldKey.currentState?.openDrawer();
                                     });
                                   } else {
