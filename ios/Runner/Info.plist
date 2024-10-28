@@ -82,5 +82,26 @@
 		<string>zavp3.app.link</string>
 		<string>zavp3-alternate.app.link</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+  <array>
+  <string>instagram</string>
+  <string>fb</string>
+  <string>fbauth2</string>
+  <string>fbshareextension</string>
+  <string>fbapi</string>
+  <string>facebook-reels</string>
+  <string>facebook-stories</string>
+  <string>fb-messenger-share-api</string>
+  <string>fb-messenger</string>
+  <string>tg</string>
+  <string>whatsapp</string>
+  <string>twitter</string>
+  </array>
+	<key>FacebookAppID</key>
+  <string>974030357745006</string>
+  <key>FacebookClientToken</key>
+  <string>0150b2b58eb55a0ea3f8a79d94a3ea52</string>
+  <key>FacebookDisplayName</key>
+  <string>Good Times App Ltd</string>
 </dict>
 </plist>

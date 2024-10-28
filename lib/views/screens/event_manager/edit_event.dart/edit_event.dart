@@ -42,12 +42,14 @@ class EditEvent extends StatefulWidget {
   final List<EventCategoriesModdel> categoryList;
   final List<ageData> ageGroupList;
   static const String routeName = "editEvent";
-  const EditEvent(
+  bool draftpage = false;
+  EditEvent(
       {super.key,
       required this.eventData,
       required this.venuList,
       required this.categoryList,
-      required this.ageGroupList});
+      required this.ageGroupList,
+      this.draftpage = false});
 
   @override
   State<EditEvent> createState() => _EditCreateEventState();
@@ -65,6 +67,9 @@ class _EditCreateEventState extends State<EditEvent> {
   TextEditingController venuCapacityController = TextEditingController();
   TextEditingController admissionCostController = TextEditingController();
   TextEditingController keyGuestController = TextEditingController();
+
+  TextEditingController couponCodeController = TextEditingController();
+  TextEditingController couponDescriptionController = TextEditingController();
   String thumbnailImg = '';
   List<String> image = [];
   bool isThumbNail = false;
@@ -89,6 +94,7 @@ class _EditCreateEventState extends State<EditEvent> {
 
   @override
   void initState() {
+    print(widget.draftpage);
     tempImgs.clear();
     if (widget.eventData.thumbnail != null) {
       globalController.thumbImgType.value = ImgTypes.network.index;
@@ -100,72 +106,42 @@ class _EditCreateEventState extends State<EditEvent> {
     profileApi();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (globalController.eventThumbnailImgPath.value.isEmpty) {
-        if (widget.eventData.thumbnail != null) {
-          globalController.eventThumbnailImgPath.value =
-              await downloadImageToCache(widget.eventData.thumbnail!);
-            print(globalController.eventThumbnailImgPath.value);
-        }
-        print("//");
+      if (widget.eventData.thumbnail != null) {
+        globalController.eventThumbnailImgPath.value =
+            await downloadImageToCache(widget.eventData.thumbnail!);
+        print(globalController.eventThumbnailImgPath.value);
       }
+      print("//");
     });
   }
 
-  /* Future<String> downloadImage(String imageUrl) async {
-    final response = await http.get(Uri.parse(imageUrl));
-    final documentDirectory = await getApplicationDocumentsDirectory();
-    final filePath = path.join(documentDirectory.path, 'temp_image.jpg');
+  Future<String> downloadImageToCache(String imageUrl) async {
+    try {
+      // Download the image from the URL
+      final response = await http.get(Uri.parse(imageUrl));
 
-    final file = File(filePath);
-    file.writeAsBytesSync(response.bodyBytes);
+      // Get the temporary cache directory
+      final directory = await getTemporaryDirectory();
 
-    return filePath;
-  } */
+      // Create a unique file name using a timestamp or a hash of the image URL
+      final fileName =
+          'shared_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-Future<String> downloadImageToCache(String imageUrl) async {
-  try {
-    // Download the image from the URL
-    final response = await http.get(Uri.parse(imageUrl));
+      // Define the file path in the cache directory
+      final filePath = path.join(directory.path, fileName);
+      final file = File(filePath);
 
-    // Get the temporary cache directory
-    final directory = await getTemporaryDirectory();
+      // Write the image data to the local file
+      await file.writeAsBytes(response.bodyBytes);
 
-    // Define the file path in the cache directory
-    final filePath = path.join(directory.path, 'shared_image.jpg');
-    final file = File(filePath);
-
-    // Write the image data to the local file
-    await file.writeAsBytes(response.bodyBytes);
-
-    // Return the local file path
-    return file.path;
-  } catch (e) {
-    print("Error downloading image: $e");
-    return '';
+      // Return the local file path
+      return file.path;
+    } catch (e) {
+      print("Error downloading image: $e");
+      return '';
+    }
   }
-}
-Future<String> downloadImage(String imageUrl) async {
-  try {
-    // Fetch the image from the provided URL
-    final response = await http.get(Uri.parse(imageUrl));
 
-    // Get the app's directory to save the image locally
-    final directory = await getApplicationDocumentsDirectory();
-
-    // Define the local file path for the image
-    final filePath = path.join(directory.path, 'temp_image.jpg');
-
-    // Save the image to the local file
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    // Return the local file path to be used for sharing
-    return filePath;
-  } catch (e) {
-    print("Error downloading image: $e");
-    return '';
-  }
-}
   multipleImageData() {
     log("category title tempImgs in multiple image");
     logger.f("");
@@ -224,6 +200,9 @@ Future<String> downloadImage(String imageUrl) async {
     selectedCategory = widget.eventData.category!;
     selectedFeeType = widget.eventData.entryType!;
     venuCapacityController.text = widget.eventData.venuCapacity.toString();
+    couponCodeController.text = widget.eventData.couponCode ?? "";
+    couponDescriptionController.text =
+        widget.eventData.couponCodeDescription ?? "";
     admissionCostController.text = widget.eventData.entryFee!;
     keyGuestController.text = widget.eventData.keyGuest!;
     for (var tagsItem in widget.eventData.tags!) {
@@ -810,7 +789,35 @@ Future<String> downloadImage(String imageUrl) async {
                                       ),
                                     )
                                   : const SizedBox(),
+                              if (widget.draftpage)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 40),
+                                    Text(
+                                      'Coupon Code',
+                                      style: labelStyle.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20),
+                                    ),
+                                    textFormField(
+                                      controller: couponCodeController,
+                                    ),
+                                    const SizedBox(height: 40),
+                                    Text(
+                                      'Coupon Description',
+                                      style: labelStyle.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20),
+                                    ),
+                                    textFormField(
+                                      controller: couponDescriptionController,
+                                    ),
+                                  ],
+                                ),
+
                               const SizedBox(height: 50),
+
                               // MyElevatedButton(
                               //   onPressed: ()=> submitFunc(context),
                               //   text: 'Create Event',
@@ -881,18 +888,22 @@ Future<String> downloadImage(String imageUrl) async {
     //   });
     // }
     Get.to(
-      () => EditedEventPreview(eventData: widget.eventData),
+      () => EditedEventPreview(
+        eventData: widget.eventData,
+        draftpage: widget.draftpage,
+      ),
     );
     log('validation success');
     addDataToEvent(
-      selectedVenue: selectedVenue,
-      selectedAge: selectedAge,
-      selectedFeeType: selectedFeeType,
-      selectedCategory: selectedCategory,
-      admissionCostController: admissionCostController.text,
-      keyGuestController: keyGuestController.text,
-      venuCapacityController: venuCapacityController.text,
-    );
+        selectedVenue: selectedVenue,
+        selectedAge: selectedAge,
+        selectedFeeType: selectedFeeType,
+        selectedCategory: selectedCategory,
+        admissionCostController: admissionCostController.text,
+        keyGuestController: keyGuestController.text,
+        venuCapacityController: venuCapacityController.text,
+        couponcode: couponCodeController.text,
+        coupondescription: couponDescriptionController.text);
   }
 
   showModalAlert() {
@@ -948,7 +959,9 @@ Future<String> downloadImage(String imageUrl) async {
       selectedFeeType,
       venuCapacityController,
       admissionCostController,
-      keyGuestController}) {
+      keyGuestController,
+      couponcode,
+      coupondescription}) {
     TempData.editselectVenu = selectedVenue;
     TempData.editageGroup = selectedAge;
     TempData.editcategory = selectedCategory;
@@ -959,6 +972,8 @@ Future<String> downloadImage(String imageUrl) async {
     TempData.editEventPhotos = globalController.eventPhotosmgPath;
     TempData.editeventThumbnail = globalController.eventThumbnailImgPath.value;
     TempData.editEventTags = _stringTagController.getTags!;
+    TempData.couponCode = couponcode;
+    TempData.couponCodeDescription = coupondescription;
   }
 
   clearAllTempData() {
@@ -988,7 +1003,7 @@ Future<String> downloadImage(String imageUrl) async {
         compressQuality: 100,
         // cropStyle: CropStyle.square,
         aspectRatioPresets: [
-          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.square, // Only allow square aspect ratio
         ],
         uiSettings: [
           AndroidUiSettings(
@@ -999,10 +1014,11 @@ Future<String> downloadImage(String imageUrl) async {
             activeControlsWidgetColor: kPrimaryColor,
             // initAspectRatio: CropAspectRatioPreset.original,
             cropFrameColor: kTextBlack,
-            lockAspectRatio: false,
+            lockAspectRatio: true,
           ),
           IOSUiSettings(
             title: 'Crop Image',
+            aspectRatioLockEnabled: true, // Lock aspect ratio to 1:1 on iOS
           ),
         ],
       );

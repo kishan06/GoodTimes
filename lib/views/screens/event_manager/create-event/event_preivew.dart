@@ -47,7 +47,7 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
   GlobalController globalController = Get.find();
   bool waiting = false;
   bool isSaved = false;
-
+  String eventid="";
   RxBool sharecheck = false.obs;
   EventsModel? eventsmodeldata;
   @override
@@ -56,6 +56,9 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
       child: WillPopScope(
         onWillPop: () async {
           // Navigate to the HomeMain screen and remove all previous routes
+          if (waiting) {
+            return false;
+          }
           if (isSaved) {
             clearAllTempData();
             Navigator.pushNamedAndRemoveUntil(
@@ -77,15 +80,17 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                   false, // Disable the default back button
               leading: IconButton(
                 onPressed: () {
-                  if (isSaved) {
-                    clearAllTempData();
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      HomeMain.routeName,
-                      (route) => true,
-                    );
-                  } else {
-                    Get.back();
+                  if (!waiting) {
+                    if (isSaved && !waiting) {
+                      clearAllTempData();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        HomeMain.routeName,
+                        (route) => true,
+                      );
+                    } else {
+                      Get.back();
+                    }
                   }
                 },
                 icon: Icon(Icons.arrow_back),
@@ -298,132 +303,149 @@ class _CreatedEventPreviewState extends State<CreatedEventPreview> {
                     child: MyElevatedButton(
                       onPressed: () async {
                         if (isSaved) {
+                          print("///");
                           onSaveBottomsheet(context,
-                              eventid: eventmodelobj!.last.id + 1);
+                              eventid:int.parse(eventid));
                         } else {
-                          log("check entry type ${TempData.eventEntryType}");
-
-                          CreateEventService()
-                              .createEventServices(
-                            context,
-                            title: TempData.evetTitle,
-                            ageGroup: TempData.ageGroup,
-                            description: TempData.evetDescription,
-                            startDate: TempData.evetStartDate,
-                            category: TempData.category,
-                            enteryFee: TempData.eventEntryCost,
-                            guest: TempData.eventKeyGuest,
-                            fromTime: TempData.evetStartTime,
-                            endDate: TempData.evetEndDate,
-                            toTime: TempData.evetEndTime,
-                            entryType: TempData.eventEntryType,
-                            venue: TempData.selectVenu,
-                            venueCapacity: TempData.eventCapcity,
-                            tags: TempData.eventTags,
-                            couponCodeController: TempData.couponCode,
-                            couponDescriptionController:
-                                TempData.couponCodeDescription,
-                            draft: false,
-                            thumbnailImg:
-                                globalController.eventThumbnailImgPath.value,
-                            images: globalController.eventPhotosmgPath,
-                          )
-                              .then((value) async {
+                          if (!waiting) {
+                            log("check entry type ${TempData.eventEntryType}");
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
                             setState(() {
-                              waiting = false;
+                              waiting = true;
                             });
+                            CreateEventService()
+                                .createEventServices(
+                              context,
+                              title: TempData.evetTitle,
+                              ageGroup: TempData.ageGroup,
+                              description: TempData.evetDescription,
+                              startDate: TempData.evetStartDate,
+                              category: TempData.category,
+                              enteryFee: TempData.eventEntryCost,
+                              guest: TempData.eventKeyGuest,
+                              fromTime: TempData.evetStartTime,
+                              endDate: TempData.evetEndDate,
+                              toTime: TempData.evetEndTime,
+                              entryType: TempData.eventEntryType,
+                              venue: TempData.selectVenu,
+                              venueCapacity: TempData.eventCapcity,
+                              tags: TempData.eventTags,
+                              couponCodeController: TempData.couponCode,
+                              couponDescriptionController:
+                                  TempData.couponCodeDescription,
+                              draft: false,
+                              thumbnailImg:
+                                  globalController.eventThumbnailImgPath.value,
+                              images: globalController.eventPhotosmgPath,
+                            )
+                                .then((value) async {
+                                  print("////");
+                                  
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                   eventid=value.data['data']["id"].toString();
 
-                            if (value.responseStatus ==
-                                ResponseStatus.success) {
-                              var response = await GetEventServices()
-                                  .getEventDetails(context,
-                                      getEventId: eventmodelobj!.last.id + 1);
+                                var response = await GetEventServices()
+                                    .getEventDetails(context,
+                                        getEventId: eventid);
 
-                              log("responses store in model --- >  $response");
-                              eventsmodeldata = response;
-                              setState(() {
-                                isSaved = true; // Update the saved status
-                              });
-                              // clearAllTempData();
-                              // Navigator.pop(context);
-                              onSaveBottomsheet(context,
-                                  eventid: eventmodelobj!.last.id + 1);
-                              Fluttertoast.showToast(
-                                  msg: "Your event has been saved");
-                            } else if (value.responseStatus ==
-                                ResponseStatus.failed) {
-                              setState(() {
-                                waiting = false;
-                              });
-                              Navigator.pop(context);
-                            }
-                          });
+                                log("responses store in model --- >  $response");
+                                eventsmodeldata = response;
+                                setState(() {
+                                  waiting = false;
+                                  Get.back();
+                                  isSaved = true; // Update the saved status
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "Your event has been saved");
+                                // clearAllTempData();
+                                // Navigator.pop(context);
+                                Future.delayed(Duration(milliseconds: 400), () {
+                                  onSaveBottomsheet(context,
+                                      eventid: int.parse(eventid));
+                                });
+                              } else if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
                         }
                       },
                       text: isSaved ? 'Share' : 'Save',
                     ),
                   ),
                   SizedBox(height: 30),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: scaffoldPadding),
-                    child: myElevatedButtonOutline(
-                      // loader: waiting
-                      //           ? const CircularProgressIndicator()
-                      //           : const SizedBox(),
-                      onPressed: () {
-                        showWaitingDialoge(context: context, loading: waiting);
-                        setState(() {
-                          waiting = true;
-                        });
-                        CreateEventService()
-                            .createEventServices(context,
-                                title: TempData.evetTitle,
-                                ageGroup: TempData.ageGroup,
-                                description: TempData.evetDescription,
-                                startDate: TempData.evetStartDate,
-                                category: TempData.category,
-                                enteryFee: TempData.eventEntryCost,
-                                guest: TempData.eventKeyGuest,
-                                fromTime: TempData.evetStartTime,
-                                endDate: TempData.evetEndDate,
-                                toTime: TempData.evetEndTime,
-                                entryType: TempData.eventEntryType,
-                                venue: TempData.selectVenu,
-                                venueCapacity: TempData.eventCapcity,
-                                couponCodeController: TempData.couponCode,
-                                couponDescriptionController:
-                                    TempData.couponCodeDescription,
-                                draft: true,
-                                tags: TempData.eventTags,
-                                thumbnailImg: globalController
-                                    .eventThumbnailImgPath.value,
-                                images: globalController.eventPhotosmgPath)
-                            .then((value) {
-                          if (value.responseStatus == ResponseStatus.success) {
+                  if (!isSaved)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: scaffoldPadding),
+                      child: myElevatedButtonOutline(
+                        // loader: waiting
+                        //           ? const CircularProgressIndicator()
+                        //           : const SizedBox(),
+                        onPressed: () {
+                          if (!waiting) {
+                            showWaitingDialoge(
+                                context: context, loading: waiting);
                             setState(() {
-                              waiting = false;
+                              waiting = true;
                             });
-                            clearAllTempData();
-                            Navigator.pop(context);
+                            CreateEventService()
+                                .createEventServices(context,
+                                    title: TempData.evetTitle,
+                                    ageGroup: TempData.ageGroup,
+                                    description: TempData.evetDescription,
+                                    startDate: TempData.evetStartDate,
+                                    category: TempData.category,
+                                    enteryFee: TempData.eventEntryCost,
+                                    guest: TempData.eventKeyGuest,
+                                    fromTime: TempData.evetStartTime,
+                                    endDate: TempData.evetEndDate,
+                                    toTime: TempData.evetEndTime,
+                                    entryType: TempData.eventEntryType,
+                                    venue: TempData.selectVenu,
+                                    venueCapacity: TempData.eventCapcity,
+                                    couponCodeController: TempData.couponCode,
+                                    couponDescriptionController:
+                                        TempData.couponCodeDescription,
+                                    draft: true,
+                                    tags: TempData.eventTags,
+                                    thumbnailImg: globalController
+                                        .eventThumbnailImgPath.value,
+                                    images: globalController.eventPhotosmgPath)
+                                .then((value) {
+                              if (value.responseStatus ==
+                                  ResponseStatus.success) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                clearAllTempData();
+                                Navigator.pop(context);
 
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              HomeMain.routeName,
-                              (route) => true,
-                            );
-                          }
-                          if (value.responseStatus == ResponseStatus.failed) {
-                            setState(() {
-                              waiting = false;
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeMain.routeName,
+                                  (route) => true,
+                                );
+                              }
+                              if (value.responseStatus ==
+                                  ResponseStatus.failed) {
+                                setState(() {
+                                  waiting = false;
+                                });
+                                Navigator.pop(context);
+                              }
                             });
-                            Navigator.pop(context);
                           }
-                        });
-                      },
-                      text: 'Save as draft',
-                    ),
-                  )
+                        },
+                        text: 'Save as draft',
+                      ),
+                    )
                 ],
               ),
             ),

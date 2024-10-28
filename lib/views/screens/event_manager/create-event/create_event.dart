@@ -901,8 +901,48 @@ class _CreateEventState extends State<CreateEvent> {
     TempData.couponCodeDescription = '';
   }
 
+
+
 // Pick single image for thumbnail
-  void selectThumbnailImg(ImageSource imgSource) async {
+void selectThumbnailImg(ImageSource imgSource) async {
+  final ImagePicker picker = ImagePicker();
+  final XFile? pickedImg = await picker.pickImage(source: imgSource);
+  if (pickedImg != null) {
+    final CroppedFile? croppedImg = await ImageCropper().cropImage(
+      sourcePath: pickedImg.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1), // Set fixed square aspect ratio
+      compressFormat: ImageCompressFormat.jpg,
+      maxHeight: 512,
+      maxWidth: 512,
+      compressQuality: 85,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square, // Only allow square aspect ratio
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: "Crop Image",
+          toolbarColor: kTextBlack,
+          toolbarWidgetColor: kTextWhite,
+          backgroundColor: kTextBlack,
+          activeControlsWidgetColor: kPrimaryColor,
+          cropFrameColor: kTextBlack,
+          lockAspectRatio: true, // Lock aspect ratio to 1:1
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: true, // Lock aspect ratio to 1:1 on iOS
+        ),
+      ],
+    );
+    
+    if (croppedImg != null) {
+      globalController.eventThumbnailImgPath.value = croppedImg.path;
+      isThumbNail.value = false;
+    }
+  }
+}
+
+ /*  void selectThumbnailImg(ImageSource imgSource) async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedImg = await picker.pickImage(source: imgSource);
     if (pickedImg != null) {
@@ -942,7 +982,7 @@ class _CreateEventState extends State<CreateEvent> {
       //   isThumbNail.value= false;
       // }
     }
-  }
+  } */
 
   // Function to select and crop multiple images
   void selectMultiplePhotoImg(List<String> imgPaths) async {

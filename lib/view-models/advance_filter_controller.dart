@@ -5,9 +5,9 @@ import 'package:good_times/data/repository/endpoints.dart';
 
 import '../data/models/home_event_modal.dart';
 
-class AdvanceFilterController extends GetxController{
+class AdvanceFilterController extends GetxController {
   final RxList _artsEvetCategory = [].obs;
-   final RxString eventSortbyfilter = "".obs;
+  final RxString eventSortbyfilter = "".obs;
 
   final RxList<String> _ageSort = <String>[].obs;
   Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
@@ -15,8 +15,7 @@ class AdvanceFilterController extends GetxController{
   Rx<TextEditingController> endPriceController = TextEditingController().obs;
   Rx<TextEditingController> locationController = TextEditingController().obs;
   Rx<TextEditingController> titleController = TextEditingController().obs;
-  RxList<HomeEventsModel> eventModalcontroller= RxList<HomeEventsModel>();
-
+  RxList<HomeEventsModel> eventModalcontroller = RxList<HomeEventsModel>();
 
   List get evetCategoryList => _artsEvetCategory;
 
@@ -29,47 +28,58 @@ class AdvanceFilterController extends GetxController{
   String get filterByLocation => locationController.value.text;
   String get homeFilterByTitle => titleController.value.text;
 
-
-  void updateEvetCategory(List<String> updatedList){
+  void updateEvetCategory(List<String> updatedList) {
     _artsEvetCategory.assignAll(updatedList);
   }
- 
+
   void ageGroup(List<String> updatedList) {
     _ageSort.assignAll(updatedList);
   }
+
   void selectDateTime(DateTime date) {
     selectedDate.value = date;
   }
+
   void startPriceFunc(String price) {
     startPriceController.value.text = price;
   }
+
   void endPriceFunc(String price) {
     endPriceController.value.text = price;
   }
+
   void filterLocation(String locationTitle) {
     locationController.value.text = locationTitle;
   }
-  void homeFilterLocation(String locationTitle) {
+
+ /*  void homeFilterLocation(String locationTitle) {
     titleController.value.text = locationTitle;
   }
-
-  clearAllFilter(){
+ */
+  clearAllFilter({String searchcontent = ""}) {
     _artsEvetCategory.clear();
-    eventSortbyfilter.value="";
+    eventSortbyfilter.value = "";
     _ageSort.clear();
     selectedDate.value = null;
     startPriceController.value.clear();
     endPriceController.value.clear();
     locationController.value.clear();
-    titleController.value.clear();
+    if (searchcontent.isEmpty) {
+      titleController.value.clear();
+    }
   }
 
-  bool checkFilterIsClearOrNot(){
-    if(_artsEvetCategory.isEmpty && eventSortbyfilter.isEmpty && _ageSort.isEmpty && selectedDate.value == null && startPriceController.value.text=="" && endPriceController.value.text=="" && titleController.value.text==""){
+  bool checkFilterIsClearOrNot() {
+    if (_artsEvetCategory.isEmpty &&
+        eventSortbyfilter.isEmpty &&
+        _ageSort.isEmpty &&
+        selectedDate.value == null &&
+        startPriceController.value.text == "" &&
+        endPriceController.value.text == "" &&
+        titleController.value.text == "") {
       return true;
-    }else{
+    } else {
       return false;
     }
-
   }
 }

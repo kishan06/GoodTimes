@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:appinio_social_share/appinio_social_share.dart';
+import 'package:appinio_social_share/appinio_social_share_method_channel.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,67 +13,122 @@ import 'package:good_times/data/repository/services/event_manager.dart';
 import 'package:good_times/data/repository/services/social_share.dart';
 import 'package:good_times/utils/temp.dart';
 
+import '../../../../../data/models/events_model.dart';
 import '../../../../../data/repository/response_data.dart';
 import '../../../../../utils/loading.dart';
+import '../../../../../view-models/copy_clipboard.dart';
 import '../../../../../view-models/global_controller.dart';
 
 final appinioSocialShare = AppinioSocialShare();
 GlobalController globalController = Get.find();
-void onSaveBottomsheet(BuildContext context, {int? eventid}) {
+void onSaveBottomsheet(BuildContext context,
+    {int? eventid, EventsModel? eventData, bool editpath = false}) {
   bool isExpanded = false;
   bool waiting = false;
   // late List<EventsModel> data;
   final appinioSocialShare = AppinioSocialShare();
+  final secondObj = MethodChannelAppinioSocialShare();
 
   void shareToFacebook(String caption, String imagePath) async {
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+    Get.snackbar("Copied to clipboard", "");
+
     print("$imagePath");
-    bool isInstalled = await DeviceApps.isAppInstalled('com.facebook.katana');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToFacebook(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Facebook: $e");
+    if (Platform.isAndroid) {
+      bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToFacebook(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Facebook: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Facebook app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Facebook app is not installed.");
+    }
+    if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+      print(resp['facebook_stories']);
+      if (resp['facebook_stories']!) {
+        try {
+          secondObj.shareToFacebook(caption, [imagePath]);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Facebook app is not installed.");
+      }
     }
   }
 
   void shareToTwitter(String caption, String imagePath) async {
-    bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToTwitter(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Twitter: $e");
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+    Get.snackbar("Copied to clipboard", "");
+    if (Platform.isAndroid) {
+      bool isInstalled = await DeviceApps.isAppInstalled('com.twitter.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToTwitter(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Twitter: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Twitter app is not installed.");
+    }
+    if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+
+      if (resp['twitter']!) {
+        try {
+          secondObj.shareToTwitter(caption, imagePath);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Twitter app is not installed.");
+      }
     }
   }
 
   void shareToInstagram(String caption, String imagePath) async {
-    Clipboard.setData(
-        ClipboardData(text: "$caption Caption copied to clipboard."));
+    CopyClipboardAndSahreController().copyToClipboard(context, caption);
+    Get.snackbar("Copied to clipboard", "");
 
-    bool isInstalled = await DeviceApps.isAppInstalled('com.instagram.android');
-    if (isInstalled) {
-      try {
-        await appinioSocialShare.shareToInstagram(
-          text: caption,
-          filePath: imagePath,
-        );
-      } catch (e) {
-        print("Failed to share on Instagram: $e");
+    if (Platform.isAndroid) {
+      bool isInstalled =
+          await DeviceApps.isAppInstalled('com.instagram.android');
+      if (isInstalled) {
+        try {
+          await appinioSocialShare.shareToInstagram(
+            text: caption,
+            filePath: imagePath,
+          );
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Instagram app is not installed.");
       }
-    } else {
-      Fluttertoast.showToast(msg: "Instagram app is not installed.");
+    }
+    if (Platform.isIOS) {
+      Map<String, bool> resp = await secondObj.getInstalledApps();
+      print(resp['instagram']);
+      if (resp['instagram']!) {
+        try {
+          secondObj.shareToInstagramFeed(caption, imagePath);
+        } catch (e) {
+          print("Failed to share on Instagram: $e");
+        }
+      } else {
+        Fluttertoast.showToast(msg: "Instagram app is not installed.");
+      }
     }
   }
 
@@ -205,11 +262,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -264,11 +325,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -324,11 +389,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Fluttertoast.showToast(
+                                      msg: "Please try again later.");
                                 }
                               });
                             },
@@ -390,7 +459,9 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                   // Delay the toast to ensure context is available
                                   Future.delayed(
                                       const Duration(milliseconds: 300), () {
-                                    Fluttertoast.showToast(msg: messages);
+                                    Get.snackbar("Success", messages,
+                                        duration:const Duration(seconds: 8),
+                                        snackPosition: SnackPosition.BOTTOM);
                                   });
 
                                   print("message$messages");
@@ -400,11 +471,19 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Get.snackbar(
+                                      "Retry", "Please try again later",
+                                      duration:const Duration(seconds: 8),
+                                      snackPosition: SnackPosition.BOTTOM);
                                 } else {
                                   setState(() {
                                     waiting = false;
                                   });
                                   Navigator.pop(context);
+                                  Get.snackbar(
+                                      "Retry", "Please try again later",
+                                      duration:const Duration(seconds: 8),
+                                      snackPosition: SnackPosition.BOTTOM);
                                 }
                               });
                             },
@@ -460,7 +539,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToInstagram(TempData.evetTitle,
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
+                              shareToInstagram(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(
@@ -490,7 +577,16 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToFacebook(TempData.evetTitle,
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
+
+                              shareToFacebook(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(
@@ -520,7 +616,15 @@ void onSaveBottomsheet(BuildContext context, {int? eventid}) {
                         children: [
                           InkWell(
                             onTap: () {
-                              shareToTwitter(TempData.evetTitle,
+                              String caption = "";
+                              if (editpath) {
+                                caption =
+                                    "Event Name: ${eventData!.title}, Location: ${eventData!.venu}, Date: ${eventData!.startDate} ${eventData!.startTime}-${eventData!.endDate} ${eventData!.endTime}, Amount: ${eventData!.entryFee}";
+                              } else {
+                                caption =
+                                    "Event Name: ${TempData.evetTitle}, Location: ${TempData.editselectVenu}, Date: ${TempData.evetStartDate} ${TempData.evetStartTime}-${TempData.evetEndDate} ${TempData.evetEndTime}, Amount: ${TempData.editeventEntryCost}";
+                              }
+                              shareToTwitter(caption,
                                   globalController.eventThumbnailImgPath.value);
                             },
                             child: Image.asset(

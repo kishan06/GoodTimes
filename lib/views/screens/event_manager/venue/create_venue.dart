@@ -32,8 +32,8 @@ class _CreateVenuState extends State<CreateVenue> {
   final AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   GlobalController globalController = Get.put(GlobalController());
 
-  String locationValidation = '';
-  String venuPhotoValidation = '';
+  RxString locationValidation = ''.obs;
+  RxString venuPhotoValidation = ''.obs;
   var args;
 
   @override
@@ -44,7 +44,6 @@ class _CreateVenuState extends State<CreateVenue> {
 
   @override
   Widget build(BuildContext context) {
-
     return parentWidgetWithConnectivtyChecker(
       child: SafeArea(
         child: Scaffold(
@@ -53,69 +52,72 @@ class _CreateVenuState extends State<CreateVenue> {
           ),
           body: PopScope(
             onPopInvoked: (e) async {
-             clearVenu();
-        
+              clearVenu();
             },
             canPop: true,
             child: LayoutBuilder(
               builder: (context, constraints) => SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: scaffoldPadding),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: scaffoldPadding),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
                     child: IntrinsicHeight(
-                      child: Form(
-                        key: _key,
-                        autovalidateMode: _autovalidateMode,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('Add Venue ', style: headingStyle),
-                            const SizedBox(height: 40),
-                            const Text('Venue Name', style: labelStyle),
-                            textFormField(
-                              controller: venuNameController,
-                              inputFormate: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^[a-zA-Z\s]+$')),
-                              ],
-                              validationFunction: (values) {
-                                 var value = values.trim();
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a venue name.';
-                                }
-                                if (value.length < 2) {
-                                  return 'Name is too short';
-                                }
-                                if (value.length > 50) {
-                                  return 'Name is to large';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 40),
-                            const Text('Location', style: labelStyle),
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(() => SearchPlace());
-                              },
-                              child: Container(
-                                height: 60,
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                        width: 1.0, color: kPrimaryColor),
+                      child: Obx(() {
+                        return Form(
+                          key: _key,
+                          autovalidateMode: _autovalidateMode,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Add Venue ', style: headingStyle),
+                              const SizedBox(height: 40),
+                              const Text('Venue Name', style: labelStyle),
+                              textFormField(
+                                controller: venuNameController,
+                                inputFormate: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^[a-zA-Z\s]+$')),
+                                ],
+                                validationFunction: (values) {
+                                  var value = values.trim();
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a venue name.';
+                                  }
+                                  if (value.length < 2) {
+                                    return 'Name is too short';
+                                  }
+                                  if (value.length > 50) {
+                                    return 'Name is to large';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 40),
+                              const Text('Location', style: labelStyle),
+                              GestureDetector(
+                                onTap: () {
+                                  locationValidation.value="";
+                                  Get.to(() => SearchPlace());
+                                },
+                                child: Container(
+                                  height: 60,
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          width: 1.0, color: kPrimaryColor),
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Icon(Icons.location_on_outlined,
-                                        color: kPrimaryColor, size: 30),
-                                    const SizedBox(width: 5),
-                                    Expanded(
-                                      child: Obx(
-                                        () => Text(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.location_on_outlined,
+                                          color: kPrimaryColor, size: 30),
+                                      const SizedBox(width: 5),
+                                      Expanded(
+                                        child: Text(
                                           globalcontroller.address.value,
                                           style: paragraphStyle.copyWith(
                                             color: kTextWhite,
@@ -124,96 +126,93 @@ class _CreateVenuState extends State<CreateVenue> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              locationValidation,
-                              style: paragraphStyle.copyWith(
-                                  color: kTextError, fontSize: 12),
-                            ),
-                            const SizedBox(height: 40),
-                            const Text('Add Photo', style: labelStyle),
-                            Text(
-                              'Photo',
-                              style: paragraphStyle.copyWith(
-                                  color: const Color(0xffA8A8A8)),
-                            ),
-                            const SizedBox(height: 16),
-                            Obx(() =>
-                            Row(children: [
-                            InkWell(
-                              onTap: (){
-                                 selectProfileImg(ImageSource.gallery);
-                              },
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: kTextWhite.withOpacity(0.15),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 26,
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            (globalController.venuImgPath.value == '')
-                                ? const SizedBox()
-                                : Image.file(
-                                  File(globalController.venuImgPath.value),
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                            ],),
-                            ),
-                            Text(
-                              venuPhotoValidation,
-                              style: paragraphStyle.copyWith(
-                                  color: kTextError, fontSize: 12),
-                            ),
-                            const Spacer(),
-                            MyElevatedButton(
-                              onPressed: () {
-                                unfoucsKeyboard(context);
-                                _key.currentState!.validate();
-                                if (_key.currentState!.validate() &&
-                                    globalcontroller.address.value != '' && globalcontroller.venuImgPath.value != '') {
-                                      setState(() {
-                                        TempData.venueName = venuNameController.text;
-                                      });
-                                      Navigator.pushNamed(context, VenuePreview.routeName,arguments: args);
-                                }
-                                if (globalcontroller.address.value == '') {
-                                  setState(() {
-                                    locationValidation =
+                              const SizedBox(height: 10),
+                              Text(
+                                locationValidation.value,
+                                style: paragraphStyle.copyWith(
+                                    color: kTextError, fontSize: 12),
+                              ),
+                              const SizedBox(height: 40),
+                              const Text('Add Photo', style: labelStyle),
+                              Text(
+                                'Photo',
+                                style: paragraphStyle.copyWith(
+                                    color: const Color(0xffA8A8A8)),
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      venuPhotoValidation.value="";
+                                      selectProfileImg(ImageSource.gallery);
+                                    },
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: kTextWhite.withOpacity(0.15),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          size: 26,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  (globalController.venuImgPath.value == '')
+                                      ? const SizedBox()
+                                      : Image.file(
+                                          File(globalController
+                                              .venuImgPath.value),
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ],
+                              ),
+                              Text(
+                                venuPhotoValidation.value,
+                                style: paragraphStyle.copyWith(
+                                    color: kTextError, fontSize: 12),
+                              ),
+                              const Spacer(),
+                              MyElevatedButton(
+                                onPressed: () {
+                                  unfoucsKeyboard(context);
+                                  _key.currentState!.validate();
+                                  if (_key.currentState!.validate() &&
+                                      globalcontroller.address.value != '' &&
+                                      globalcontroller.venuImgPath.value !=
+                                          '') {
+                                    setState(() {
+                                      TempData.venueName =
+                                          venuNameController.text;
+                                    });
+                                    Navigator.pushNamed(
+                                        context, VenuePreview.routeName,
+                                        arguments: args);
+                                  }
+                                  if (globalcontroller.address.value.isEmpty) {
+                                    locationValidation.value =
                                         'Please select a address';
-                                  });
-                                }else {
-                                  setState(() {
-                                    locationValidation ="";
-                                  });
-                                }
-                                if(globalcontroller.venuImgPath.value == ''){
-                                  setState(() {
-                                    venuPhotoValidation = 'Please add photo';
-                                  });
-                                }else{
-                                  setState(() {
-                                    venuPhotoValidation = "";
-                                  });
-                                }
-                              },
-                              text: 'Add Venue',
-                            ),
-                          ],
-                        ),
-                      ),
+                                  }
+                                  if (globalcontroller
+                                      .venuImgPath.value.isEmpty) {
+                                    venuPhotoValidation.value =
+                                        'Please add photo';
+                                  }
+                                },
+                                text: 'Add Venue',
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                   ),
                 ),
@@ -262,10 +261,10 @@ class _CreateVenuState extends State<CreateVenue> {
       }
     }
   }
-
 }
-  clearVenu(){
-     globalcontroller.address.value = '';
-     globalcontroller.venuImgPath.value = '';
-     TempData.venueName ='';
-  }
+
+clearVenu() {
+  globalcontroller.address.value = '';
+  globalcontroller.venuImgPath.value = '';
+  TempData.venueName = '';
+}

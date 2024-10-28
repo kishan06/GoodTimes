@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:good_times/view-models/global_controller.dart';
 import 'package:good_times/views/widgets/common/button.dart';
 
+import '../../../data/repository/services/advance_filter_service.dart';
 import '../../../utils/constant.dart';
+import '../../../view-models/SubscriptionPreference.dart';
 
 // class ConnectTimeOut extends StatefulWidget {
 //   const ConnectTimeOut({super.key});
@@ -68,15 +70,15 @@ class _ConnectTimeOutState extends State<ConnectTimeOut> {
       globalController.connectionTimeout.value = false;
     }
   }
-
+  ProfileExtendedDataController profileextendedcontroller =
+      Get.put(ProfileExtendedDataController(), permanent: true);
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       if (!globalController.connectionTimeout.value) {
         // If the connection timeout is false, pop this screen
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pop(context);
-        });
+        profileextendedcontroller.profileextenddata.value.data=null;
+        Navigator.pop(context);
       }
       return Scaffold(
         appBar: AppBar(

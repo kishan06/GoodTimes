@@ -103,8 +103,12 @@ class _FeedBackState extends State<FeedBack> {
                     ),
                     style: paragraphStyle,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                    
+                      if (value == null || value.isEmpty ) {
                         return 'Please enter some feedback';
+                      }
+                      if(value.trim().isEmpty){
+                        return 'Please enter valid feedback.';
                       }
                       if (value.length < 5) {
                         return 'Please  enter more than 5 character';

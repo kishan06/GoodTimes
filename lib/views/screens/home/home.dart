@@ -36,6 +36,7 @@ import '../../../view-models/SubscriptionPreference.dart';
 import '../../../view-models/advance_filter_controller.dart';
 import '../../../view-models/app_version.dart';
 import '../../../view-models/auth/google_auth.dart';
+import '../../../view-models/bootomnavigation_controller.dart';
 import '../../../view-models/location_controller.dart';
 import '../../widgets/common/bottom_navigation.dart';
 import '../../widgets/common/bottom_sheet.dart';
@@ -77,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     checkFunction();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _showInitialBottomSheet();
@@ -104,12 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
           null) {
         organisationController.getOrganisationData(context);
       }
-      if (!globalController.serverError.value) {
-        allowfilter.value = false;
-        advanceFilterController.eventModalcontroller.value = [];
-        advanceFilterServicee.advanceFilterEventServices(context);
-      }
-     
+
+      allowfilter.value = false;
+      advanceFilterController.eventModalcontroller.value = [];
+      advanceFilterController.clearAllFilter();
+      advanceFilterServicee.advanceFilterEventServices(context).then((value) {
+        Future.delayed(const Duration(milliseconds: 600), () {
+          allowfilter.value = true;
+        });
+        print("called1");
+      });
     });
   }
 
@@ -163,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // If preference is true, navigate to HomeMain
           appVersionController.initPackageInfo(context);
           ProfileService().getProfileDetails(context);
+
           // advanceFilterServicee.advanceFilterEventServices(context);
           if (preferenceController.prefrencecontrollerdata.isEmpty) {
             preferenceController.eventCategory(context);
@@ -189,20 +194,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getAgeGroup() {
-     if(TempData.agedatagroup.isEmpty){
+    if (TempData.agedatagroup.isEmpty) {
       PreferencesService().getAgeGroup(context).then((value) {
-      log("log data of category list in event screen $value");
-      setState(() {
-         TempData.agedatagroup = value;
-        ageList = value;
+        log("log data of category list in event screen $value");
+        setState(() {
+          TempData.agedatagroup = value;
+          ageList = value;
+        });
       });
-    });
-    }else{
-  setState(() {
+    } else {
+      setState(() {
         ageList = TempData.agedatagroup;
       });
     }
   }
+  // HomePageController homePageController = Get.put(HomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -213,29 +219,52 @@ class _HomeScreenState extends State<HomeScreen> {
         child: GestureDetector(onTap: () {
           unfoucsKeyboard(context);
         }, child: Obx(() {
-          print("r");
-
+          print("r#11111");
           if (!allowfilter.value &&
               advanceFilterController.eventModalcontroller.isNotEmpty) {
             Future.delayed(const Duration(milliseconds: 200), () {
               allowfilter.value = true;
             });
           }
-          if (advanceFilterController.eventModalcontroller.isEmpty &&
-              !TempData.preventapicall) {
-            TempData.preventapicall = true;
-            advanceFilterController.clearAllFilter();
-            AdvanceFilterService()
-                .advanceFilterEventServices(context)
-                .then((value) {
-              print("rr");
-              Future.delayed(const Duration(milliseconds: 200), () {
-                allowfilter.value = true;
+          if (requireddataload.value) {
+            Future.delayed(Duration(seconds: 1), () {
+              allowfilter.value = false;
+              advanceFilterController.eventModalcontroller.value = [];
+              advanceFilterController.clearAllFilter();
+              advanceFilterServicee
+                  .advanceFilterEventServices(context)
+                  .then((value) {
+                requireddataload.value = false;
+                Future.delayed(const Duration(milliseconds: 600), () {
+                  allowfilter.value = true;
+                });
+                print("called2");
               });
-              TempData.preventapicall = false;
             });
-            globalController.serverError.value = false;
           }
+
+          /*  if (advanceFilterController.eventModalcontroller.isEmpty &&
+              (!TempData.preventapicall && !TempData.dataloaded)) {
+            TempData.preventapicall = true;
+
+            ///bug solution is here
+            if (advanceFilterController.titleController.value.text.isEmpty) {
+              advanceFilterController.clearAllFilter();
+               print("called2");
+              AdvanceFilterService()
+                  .advanceFilterEventServices(context)
+                  .then((value) {
+                print("rr#1111");
+                TempData.preventapicall = false;
+                TempData.dataloaded = true;
+
+                Future.delayed(const Duration(milliseconds: 400), () {
+                  allowfilter.value = true;
+                });
+              });
+              globalController.serverError.value = false;
+            }
+          } */
 
           return Stack(
             children: [
@@ -314,53 +343,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }),
                                             ),
                                           ),
-                                          // ImageFiltered(
-                                          //   imageFilter: ImageFilter.blur(
-                                          //       sigmaX: !(globalController
-                                          //                   .hasActiveSubscription
-                                          //                   .value ||
-                                          //               globalController
-                                          //                   .hasActiveGracePeriod
-                                          //                   .value)
-                                          //           ? 5.0
-                                          //           : 0.0,
-                                          //       sigmaY: !(globalController
-                                          //                   .hasActiveSubscription
-                                          //                   .value ||
-                                          //               globalController
-                                          //                   .hasActiveGracePeriod
-                                          //                   .value)
-                                          //           ? 5.0
-                                          //           : 0.0),
-                                          //   child: IgnorePointer(
-                                          //     ignoring: !(globalController
-                                          //                 .hasActiveSubscription
-                                          //                 .value ||
-                                          //             globalController
-                                          //                 .hasActiveGracePeriod
-                                          //                 .value)
-                                          //         ? true
-                                          //         : false,
-                                          //     child: ListView.builder(
-                                          //       itemCount: dataList.length,
-                                          //       shrinkWrap: true,
-                                          //       physics: const ScrollPhysics(),
-                                          //       itemBuilder: (context, index) {
-                                          //         return eventWidget(
-                                          //           eventId: dataList[index].id,
-                                          //           img: dataList[index]
-                                          //               .thumbnail,
-                                          //           title:
-                                          //               dataList[index].title,
-                                          //           price: dataList[index]
-                                          //               .entryFee,
-                                          //           date: dataList[index]
-                                          //               .startDate,
-                                          //         );
-                                          //       },
-                                          //     ),
-                                          //   ),
-                                          // ),
+                                          ListView.builder(
+                                            itemCount: dataList.length,
+                                            shrinkWrap: true,
+                                            physics: const ScrollPhysics(),
+                                            itemBuilder: (context, index) {
+                                              return eventWidget(
+                                                eventId: dataList[index].id,
+                                                img: dataList[index].thumbnail,
+                                                title: dataList[index].title,
+                                                price: dataList[index].entryFee,
+                                                date: dataList[index].startDate,
+                                              );
+                                            },
+                                          ),
                                         ],
                                       ))
                                   : const Text("No data found 😞",
@@ -622,23 +618,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                     unfoucsKeyboard(context);
                                   },
                                   onChanged: (e) {
-                                    if (e.length > 2) {
-                                      advanceFilterController
-                                          .homeFilterLocation(e);
+                                    Future.delayed(Duration(seconds: 1), () {
+                                      /*  advanceFilterController
+                                          .homeFilterLocation(e); */
                                       advanceFilterServicee
                                           .advanceFilterEventServices(context);
-                                    }
+                                    });
                                   },
                                 )),
                           ),
                     const SizedBox(width: 10),
-                    !allowfilter.value
-                        ? ReusableSkeletonAvatar(
-                            height: 40,
-                            width: 87,
-                            borderRadius: BorderRadius.circular(5),
-                          )
-                        : InkWell(
+                    allowfilter.value
+                        ? InkWell(
                             onTap: () async {
                               if (latlong == null) {
                                 LocationPermission permission =
@@ -682,7 +673,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 }
                               }
-                              _scaffoldKey.currentState?.openDrawer();
+                              if (eventData.isEmpty || ageList == null) {
+                                await eventCategory();
+                                await getAgeGroup();
+                                Future.delayed(Duration(seconds: 1), () {
+                                  _scaffoldKey.currentState?.openDrawer();
+                                });
+                              } else {
+                                if (ageList != null) {
+                                  if (ageList!.isEmpty) {
+                                    await getAgeGroup();
+                                    Future.delayed(Duration(seconds: 1), () {
+                                      _scaffoldKey.currentState?.openDrawer();
+                                    });
+                                  } else {
+                                    _scaffoldKey.currentState?.openDrawer();
+                                  }
+                                }
+                              }
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -705,6 +713,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                             ),
+                          )
+                        : ReusableSkeletonAvatar(
+                            height: 40,
+                            width: 87,
+                            borderRadius: BorderRadius.circular(5),
                           )
                   ],
                 ),
