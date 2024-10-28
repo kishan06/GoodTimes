@@ -7,8 +7,8 @@ var logger = Logger();
 class Endpoints {
   // base point urls
   //!local urls of bobby server
-/*   static const domain = "http://192.168.50.71:8000/";
-  static const _base = "http://192.168.50.71:8000/api/";
+  /*  static const domain = "http://192.168.50.183:8000/";
+  static const _base = "http://192.168.50.183:8000/api/";
   static const chatDomain = "ws://chat.goodtimes.betadelivery.com/ws/chat/"; */
 
   // base point urls
@@ -20,20 +20,18 @@ class Endpoints {
   //!stagging urls of client
   static const domain = "https://staging.goodtimesltd.co.uk";
   static const _base = "https://staging.goodtimesltd.co.uk/api/";
-  
-
-  static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
+  static const chatDomain = "ws://chat.staging.goodtimesltd.co.uk/ws/chat/";
 
   //cutome url
-  /* static const domain = "https://deciding-firmly-fly.ngrok-free.app";
+  /*  static const domain = "https://deciding-firmly-fly.ngrok-free.app";
   static const _base = "https://deciding-firmly-fly.ngrok-free.app/api/";
   static const chatDomain= "ws://chat.staging.goodtimesltd.co.uk/ws/chat/"; */
 //https://deciding-firmly-fly.ngrok-free.app/api
 
-  //!production urls of client
-  // static const domain = "https://admin.goodtimesltd.co.uk";
-  // static const _base = "https://admin.goodtimesltd.co.uk/api/";
-  // static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/";
+  // !production urls of client
+/*   static const domain = "https://admin.goodtimesltd.co.uk";
+  static const _base = "https://admin.goodtimesltd.co.uk/api/";
+  static const chatDomain = "ws://chat.admin.goodtimesltd.co.uk/ws/chat/"; */
 
   // websocket url
   //Production on clinet server base websocketurl
@@ -150,9 +148,8 @@ class Endpoints {
   static const accountTransfer = _base + "account/transfer-check/";
   static const accountTransferDone = _base + "account/transfer-check/";
   static const eventCategoryDrawar = _base + "events/preferences/";
-  static const profileextendeddata=_base + "account/profile/extended-data/";
+  static const profileextendeddata = _base + "account/profile/extended-data/";
 
 //SocialShare
- static const socialshare = _base + "events/post-to-social-media/";
-
+  static const socialshare = _base + "events/post-to-social-media/";
 }
