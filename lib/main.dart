@@ -29,7 +29,7 @@ import 'views/screens/intro_slider/intro_slider.dart';
 import 'views/widgets/common/custom_error.dart';
 
 void main() async {
-  //final bug fix
+  //live bug fix
   WidgetsFlutterBinding.ensureInitialized();
 
   // if Error occured then it this will show
