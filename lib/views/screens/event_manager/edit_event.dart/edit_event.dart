@@ -4,6 +4,7 @@ import 'dart:io' as IO;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:good_times/data/models/event_age_group_model.dart';
 import 'package:good_times/data/repository/endpoints.dart';
 import 'package:good_times/utils/constant.dart';
@@ -79,11 +80,16 @@ class _EditCreateEventState extends State<EditEvent> {
   List<VenuModel> venuList = [];
   List<EventCategoriesModdel> categoryList = [];
   bool tagsError = false;
+  bool isRunOnce = true;
+
   bool _callbackExecuted = false;
 
   final StringTagController _stringTagController = StringTagController();
+  final StringTagController _stringGuestController = StringTagController();
+
   late double _distanceToField;
   final List<String> _initialTags = <String>[];
+  static List<String> _initialGuest = <String>[];
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   GlobalController globalController = Get.put(GlobalController());
@@ -205,6 +211,7 @@ class _EditCreateEventState extends State<EditEvent> {
         widget.eventData.couponCodeDescription ?? "";
     admissionCostController.text = widget.eventData.entryFee!;
     keyGuestController.text = widget.eventData.keyGuest!;
+    _initialGuest = widget.eventData.keyGuest!.split(", ");
     for (var tagsItem in widget.eventData.tags!) {
       _initialTags.add(tagsItem.name);
     }
@@ -604,13 +611,163 @@ class _EditCreateEventState extends State<EditEvent> {
                                 style: labelStyle.copyWith(
                                     fontWeight: FontWeight.w400, fontSize: 20),
                               ),
-                              textFormField(
+                              Text(
+                                'Add guest comma sperated if multiple tags',
+                                style: labelStyle.copyWith(
+                                    fontWeight: FontWeight.w400, fontSize: 10),
+                              ),
+
+                              /* textFormField(
                                 controller: keyGuestController,
                                 inputFormate: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp(r'^[a-zA-Z\s]+$')),
                                 ],
+                              ), */
+                              TextFieldTags<String>(
+                                textfieldTagsController: _stringGuestController,
+                                initialTags: _initialGuest,
+                                textSeparators: const [' ', ','],
+                                letterCase: LetterCase.normal,
+                                validator: (String guest) {
+                                  if (guest == 'porn') {
+                                    return 'No, please just no';
+                                  } else if (_stringGuestController.getTags!
+                                      .contains(guest)) {
+                                    return 'You\'ve already entered that';
+                                  }
+                                  return null;
+                                },
+                                inputFieldBuilder: (context, inputFieldValues) {
+                                  logger.f(
+                                      "tag is empty or not ${_stringGuestController.getTags!.isEmpty}");
+                                  if (!isRunOnce) {
+                                    setState(() {
+                                      isRunOnce = false;
+                                    });
+                                  }
+                                  return TextField(
+                                    onTap: () {
+                                      _stringGuestController.getFocusNode
+                                          ?.requestFocus();
+                                    },
+                                    style: const TextStyle(
+                                      color: kTextWhite,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    controller:
+                                        inputFieldValues.textEditingController,
+                                    focusNode: inputFieldValues.focusNode,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      enabledBorder: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      border: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      focusedBorder: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      // helperText: 'Enter Tags...',
+                                      helperStyle: const TextStyle(
+                                        color: kPrimaryColor,
+                                      ),
+                                      hintText: inputFieldValues.tags.isNotEmpty
+                                          ? ''
+                                          : "Enter guest...",
+                                      errorText: inputFieldValues.error,
+                                      prefixIconConstraints: BoxConstraints(
+                                          maxWidth: _distanceToField * 0.8),
+                                      prefixIcon: inputFieldValues
+                                              .tags.isNotEmpty
+                                          ? SingleChildScrollView(
+                                              controller: inputFieldValues
+                                                  .tagScrollController,
+                                              scrollDirection: Axis.vertical,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 8,
+                                                  bottom: 8,
+                                                  left: 8,
+                                                ),
+                                                child: Wrap(
+                                                    runSpacing: 4.0,
+                                                    spacing: 4.0,
+                                                    children: inputFieldValues
+                                                        .tags
+                                                        .map((String guest) {
+                                                      return Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                20.0),
+                                                          ),
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 5.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 5.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            InkWell(
+                                                              child: Text(
+                                                                guest,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              onTap: () {},
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 4.0),
+                                                            InkWell(
+                                                              child: const Icon(
+                                                                Icons.cancel,
+                                                                size: 14.0,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        233,
+                                                                        233,
+                                                                        233),
+                                                              ),
+                                                              onTap: () {
+                                                                inputFieldValues
+                                                                    .onTagRemoved(
+                                                                        guest);
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }).toList()),
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                    onChanged: inputFieldValues.onTagChanged,
+                                    onSubmitted:
+                                        inputFieldValues.onTagSubmitted,
+                                  );
+                                },
                               ),
+
                               const SizedBox(height: 40),
                               Text(
                                 'Add tags',
@@ -828,6 +985,12 @@ class _EditCreateEventState extends State<EditEvent> {
                                   unfoucsKeyboard(context);
                                   autovalidateMode = AutovalidateMode.always;
                                   _key.currentState!.validate();
+                                  keyGuestController.text =
+                                      _stringGuestController.getTags != null
+                                          ? _stringGuestController.getTags!
+                                              .join(", ")
+                                          : "";
+
                                   if (_stringTagController.getTags!.isEmpty) {
                                     setState(() {
                                       tagsError = true;

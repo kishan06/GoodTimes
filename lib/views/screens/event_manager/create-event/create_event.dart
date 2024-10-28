@@ -53,6 +53,8 @@ class _CreateEventState extends State<CreateEvent> {
   RxBool isPhoto = false.obs;
   String? refresh;
   final StringTagController _stringTagController = StringTagController();
+  final StringTagController _stringGuestController = StringTagController();
+
   late double _distanceToField;
   ProfileModel? profileData;
   bool loadings = true;
@@ -61,6 +63,7 @@ class _CreateEventState extends State<CreateEvent> {
   bool isRunOnce = true;
 
   static const List<String> _initialTags = <String>[];
+  static const List<String> _initialGuest = <String>[];
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   GlobalController globalController = Get.put(GlobalController());
@@ -524,13 +527,163 @@ class _CreateEventState extends State<CreateEvent> {
                                 style: labelStyle.copyWith(
                                     fontWeight: FontWeight.w400, fontSize: 20),
                               ),
-                              textFormField(
+                              Text(
+                                'Add guest comma sperated if multiple tags',
+                                style: labelStyle.copyWith(
+                                    fontWeight: FontWeight.w400, fontSize: 10),
+                              ),
+
+                              /* textFormField(
                                 controller: keyGuestController,
                                 inputFormate: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp(r'^[a-zA-Z\s]+$')),
                                 ],
+                              ), */
+                              TextFieldTags<String>(
+                                textfieldTagsController: _stringGuestController,
+                                initialTags: _initialGuest,
+                                textSeparators: const [' ', ','],
+                                letterCase: LetterCase.normal,
+                                validator: (String guest) {
+                                  if (guest == 'porn') {
+                                    return 'No, please just no';
+                                  } else if (_stringGuestController.getTags!
+                                      .contains(guest)) {
+                                    return 'You\'ve already entered that';
+                                  }
+                                  return null;
+                                },
+                                inputFieldBuilder: (context, inputFieldValues) {
+                                  logger.f(
+                                      "tag is empty or not ${_stringGuestController.getTags!.isEmpty}");
+                                  if (!isRunOnce) {
+                                    setState(() {
+                                      isRunOnce = false;
+                                    });
+                                  }
+                                  return TextField(
+                                    onTap: () {
+                                      _stringGuestController.getFocusNode
+                                          ?.requestFocus();
+                                    },
+                                    style: const TextStyle(
+                                      color: kTextWhite,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    controller:
+                                        inputFieldValues.textEditingController,
+                                    focusNode: inputFieldValues.focusNode,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      enabledBorder: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      border: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      focusedBorder: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: kPrimaryColor)),
+                                      // helperText: 'Enter Tags...',
+                                      helperStyle: const TextStyle(
+                                        color: kPrimaryColor,
+                                      ),
+                                      hintText: inputFieldValues.tags.isNotEmpty
+                                          ? ''
+                                          : "Enter guest...",
+                                      errorText: inputFieldValues.error,
+                                      prefixIconConstraints: BoxConstraints(
+                                          maxWidth: _distanceToField * 0.8),
+                                      prefixIcon: inputFieldValues
+                                              .tags.isNotEmpty
+                                          ? SingleChildScrollView(
+                                              controller: inputFieldValues
+                                                  .tagScrollController,
+                                              scrollDirection: Axis.vertical,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 8,
+                                                  bottom: 8,
+                                                  left: 8,
+                                                ),
+                                                child: Wrap(
+                                                    runSpacing: 4.0,
+                                                    spacing: 4.0,
+                                                    children: inputFieldValues
+                                                        .tags
+                                                        .map((String guest) {
+                                                      return Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                20.0),
+                                                          ),
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 5.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 5.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            InkWell(
+                                                              child: Text(
+                                                                guest,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              onTap: () {},
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 4.0),
+                                                            InkWell(
+                                                              child: const Icon(
+                                                                Icons.cancel,
+                                                                size: 14.0,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        233,
+                                                                        233,
+                                                                        233),
+                                                              ),
+                                                              onTap: () {
+                                                                inputFieldValues
+                                                                    .onTagRemoved(
+                                                                        guest);
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }).toList()),
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                    onChanged: inputFieldValues.onTagChanged,
+                                    onSubmitted:
+                                        inputFieldValues.onTagSubmitted,
+                                  );
+                                },
                               ),
+
                               const SizedBox(height: 40),
                               Text(
                                 'Add tags',
@@ -734,6 +887,8 @@ class _CreateEventState extends State<CreateEvent> {
                                   unfoucsKeyboard(context);
                                   autovalidateMode = AutovalidateMode.always;
                                   _key.currentState!.validate();
+                                  keyGuestController.text=_stringGuestController.getTags!=null
+                                  ?_stringGuestController.getTags!.join(", "):"";
                                   if (_stringTagController.getTags!.isEmpty) {
                                     setState(() {
                                       tagsError = true;
@@ -878,7 +1033,6 @@ class _CreateEventState extends State<CreateEvent> {
     TempData.eventEntryType = selectedFeeType;
     TempData.eventEntryCost = admissionCostController;
     TempData.eventKeyGuest = keyGuestController;
-    TempData.eventKeyGuest = keyGuestController;
     TempData.eventPhotos = globalController.eventPhotosmgPath;
     TempData.eventThumbnail = globalController.eventThumbnailImgPath.value;
     TempData.eventTags = _stringTagController.getTags!;
@@ -901,48 +1055,47 @@ class _CreateEventState extends State<CreateEvent> {
     TempData.couponCodeDescription = '';
   }
 
-
-
 // Pick single image for thumbnail
-void selectThumbnailImg(ImageSource imgSource) async {
-  final ImagePicker picker = ImagePicker();
-  final XFile? pickedImg = await picker.pickImage(source: imgSource);
-  if (pickedImg != null) {
-    final CroppedFile? croppedImg = await ImageCropper().cropImage(
-      sourcePath: pickedImg.path,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1), // Set fixed square aspect ratio
-      compressFormat: ImageCompressFormat.jpg,
-      maxHeight: 512,
-      maxWidth: 512,
-      compressQuality: 85,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square, // Only allow square aspect ratio
-      ],
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: "Crop Image",
-          toolbarColor: kTextBlack,
-          toolbarWidgetColor: kTextWhite,
-          backgroundColor: kTextBlack,
-          activeControlsWidgetColor: kPrimaryColor,
-          cropFrameColor: kTextBlack,
-          lockAspectRatio: true, // Lock aspect ratio to 1:1
-        ),
-        IOSUiSettings(
-          title: 'Crop Image',
-          aspectRatioLockEnabled: true, // Lock aspect ratio to 1:1 on iOS
-        ),
-      ],
-    );
-    
-    if (croppedImg != null) {
-      globalController.eventThumbnailImgPath.value = croppedImg.path;
-      isThumbNail.value = false;
+  void selectThumbnailImg(ImageSource imgSource) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedImg = await picker.pickImage(source: imgSource);
+    if (pickedImg != null) {
+      final CroppedFile? croppedImg = await ImageCropper().cropImage(
+        sourcePath: pickedImg.path,
+        aspectRatio: const CropAspectRatio(
+            ratioX: 1, ratioY: 1), // Set fixed square aspect ratio
+        compressFormat: ImageCompressFormat.jpg,
+        maxHeight: 512,
+        maxWidth: 512,
+        compressQuality: 85,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square, // Only allow square aspect ratio
+        ],
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: "Crop Image",
+            toolbarColor: kTextBlack,
+            toolbarWidgetColor: kTextWhite,
+            backgroundColor: kTextBlack,
+            activeControlsWidgetColor: kPrimaryColor,
+            cropFrameColor: kTextBlack,
+            lockAspectRatio: true, // Lock aspect ratio to 1:1
+          ),
+          IOSUiSettings(
+            title: 'Crop Image',
+            aspectRatioLockEnabled: true, // Lock aspect ratio to 1:1 on iOS
+          ),
+        ],
+      );
+
+      if (croppedImg != null) {
+        globalController.eventThumbnailImgPath.value = croppedImg.path;
+        isThumbNail.value = false;
+      }
     }
   }
-}
 
- /*  void selectThumbnailImg(ImageSource imgSource) async {
+  /*  void selectThumbnailImg(ImageSource imgSource) async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedImg = await picker.pickImage(source: imgSource);
     if (pickedImg != null) {
