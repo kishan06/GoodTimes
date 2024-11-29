@@ -43,6 +43,7 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
     }
     return meetings;
   }
+final CalendarController _calendarController = CalendarController();
 
   List<Meeting> _getDataSource(
       {date, startDate, endDate, title, id, bgImage, price}) {
@@ -84,14 +85,17 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
                             headerBackgroundColor: kTextBlack,
                             headerTextStyle: TextStyle(color: kTextWhite),
                             // agendaBackgroundColor:kTextWhite,
-                            viewHeaderDateTextStyle: TextStyle(color: kTextWhite),
-                            viewHeaderDayTextStyle: TextStyle(color: kTextWhite),
+                            viewHeaderDateTextStyle:
+                                TextStyle(color: kTextWhite),
+                            viewHeaderDayTextStyle:
+                                TextStyle(color: kTextWhite),
                             // viewHeaderBackgroundColor:kTextWhite,
                             // timeTextStyle:TextStyle(color: kTextWhite),
                             activeDatesTextStyle: TextStyle(color: kTextWhite),
                           ),
                           child: SfCalendar(
                             view: CalendarView.month,
+controller: _calendarController,
                             todayHighlightColor: kPrimaryColor,
                             selectionDecoration: BoxDecoration(
                               color: kTextWhite.withOpacity(0.2),
@@ -116,7 +120,8 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
                                     ],
                                   ),
                                   color: kPrimaryColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4.0)),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,10 +154,18 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
                                 ),
                               );
                             },
-      
+
                             // appointmentTextStyle:TextStyle(color: kTextBlack),
                             dataSource: MeetingDataSource(allSource()),
-                            monthViewSettings: const MonthViewSettings(
+                            monthViewSettings:  MonthViewSettings(
+                                monthCellStyle: MonthCellStyle(
+                                  leadingDatesTextStyle: TextStyle(
+                                      color: Colors
+                                          .grey.shade600), // Previous month's dates
+                                  trailingDatesTextStyle: TextStyle(
+                                      color: Colors
+                                          .grey.shade600), // Next month's dates
+                                ),
                                 appointmentDisplayMode:
                                     MonthAppointmentDisplayMode.indicator,
                                 showAgenda: true,
@@ -174,7 +187,33 @@ class _SyncFusioCalendarState extends State<SyncFusioCalendar> {
   void calendarTapped(CalendarTapDetails calendarTapDetails) {
     if (calendarTapDetails.targetElement == CalendarElement.appointment) {
       int eventId = calendarTapDetails.appointments![0].id;
-      Navigator.pushNamed(context, EventPreview.routeName, arguments: [eventId,null]);
+      Navigator.pushNamed(context, EventPreview.routeName,
+          arguments: [eventId, null]);
+    }
+    if (calendarTapDetails.targetElement == CalendarElement.calendarCell) {
+      final tappedDate = calendarTapDetails.date!;
+      final currentMonth = _calendarController.displayDate!.month;
+      // Check if tapped date is a leading date
+      if (tappedDate.month < currentMonth) {
+        // Navigate to the previous month
+        _calendarController.displayDate = DateTime(
+          tappedDate.year,
+          tappedDate.month,
+        );
+      }
+    }
+    if (calendarTapDetails.targetElement == CalendarElement.calendarCell) {
+      final tappedDate = calendarTapDetails.date!;
+      final currentMonth = _calendarController.displayDate!.month;
+      // Check if tapped date is a leading date
+      if (tappedDate.month > currentMonth) {
+        // Navigate to the previous month
+        _calendarController.displayDate = DateTime(
+          tappedDate.year,
+          tappedDate.month,
+        );
+      }
     }
   }
+  
 }

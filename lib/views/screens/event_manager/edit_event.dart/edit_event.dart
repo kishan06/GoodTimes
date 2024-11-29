@@ -699,7 +699,7 @@ class _EditCreateEventState extends State<EditEvent> {
                                                     children: inputFieldValues
                                                         .tags
                                                         .map((String guest) {
-                                                      return Container(
+                                                      return guest.isEmpty? SizedBox():Container(
                                                         decoration:
                                                             const BoxDecoration(
                                                           borderRadius:
