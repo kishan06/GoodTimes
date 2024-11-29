@@ -27,33 +27,13 @@ class GetEventServices {
         startDates = DateFormat('yyyy-MM-dd').format(DateTime.parse(startDate));
         endDates = DateFormat('yyyy-MM-dd').format(DateTime.parse(endDate));
     }
-    if (filterParams == "high_admission_cost")filterParams = "expensive"; //if event filter by high
-    if (filterParams == "low_admission_cost")filterParams = "cheap"; //if event filter by low
-    if (filterParams == "key_guest")filterParams = "key_guest"; //if event filter by guest
-    if (filterParams == "Arts & Entertainment")filterParams ="category&category_id=1"; //if event filter by Arts & Entertainment
-    if (filterParams == "Business & Economic")filterParams = "category&category_id=2"; //if event filter by Business & Economic
-    if (filterParams == "Health & Wellness")filterParams = "category&category_id=3"; //if event filter by Health & Wellness
-    if (filterParams == "Leisure & Hobbies")filterParams = "category&category_id=4"; //if event filter by Leisure & Hobbies
-    if (filterParams == "Cultural & Social")filterParams = "category&category_id=5"; //if event filter by Cultural & Social
-    if (filterParams == "Education & Technology")filterParams = "category&category_id=6"; //if event filter by Education & Technology
-    if (filterParams == "Outdoor Activities")filterParams = "category&category_id=7"; //if event filter by Outdoor Activities
-    if (filterParams == "Recreation & Sports")filterParams = "category&category_id=8"; //if event filter by Recreation & Sports
-    if (filterParams == "Family")filterParams = "category&category_id=9"; //if event filter by Recreation & Sports
-    if (filterParams == "Shopping Sale")filterParams = "category&category_id=10"; //if event filter by Recreation & Sports
-    if (filterParams == "Within 10km")filterParams = "filter-by-location"; //if event filter within 10 km range
-    if (filterParams == "Anytime")filterParams = "preference"; //if event filter by anytime
-    if (filterParams == "Today")filterParams = "today"; //if event filter by Today
-    if (filterParams == "Tomorrow")filterParams = "tomorrow"; //if event filter by Tomorrow
-    if (filterParams == "Choose a date")filterParams = "choose_a_date"; //if event filter by Custome Date Range
     
     log("filter data url ${Endpoints.getEventFilter}?filter=$filterParams");
   final ApiService apiService = ApiService(dio);
     try {
       ResponseModel<String?> response = await apiService.getData<String>(
         context,
-        (filterParams == "filter-by-location")
-            ? Endpoints.getEventFilterWithin10km
-            :(filterParams =="choose_a_date")?"${Endpoints.getEventFilterDateRage}?start_date=$startDates&end_date=$endDates":"${Endpoints.getEventFilter}?filter=$filterParams",
+        "${Endpoints.getEventFilter}calendar",
       );
       if (response.responseStatus == ResponseStatus.success) {
         List data = response.data["data"];

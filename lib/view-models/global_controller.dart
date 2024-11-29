@@ -15,10 +15,8 @@ import '../views/screens/auth/login/login.dart';
 import 'auth/google_auth.dart';
 
 class GlobalController extends GetxController {
-
   RxBool apiCall =  false.obs;
   Logger logger = Logger();
-
   RxString locationName = "".obs;
   RxString profileImgPath = "".obs;
   RxString profileUserName = "".obs;
@@ -36,23 +34,17 @@ class GlobalController extends GetxController {
   RxBool checkiffilterload =true.obs;
   RxBool serverError = false.obs;
   RxBool accoutTransferSuccess = false.obs;
-
-
   RxBool hasPreference = false.obs;
-
   // venue variable
   RxString address = ''.obs;
   RxString lat = ''.obs;
   RxString long = ''.obs;
-
   //Event image variable path
   RxString eventThumbnailImgPath = "".obs;
   RxList eventPhotosmgPath = <String>[].obs;
-
   RxInt thumbImgType = ImgTypes.network.index.obs;
   RxString thumbImgPath = "".obs;
   RxList eventFilterCategory = [].obs;
-
   @override
   void onInit() {
     log("On init called");
@@ -60,7 +52,6 @@ class GlobalController extends GetxController {
     // getPlayerId();
     super.onInit();
   }
-
   getProfileDetail() async {
     try {
       final header = {

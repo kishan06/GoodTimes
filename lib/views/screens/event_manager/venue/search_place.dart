@@ -21,7 +21,13 @@ class SearchPlace extends PlacesAutocompleteWidget {
           key: key,
           apiKey: kGoogleApiKey,
           language: 'en',
-          components: [const Component(Component.country, "uk")],
+          components: [
+            const Component(Component.country, "uk"),
+            // const Component(Component.country, "fr"), // France
+            // const Component(Component.country, "de"), // Germany
+            // const Component(Component.country, "es"), // Spain
+            // const Component(Component.country, "it"), // Italy
+          ],
         );
 
   @override
