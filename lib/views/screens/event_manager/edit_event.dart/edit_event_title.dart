@@ -337,8 +337,8 @@ class EditEventTitileState extends State<EditEventTitile> {
                       textFormField(
                         controller: _eventDescriptions,
                         inputFormate: [
-                          FilteringTextInputFormatter.allow(RegExp(
-                              r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
+                                                        FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;\'<>^`/₹€¥£$]"),),
+
                         ],
                         validationFunction: (values) {
                           var value = values.trim();

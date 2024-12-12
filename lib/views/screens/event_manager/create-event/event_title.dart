@@ -303,8 +303,8 @@ class _EventTitileState extends State<EventTitile> {
                             textFormField(
                               controller: _eventDescriptions,
                               inputFormate: [
-                                FilteringTextInputFormatter.allow(RegExp(
-                                    r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/]')),
+                                FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;\'<>^`/₹€¥£$]"),),
+                               // FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9\s!@#\$&*~%(),.?\-_=+|{}[\]:;"<>^`/₹€¥£$]')),
                                 // RegExp(r'^[a-zA-Z\s]+$')),
                               ],
                               validationFunction: (values) {
